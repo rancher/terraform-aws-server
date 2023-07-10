@@ -1,0 +1,11 @@
+module "TestMedium" {
+  source                     = "../../../"
+  image                      = "sles-15"
+  server_owner               = "terraform"
+  server_name                = "test-medium"
+  server_type                = "medium"
+  server_user                = "testmedium"
+  server_ssh_key             = "ssh-ed25519 your+publicSSHkey you@example.com"
+  server_subnet_name         = "tf-test"
+  server_security_group_name = "tf-test"
+}
