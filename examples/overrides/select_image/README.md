@@ -6,3 +6,6 @@ If you would like to test this example go to the ./tests/overrides directory and
 This is an example of using this module to select information rather than creating anything.
 This will select the image from the image types and retrieve information about it.
 Please see ./image/types.tf for more information on the opinionated image selection this module provides.
+
+
+NOTE: This module does not create images, it may select them or skip them (potentially requiring the user to provide more information), but it won't create them.
