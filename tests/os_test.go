@@ -1,72 +1,79 @@
 package test
 
 import (
-	"github.com/gruntwork-io/terratest/modules/terraform"
 	"testing"
+
+	"github.com/gruntwork-io/terratest/modules/terraform"
 )
 
 func TestCis(t *testing.T) {
 	t.Parallel()
-
-	terraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
-		TerraformDir: "../examples/os/cis",
-	})
-
+	category := "os"
+	directory := "cis"
+	region := "us-west-1"
+	owner := "terraform-ci@suse.com"
+	terraformOptions, keyPair, sshAgent := setup(t, category, directory, region, owner)
+	defer teardown(t, category, directory, keyPair, sshAgent)
 	defer terraform.Destroy(t, terraformOptions)
 	terraform.InitAndApply(t, terraformOptions)
 }
 
 func TestSles15(t *testing.T) {
 	t.Parallel()
-
-	terraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
-		TerraformDir: "../examples/os/sles15",
-	})
-
+	category := "os"
+	directory := "sles15"
+	region := "us-west-1"
+	owner := "terraform-ci@suse.com"
+	terraformOptions, keyPair, sshAgent := setup(t, category, directory, region, owner)
+	defer teardown(t, category, directory, keyPair, sshAgent)
 	defer terraform.Destroy(t, terraformOptions)
 	terraform.InitAndApply(t, terraformOptions)
 }
 
 func TestRocky8(t *testing.T) {
 	t.Parallel()
-
-	terraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
-		TerraformDir: "../examples/os/rocky8",
-	})
-
+	category := "os"
+	directory := "rocky8"
+	region := "us-west-1"
+	owner := "terraform-ci@suse.com"
+	terraformOptions, keyPair, sshAgent := setup(t, category, directory, region, owner)
+	defer teardown(t, category, directory, keyPair, sshAgent)
 	defer terraform.Destroy(t, terraformOptions)
 	terraform.InitAndApply(t, terraformOptions)
 }
 
 func TestRhel8(t *testing.T) {
 	t.Parallel()
-
-	terraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
-		TerraformDir: "../examples/os/rhel8",
-	})
-
+	category := "os"
+	directory := "rhel8"
+	region := "us-west-1"
+	owner := "terraform-ci@suse.com"
+	terraformOptions, keyPair, sshAgent := setup(t, category, directory, region, owner)
+	defer teardown(t, category, directory, keyPair, sshAgent)
 	defer terraform.Destroy(t, terraformOptions)
 	terraform.InitAndApply(t, terraformOptions)
 }
 
 func TestUbuntu20(t *testing.T) {
 	t.Parallel()
-
-	terraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
-		TerraformDir: "../examples/os/ubuntu20",
-	})
-
+	category := "os"
+	directory := "ubuntu20"
+	region := "us-west-1"
+	owner := "terraform-ci@suse.com"
+	terraformOptions, keyPair, sshAgent := setup(t, category, directory, region, owner)
+	defer teardown(t, category, directory, keyPair, sshAgent)
 	defer terraform.Destroy(t, terraformOptions)
 	terraform.InitAndApply(t, terraformOptions)
 }
 
 func TestUbuntu22(t *testing.T) {
 	t.Parallel()
-
-	terraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
-		TerraformDir: "../examples/os/ubuntu22",
-	})
-
+	category := "os"
+	directory := "ubuntu22"
+	region := "us-west-1"
+	owner := "terraform-ci@suse.com"
+	terraformOptions, keyPair, sshAgent := setup(t, category, directory, region, owner)
+	defer teardown(t, category, directory, keyPair, sshAgent)
 	defer terraform.Destroy(t, terraformOptions)
 	terraform.InitAndApply(t, terraformOptions)
 }

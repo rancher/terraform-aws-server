@@ -1,36 +1,54 @@
 package test
 
 import (
-	"github.com/gruntwork-io/terratest/modules/terraform"
+	"fmt"
 	"testing"
+
+	"github.com/gruntwork-io/terratest/modules/terraform"
 )
 
 func TestServerOnly(t *testing.T) {
+	// in this test we are going to create a server without touching the image module
 	t.Parallel()
-
+	category := "overrides"
+	directory := "server_only"
+	region := "us-west-1"
+	owner := "terraform-ci@suse.com"
+	terraformOptions, keyPair, sshAgent := setup(t, category, directory, region, owner)
+	defer teardown(t, category, directory, keyPair, sshAgent)
+	defer terraform.Destroy(t, terraformOptions)
+	terraform.InitAndApply(t, terraformOptions)
+}
+func TestSelectImage(t *testing.T) {
+	// in this test we are going to select an image without touching the server module
+	t.Parallel()
+	category := "overrides"
+	directory := "select_image"
+	region := "us-west-1"
 	terraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
-		TerraformDir: "../examples/overrides/server_only",
+		TerraformDir: fmt.Sprintf("../examples/%s/%s", category, directory),
+		// Environment variables to set when running Terraform
+		EnvVars: map[string]string{
+			"AWS_DEFAULT_REGION": region,
+		},
 	})
 
 	defer terraform.Destroy(t, terraformOptions)
 	terraform.InitAndApply(t, terraformOptions)
 }
-func TestImageOnly(t *testing.T) {
+
+func TestSelectServer(t *testing.T) {
+	// in this test we are going to select an image and a server without creating anything
 	t.Parallel()
-
+	category := "overrides"
+	directory := "select_server"
+	region := "us-west-1"
 	terraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
-		TerraformDir: "../examples/overrides/image_only",
-	})
-
-	defer terraform.Destroy(t, terraformOptions)
-	terraform.InitAndApply(t, terraformOptions)
-}
-
-func TestSelectOnly(t *testing.T) {
-	t.Parallel()
-
-	terraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
-		TerraformDir: "../examples/overrides/select_only",
+		TerraformDir: fmt.Sprintf("../examples/%s/%s", category, directory),
+		// Environment variables to set when running Terraform
+		EnvVars: map[string]string{
+			"AWS_DEFAULT_REGION": region,
+		},
 	})
 
 	defer terraform.Destroy(t, terraformOptions)

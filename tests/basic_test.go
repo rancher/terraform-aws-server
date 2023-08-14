@@ -1,17 +1,19 @@
 package test
 
 import (
-	"github.com/gruntwork-io/terratest/modules/terraform"
 	"testing"
+
+	"github.com/gruntwork-io/terratest/modules/terraform"
 )
 
 func TestBasic(t *testing.T) {
 	t.Parallel()
-
-	terraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
-		TerraformDir: "../examples/basic",
-	})
-
+	category := "basic"
+	directory := "basic"
+	region := "us-west-1"
+	owner := "terraform-ci@suse.com"
+	terraformOptions, keyPair, sshAgent := setup(t, category, directory, region, owner)
+	defer teardown(t, category, directory, keyPair, sshAgent)
 	defer terraform.Destroy(t, terraformOptions)
 	terraform.InitAndApply(t, terraformOptions)
 }
