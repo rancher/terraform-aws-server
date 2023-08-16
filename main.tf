@@ -13,9 +13,6 @@ locals {
   server_security_group_name = var.server_security_group_name
   server_subnet_name         = var.server_subnet_name
 
-  select_image  = (local.image_id != "" ? true : false)
-  select_server = (local.server_id != "" ? true : false)
-
   skip_server = ((local.server_id == "" && local.server_name == "") ? true : false)
 }
 

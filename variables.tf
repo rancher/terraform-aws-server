@@ -1,4 +1,5 @@
 variable "server_name" {
+  type        = string
   description = <<-EOT
     The name to give the server, this will form the local hostname and appear in the AWS ec2 console.
     The name should be unique within your region.
@@ -11,6 +12,7 @@ variable "server_name" {
 }
 
 variable "server_owner" {
+  type        = string
   description = <<-EOT
     The value of the "Owner" tag which will be added to resources, usually this is your email address.
     Adding your email address as a tag on resources allows your teammates to contact you about the resource.
@@ -21,6 +23,7 @@ variable "server_owner" {
 }
 
 variable "server_type" {
+  type        = string
   description = <<-EOT
     The designation of server "type" from the ./server/types.tf file
     This will set the cpu, ram, and storage resources available to the server.
@@ -32,6 +35,7 @@ variable "server_type" {
 }
 
 variable "image" {
+  type        = string
   description = <<-EOT
     The designation of server "image" from the ./image/types.tf file, this relates the AWS AMI information.
     Please be aware that some images require a subscription and will have additional cost over usage of the server.
@@ -43,6 +47,7 @@ variable "image" {
 }
 
 variable "image_initial_user" {
+  type        = string
   description = <<-EOT
     The initial or default user on the AMI, this will be used to configure initial connection.
     Use this only when overriding with the image_id.
@@ -51,6 +56,7 @@ variable "image_initial_user" {
 }
 
 variable "image_admin_group" {
+  type        = string
   description = <<-EOT
     The group defined as an 'admin' or 'sudoer' on the AMI, must allow sudo access.
     Use this only when overriding with the image_id.
@@ -59,6 +65,7 @@ variable "image_admin_group" {
 }
 
 variable "image_id" {
+  type        = string
   description = <<-EOT
     The id of the AMI to use. This is the AWS AMI id, not the id from the ./image/types.tf file.
     Use this only when you need to use an AMI that is not listed in the ./image/types.tf file.
@@ -70,6 +77,7 @@ variable "image_id" {
 }
 
 variable "server_user" {
+  type        = string
   description = <<-EOT
     The username to add to the server for configuring the OS and provisioning software.
     The user will get sudo access without a password, password authentication over remote connections is diabled.
@@ -80,6 +88,7 @@ variable "server_user" {
 }
 
 variable "server_ssh_key" {
+  type        = string
   description = <<-EOT
     The contents of the public key to use for ssh access.
     This will be placed in the /home/.ssh/authorized_keys for the user provided.
@@ -89,6 +98,7 @@ variable "server_ssh_key" {
 }
 
 variable "server_security_group_name" {
+  type        = string
   description = <<-EOT
     The name of the AWS security group that you want to apply to the server.
     This must already exist in AWS, it will not be created by this module.
@@ -99,6 +109,7 @@ variable "server_security_group_name" {
 }
 
 variable "server_subnet_name" {
+  type        = string
   description = <<-EOT
     The name of the AWS subnet that you want to apply to the server.
     This must already exist in AWS, it will not be created by this module.
@@ -109,6 +120,7 @@ variable "server_subnet_name" {
 }
 
 variable "server_id" {
+  type        = string
   description = <<-EOT
     The id of the AWS Ec2 instance that you want to select.
     This must already exist in AWS, it will not be created by this module.

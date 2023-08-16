@@ -25,7 +25,10 @@ data "aws_ec2_instance_type" "general_info" {
 
 data "aws_security_group" "general_info" {
   count = (local.create ? 1 : 0)
-  name  = local.security_group
+  filter {
+    name   = "tag:Name"
+    values = [local.security_group]
+  }
 }
 
 data "aws_subnet" "general_info" {
