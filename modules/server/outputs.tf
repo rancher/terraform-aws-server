@@ -19,3 +19,6 @@ output "cpu" {
 output "storage" {
   value = (local.create ? (aws_instance.created[0].root_block_device[*].volume_size)[0] : (data.aws_instance.selected[0].root_block_device[*].volume_size)[0])
 }
+output "server" {
+  value = (local.create ? aws_instance.created[0] : data.aws_instance.selected[0])
+}
