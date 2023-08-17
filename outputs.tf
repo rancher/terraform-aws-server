@@ -20,5 +20,5 @@ output "storage" {
   value = (local.skip_server ? "" : module.server[0].storage)
 }
 output "server" {
-  value = (local.skip_server ? "" : module.server[0].server)
+  value = (local.skip_server ? {} : module.server[0].server)
 }
