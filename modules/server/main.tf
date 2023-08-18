@@ -65,6 +65,7 @@ resource "aws_instance" "created" {
       lock_password: false
       ssh_authorized_keys:
         - ${local.ssh_key}
+  fqdn: ${local.name}
   EOT
 
   tags = {
@@ -128,6 +129,12 @@ resource "aws_instance" "created" {
       if [ "${local.initial_user}" != "${local.user}" ]; then
         sudo sed -i 's/^AllowUsers.*/& ${local.user}/' /etc/ssh/sshd_config
         sudo systemctl restart sshd
+      fi
+      # we need to make sure the hostname is set properly if possible
+      if [ -z "$(which hostnamectl)" ]; then
+        echo "hostnamectl not found";
+      else
+        sudo hostnamectl set-hostname ${local.name}
       fi
     EOT
     ]
