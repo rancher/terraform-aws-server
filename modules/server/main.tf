@@ -12,6 +12,13 @@ locals {
   image_id       = var.image_id
   initial_user   = var.image_initial_user
   admin_group    = var.image_admin_group
+  user_data = templatefile("${path.module}/cloudinit.tpl", {
+    initial_user = local.initial_user
+    admin_group  = local.admin_group
+    user         = local.user
+    ssh_key      = local.ssh_key
+    name         = local.name
+  })
 }
 
 data "aws_instance" "selected" {
@@ -47,26 +54,7 @@ resource "aws_instance" "created" {
   subnet_id                            = data.aws_subnet.general_info[0].id
   associate_public_ip_address          = "true"
   instance_initiated_shutdown_behavior = "terminate"
-  user_data                            = <<-EOT
-  #cloud-config
-  users:
-    - default
-    - name: ${local.initial_user}
-      gecos: ${local.initial_user}
-      sudo: ALL=(ALL) NOPASSWD:ALL
-      groups: users, ${local.admin_group}
-      lock_password: false
-      ssh_authorized_keys:
-        - ${local.ssh_key}
-    - name: ${local.user}
-      gecos: ${local.user}
-      sudo: ALL=(ALL) NOPASSWD:ALL
-      groups: users, ${local.admin_group}
-      lock_password: false
-      ssh_authorized_keys:
-        - ${local.ssh_key}
-  fqdn: ${local.name}
-  EOT
+  user_data_base64                     = base64encode(local.user_data)
 
   tags = {
     Name  = local.name
