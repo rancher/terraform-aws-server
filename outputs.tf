@@ -22,3 +22,6 @@ output "storage" {
 output "server" {
   value = (local.skip_server ? null : module.server[0].server)
 }
+output "user_data" {
+  value = (local.skip_server ? null : module.server[0].user_data)
+}

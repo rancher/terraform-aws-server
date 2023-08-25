@@ -22,3 +22,14 @@ output "storage" {
 output "server" {
   value = (local.create ? aws_instance.created[0] : data.aws_instance.selected[0])
 }
+# The AWS provider in Terraform uses the SHA-1 checksum to check if the user data has changed.
+# The user_data attribute is actually the SHA-1 checksum of the user data.
+# To get the Base64 encoded user data, you can use the user_data_base64 attribute instead of the user_data attribute.
+# When creating an instance you need to use the user_data_base64 attribute to return the user_data_base64 value.
+output "user_data" {
+  value = (
+    local.create ?
+    (can(base64decode(aws_instance.created[0].user_data_base64)) ? base64decode(aws_instance.created[0].user_data_base64) : aws_instance.created[0].user_data) :
+    (can(base64decode(data.aws_instance.selected[0].user_data_base64)) ? base64decode(data.aws_instance.selected[0].user_data_base64) : data.aws_instance.selected[0].user_data)
+  )
+}

@@ -17,11 +17,12 @@ module "aws_access" {
   owner               = local.email
   vpc_name            = "default"
   subnet_name         = "default"
-  security_group_name = local.username
+  security_group_name = local.name
   security_group_type = "specific"
   ssh_key_name        = local.key_name
 }
-
+# aws_access returns a security group object from the aws api, but the name attribute isn't the same as the Name tag
+# this is an rare example of when the name attribute is different than the Name tag
 module "TestSmall" {
   depends_on                 = [module.aws_access]
   source                     = "../../../"
@@ -32,5 +33,5 @@ module "TestSmall" {
   server_user                = local.username
   server_ssh_key             = local.public_ssh_key
   server_subnet_name         = "default"
-  server_security_group_name = module.aws_access.security_group.name
+  server_security_group_name = local.name # WARNING: security_group.name isn't the same as security_group->tags->Name
 }
