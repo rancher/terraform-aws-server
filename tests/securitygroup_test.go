@@ -7,43 +7,11 @@ import (
 	"github.com/gruntwork-io/terratest/modules/terraform"
 )
 
-func TestUsEast1(t *testing.T) {
-	// in this test we are going to create a server in the us-east-1 region
+func TestSpecific(t *testing.T) {
+	// in this test we are going to create a small server
 	t.Parallel()
-	category := "region"
-	directory := "useast1"
-	region := "us-east-1"
-	owner := "terraform-ci@suse.com"
-	terraformOptions, keyPair := setup(t, category, directory, region, owner)
-
-	sshAgent := ssh.SshAgentWithKeyPair(t, keyPair.KeyPair)
-	defer sshAgent.Stop()
-	terraformOptions.SshAgent = sshAgent
-	defer teardown(t, category, directory, keyPair)
-	defer terraform.Destroy(t, terraformOptions)
-	terraform.InitAndApply(t, terraformOptions)
-}
-func TestUsEast2(t *testing.T) {
-	// in this test we are going to create a server in the us-east-2 region
-	t.Parallel()
-	category := "region"
-	directory := "useast2"
-	region := "us-east-2"
-	owner := "terraform-ci@suse.com"
-	terraformOptions, keyPair := setup(t, category, directory, region, owner)
-
-	sshAgent := ssh.SshAgentWithKeyPair(t, keyPair.KeyPair)
-	defer sshAgent.Stop()
-	terraformOptions.SshAgent = sshAgent
-	defer teardown(t, category, directory, keyPair)
-	defer terraform.Destroy(t, terraformOptions)
-	terraform.InitAndApply(t, terraformOptions)
-}
-func TestUsWest1(t *testing.T) {
-	// in this test we are going to create a server in the us-west-1 region
-	t.Parallel()
-	category := "region"
-	directory := "uswest1"
+	category := "securitygroups"
+	directory := "specific"
 	region := "us-west-1"
 	owner := "terraform-ci@suse.com"
 	terraformOptions, keyPair := setup(t, category, directory, region, owner)
@@ -55,12 +23,44 @@ func TestUsWest1(t *testing.T) {
 	defer terraform.Destroy(t, terraformOptions)
 	terraform.InitAndApply(t, terraformOptions)
 }
-func TestUsWest2(t *testing.T) {
-	// in this test we are going to create a server in the us-west-2 region
+func TestInternal(t *testing.T) {
+	// in this test we are going to create a medium server
 	t.Parallel()
-	category := "region"
-	directory := "uswest2"
-	region := "us-west-2"
+	category := "securitygroups"
+	directory := "internal"
+	region := "us-west-1"
+	owner := "terraform-ci@suse.com"
+	terraformOptions, keyPair := setup(t, category, directory, region, owner)
+
+	sshAgent := ssh.SshAgentWithKeyPair(t, keyPair.KeyPair)
+	defer sshAgent.Stop()
+	terraformOptions.SshAgent = sshAgent
+	defer teardown(t, category, directory, keyPair)
+	defer terraform.Destroy(t, terraformOptions)
+	terraform.InitAndApply(t, terraformOptions)
+}
+func TestEgress(t *testing.T) {
+	// in this test we are going to create a large server
+	t.Parallel()
+	category := "securitygroups"
+	directory := "egress"
+	region := "us-west-1"
+	owner := "terraform-ci@suse.com"
+	terraformOptions, keyPair := setup(t, category, directory, region, owner)
+
+	sshAgent := ssh.SshAgentWithKeyPair(t, keyPair.KeyPair)
+	defer sshAgent.Stop()
+	terraformOptions.SshAgent = sshAgent
+	defer teardown(t, category, directory, keyPair)
+	defer terraform.Destroy(t, terraformOptions)
+	terraform.InitAndApply(t, terraformOptions)
+}
+func TestPublic(t *testing.T) {
+	// in this test we are going to create a extra large server
+	t.Parallel()
+	category := "securitygroups"
+	directory := "public"
+	region := "us-west-1"
 	owner := "terraform-ci@suse.com"
 	terraformOptions, keyPair := setup(t, category, directory, region, owner)
 
