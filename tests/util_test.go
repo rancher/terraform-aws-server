@@ -21,7 +21,7 @@ func teardown(t *testing.T, category string, directory string, keyPair *aws.Ec2K
 	sshAgent.Stop()
 }
 
-func setup(t *testing.T, category string, directory string, region string, owner string) (*terraform.Options, *aws.Ec2Keypair, *ssh.SshAgent) {
+func setup(t *testing.T, category string, directory string, region string, owner string) (*terraform.Options, *aws.Ec2Keypair) {
 	uniqueID := random.UniqueId()
 
 	// Create an EC2 KeyPair that we can use for SSH access
@@ -39,9 +39,6 @@ func setup(t *testing.T, category string, directory string, region string, owner
 	require.NoError(t, err2)
 
 	aws.AddTagsToResource(t, region, *result.KeyPairs[0].KeyPairId, map[string]string{"Name": keyPairName, "Owner": owner})
-
-	// start an SSH agent, with our key pair added
-	sshAgent := ssh.SshAgentWithKeyPair(t, keyPair.KeyPair)
 
 	retryableTerraformErrors := map[string]string{
 		// The reason is unknown, but eventually these succeed after a few retries.
@@ -64,8 +61,7 @@ func setup(t *testing.T, category string, directory string, region string, owner
 		EnvVars: map[string]string{
 			"AWS_DEFAULT_REGION": region,
 		},
-		SshAgent:                 sshAgent, // Overrides local SSH agent with our new agent
 		RetryableTerraformErrors: retryableTerraformErrors,
 	})
-	return terraformOptions, keyPair, sshAgent
+	return terraformOptions, keyPair
 }

@@ -1,8 +1,10 @@
 package test
 
 import (
-	"github.com/gruntwork-io/terratest/modules/terraform"
 	"testing"
+
+	"github.com/gruntwork-io/terratest/modules/ssh"
+	"github.com/gruntwork-io/terratest/modules/terraform"
 )
 
 func TestUsEast1(t *testing.T) {
@@ -12,7 +14,11 @@ func TestUsEast1(t *testing.T) {
 	directory := "useast1"
 	region := "us-east-1"
 	owner := "terraform-ci@suse.com"
-	terraformOptions, keyPair, sshAgent := setup(t, category, directory, region, owner)
+	terraformOptions, keyPair := setup(t, category, directory, region, owner)
+
+	sshAgent := ssh.SshAgentWithKeyPair(t, keyPair.KeyPair)
+	defer sshAgent.Stop()
+	terraformOptions.SshAgent = sshAgent
 	defer teardown(t, category, directory, keyPair, sshAgent)
 	defer terraform.Destroy(t, terraformOptions)
 	terraform.InitAndApply(t, terraformOptions)
@@ -24,7 +30,11 @@ func TestUsEast2(t *testing.T) {
 	directory := "useast2"
 	region := "us-east-2"
 	owner := "terraform-ci@suse.com"
-	terraformOptions, keyPair, sshAgent := setup(t, category, directory, region, owner)
+	terraformOptions, keyPair := setup(t, category, directory, region, owner)
+
+	sshAgent := ssh.SshAgentWithKeyPair(t, keyPair.KeyPair)
+	defer sshAgent.Stop()
+	terraformOptions.SshAgent = sshAgent
 	defer teardown(t, category, directory, keyPair, sshAgent)
 	defer terraform.Destroy(t, terraformOptions)
 	terraform.InitAndApply(t, terraformOptions)
@@ -36,7 +46,11 @@ func TestUsWest1(t *testing.T) {
 	directory := "uswest1"
 	region := "us-west-1"
 	owner := "terraform-ci@suse.com"
-	terraformOptions, keyPair, sshAgent := setup(t, category, directory, region, owner)
+	terraformOptions, keyPair := setup(t, category, directory, region, owner)
+
+	sshAgent := ssh.SshAgentWithKeyPair(t, keyPair.KeyPair)
+	defer sshAgent.Stop()
+	terraformOptions.SshAgent = sshAgent
 	defer teardown(t, category, directory, keyPair, sshAgent)
 	defer terraform.Destroy(t, terraformOptions)
 	terraform.InitAndApply(t, terraformOptions)
@@ -48,7 +62,11 @@ func TestUsWest2(t *testing.T) {
 	directory := "uswest2"
 	region := "us-west-2"
 	owner := "terraform-ci@suse.com"
-	terraformOptions, keyPair, sshAgent := setup(t, category, directory, region, owner)
+	terraformOptions, keyPair := setup(t, category, directory, region, owner)
+
+	sshAgent := ssh.SshAgentWithKeyPair(t, keyPair.KeyPair)
+	defer sshAgent.Stop()
+	terraformOptions.SshAgent = sshAgent
 	defer teardown(t, category, directory, keyPair, sshAgent)
 	defer terraform.Destroy(t, terraformOptions)
 	terraform.InitAndApply(t, terraformOptions)
