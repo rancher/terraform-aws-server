@@ -1,42 +1,51 @@
 # Terraform AWS Server
 
-This is Alpha, and is subject to major changes, please wait for a stable version before using.
+WARNING! this module is not ready for use
 
-This module provides the basic necessities for provisioning EC2 servers.
+This module deploys infrastructure in AWS.
 
 This is a "Core Module", it shouldn't contain any nested "independent modules". Please see [terraform.md](./terraform.md) for more information.
 
-## Requirements
-
-### AWS Access
+## AWS Access
 
 The first step to using the AWS modules is having an AWS account, [here](https://docs.aws.amazon.com/accounts/latest/reference/manage-acct-creating.html) is a document describing this process.
 You will need an API access key id and API secret key, you can get the API keys [following this tutorial](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html#Using_CreateAccessKey).
-
 The Terraform AWS provider uses the AWS Go SDK, which allows the use of either environment variables or [config files](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html#cli-configure-files-settings) for authentication.
-
 You do not need the AWS cli to generate the files, just place them in the proper place and Terraform will find and read them.
 
-You should also have a VPC, Subnet, VPC gateway and all of the necessary resources to connect to servers.
-This module is only concerned with provisioning the servers themselves, not the resources to connect to them.
-If you would like help getting those up and running please see the terraform-aws-access module that we also publish.
+## Examples
 
-### Nix
+### Local State
 
-These modules use Nix the OS agnostic package manager to install and manage local package dependencies,
- install Nix and source the .envrc to enter the environment.
-The .envrc will load a Nix development environment (a Nix shell), using the flake.nix file.
-You can easily add or remove dependencies by updating that file, the flake.lock is a lock file to cache dependencies.
-After loading the Nix shell, Nix will source the .envrc, setting all of the environment variables as necessary.
-
-## Local State
-
-The specific use case for the example modules here is temporary infrastructure for testing purposes.
-With that in mind it is not expected that the user will manage the resources as a team, therefore the state files are all stored locally.
+The specific use case for the example modules is temporary infrastructure for testing purposes.
+With that in mind, it is not expected that we manage the resources as a team, therefore the state files are all stored locally.
 If you would like to store the state files remotely, add a terraform backend file (`*.name.tfbackend`) to your implementation module.
 https://www.terraform.io/language/settings/backends/configuration#file
 
-## Override Tests
+## Development and Testing
 
-You may want to test this code with slightly different parameters for your environment.
-Check out [Terraform override files](https://developer.hashicorp.com/terraform/language/files/override) as a clean way to modify the inputs without accidentally committing any personalized code.
+### Paradigms and Expectations
+
+Please make sure to read [terraform.md](./terraform.md) to understand the paradigms and expectations that this module has for development.
+This is a "Core" module, as such it is not allowed to call other modules, and must only generate resources.
+
+### Environment
+
+It is important to us that all collaborators have the ability to develop in similar environments, so we use tools which enable this as much as possible.
+These tools are not necessary, but they can make it much simpler to collaborate.
+
+* I use [nix](https://nixos.org/) that I have installed using [their recommended script](https://nixos.org/download.html#nix-install-macos)
+* I use [direnv](https://direnv.net/) that I have installed using brew.
+* I simply use `direnv allow` to enter the environment
+* I navigate to the `tests` directory and run `go test -v -timeout=40m -parallel=10`
+  * It is important to note that the test files do not stand alone, they expect to run as a package.
+  * This means that specifying the file to test (as follows) will fail: `go test -v -timeout 40m -parallel 10 basic_test.go`
+* To run an individual test I navigate to the `tests` directory and run `go test -v -timeout 40m -parallel 10 -run <test function name>`
+  * eg. `go test -v -timeout 40m -parallel 10 -run TestBasic`
+* I use `override.tf` files to change the values of `examples` to personalized data so that I can run them.
+  * some examples use variables so that I can dynamically add values in tests
+* I store my GitHub credentials in a local file and generate a symlink to them named `~/.config/github/default/rc`
+  * this will be automatically sourced when you enter the nix environment (and unloaded when you leave)
+
+Our continuous integration tests in the GitHub [ubuntu-latest runner](https://github.com/actions/runner-images/blob/main/images/linux/Ubuntu2204-Readme.md), which has many different things installed and does not rely on Nix.
+It also uses a custom role and user which has been set up for it.
