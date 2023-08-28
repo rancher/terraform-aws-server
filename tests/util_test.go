@@ -9,16 +9,14 @@ import (
 	"github.com/aws/aws-sdk-go/service/ec2"
 	aws "github.com/gruntwork-io/terratest/modules/aws"
 	"github.com/gruntwork-io/terratest/modules/random"
-	"github.com/gruntwork-io/terratest/modules/ssh"
 	"github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/stretchr/testify/require"
 )
 
-func teardown(t *testing.T, category string, directory string, keyPair *aws.Ec2Keypair, sshAgent *ssh.SshAgent) {
+func teardown(t *testing.T, category string, directory string, keyPair *aws.Ec2Keypair) {
 	err := os.RemoveAll(fmt.Sprintf("../examples/%s/%s/.terraform", category, directory))
 	require.NoError(t, err)
 	aws.DeleteEC2KeyPair(t, keyPair)
-	sshAgent.Stop()
 }
 
 func setup(t *testing.T, category string, directory string, region string, owner string) (*terraform.Options, *aws.Ec2Keypair) {

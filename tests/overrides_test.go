@@ -20,7 +20,7 @@ func TestServerOnly(t *testing.T) {
 	sshAgent := ssh.SshAgentWithKeyPair(t, keyPair.KeyPair)
 	defer sshAgent.Stop()
 	terraformOptions.SshAgent = sshAgent
-	defer teardown(t, category, directory, keyPair, sshAgent)
+	defer teardown(t, category, directory, keyPair)
 	defer terraform.Destroy(t, terraformOptions)
 	terraform.InitAndApply(t, terraformOptions)
 }

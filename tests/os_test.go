@@ -20,7 +20,7 @@ func TestCis(t *testing.T) {
 	defer sshAgent.Stop()
 	terraformOptions.SshAgent = sshAgent
 
-	defer teardown(t, category, directory, keyPair, sshAgent)
+	defer teardown(t, category, directory, keyPair)
 	defer terraform.Destroy(t, terraformOptions)
 	terraform.InitAndApply(t, terraformOptions)
 }
@@ -36,7 +36,7 @@ func TestSles15(t *testing.T) {
 	sshAgent := ssh.SshAgentWithKeyPair(t, keyPair.KeyPair)
 	defer sshAgent.Stop()
 	terraformOptions.SshAgent = sshAgent
-	defer teardown(t, category, directory, keyPair, sshAgent)
+	defer teardown(t, category, directory, keyPair)
 	defer terraform.Destroy(t, terraformOptions)
 	terraform.InitAndApply(t, terraformOptions)
 }
@@ -52,7 +52,7 @@ func TestRocky8(t *testing.T) {
 	sshAgent := ssh.SshAgentWithKeyPair(t, keyPair.KeyPair)
 	defer sshAgent.Stop()
 	terraformOptions.SshAgent = sshAgent
-	defer teardown(t, category, directory, keyPair, sshAgent)
+	defer teardown(t, category, directory, keyPair)
 	defer terraform.Destroy(t, terraformOptions)
 	terraform.InitAndApply(t, terraformOptions)
 }
@@ -68,7 +68,7 @@ func TestRhel8(t *testing.T) {
 	sshAgent := ssh.SshAgentWithKeyPair(t, keyPair.KeyPair)
 	defer sshAgent.Stop()
 	terraformOptions.SshAgent = sshAgent
-	defer teardown(t, category, directory, keyPair, sshAgent)
+	defer teardown(t, category, directory, keyPair)
 	defer terraform.Destroy(t, terraformOptions)
 	terraform.InitAndApply(t, terraformOptions)
 }
@@ -84,7 +84,7 @@ func TestUbuntu20(t *testing.T) {
 	sshAgent := ssh.SshAgentWithKeyPair(t, keyPair.KeyPair)
 	defer sshAgent.Stop()
 	terraformOptions.SshAgent = sshAgent
-	defer teardown(t, category, directory, keyPair, sshAgent)
+	defer teardown(t, category, directory, keyPair)
 	defer terraform.Destroy(t, terraformOptions)
 	terraform.InitAndApply(t, terraformOptions)
 }
@@ -100,7 +100,7 @@ func TestUbuntu22(t *testing.T) {
 	sshAgent := ssh.SshAgentWithKeyPair(t, keyPair.KeyPair)
 	defer sshAgent.Stop()
 	terraformOptions.SshAgent = sshAgent
-	defer teardown(t, category, directory, keyPair, sshAgent)
+	defer teardown(t, category, directory, keyPair)
 	defer terraform.Destroy(t, terraformOptions)
 	terraform.InitAndApply(t, terraformOptions)
 }

@@ -19,7 +19,7 @@ func TestBasic(t *testing.T) {
 	defer sshAgent.Stop()
 	terraformOptions.SshAgent = sshAgent
 
-	defer teardown(t, category, directory, keyPair, sshAgent)
+	defer teardown(t, category, directory, keyPair)
 	defer terraform.Destroy(t, terraformOptions)
 	terraform.InitAndApply(t, terraformOptions)
 }
