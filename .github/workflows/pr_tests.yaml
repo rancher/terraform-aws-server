@@ -18,9 +18,9 @@ jobs:
         terraform_version: 1.5.3
         with_wrapper: false
     - name: Init Basic
-      run: cd examples/basic && terraform init -upgrade
+      run: cd examples/basic/basic && terraform init -upgrade
     - name: Validate Basic
-      run: cd examples/basic && terraform validate
+      run: cd examples/basic/basic && terraform validate
 
   tflint:
     name: 'TFLint'
