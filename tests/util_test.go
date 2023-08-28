@@ -16,6 +16,13 @@ import (
 func teardown(t *testing.T, category string, directory string, keyPair *aws.Ec2Keypair) {
 	err := os.RemoveAll(fmt.Sprintf("../examples/%s/%s/.terraform", category, directory))
 	require.NoError(t, err)
+	err1 := os.RemoveAll(fmt.Sprintf("../examples/%s/%s/.terraform.lock.hcl", category, directory))
+	require.NoError(t, err1)
+	err2 := os.RemoveAll(fmt.Sprintf("../examples/%s/%s/terraform.tfstate", category, directory))
+	require.NoError(t, err2)
+	err3 := os.RemoveAll(fmt.Sprintf("../examples/%s/%s/terraform.tfstate.backup", category, directory))
+	require.NoError(t, err3)
+
 	aws.DeleteEC2KeyPair(t, keyPair)
 }
 
