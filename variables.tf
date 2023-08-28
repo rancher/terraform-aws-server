@@ -83,8 +83,15 @@ variable "server_user" {
     The user will get sudo access without a password, password authentication over remote connections is diabled.
     The only way to access the server is by ssh-key using the user specified here.
     This value is ignored when overriding with the server_id.
+    If specified, this must be 32 characters or less.
   EOT
   default     = ""
+  validation {
+    condition = (
+      var.server_user == "" ? true : (length(var.server_user) <= 32 ? true : false)
+    )
+    error_message = "If specified, this must be 32 characters or less."
+  }
 }
 
 variable "server_ssh_key" {
