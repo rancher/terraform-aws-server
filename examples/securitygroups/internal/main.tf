@@ -12,7 +12,8 @@ locals {
 
 # selecting the vpc, subnet, and ssh key pair, generating a security group specific to the runner
 module "aws_access" {
-  source              = "github.com/rancher/terraform-aws-access"
+  source              = "rancher/access/aws"
+  version             = "v0.0.5"
   owner               = local.email
   vpc_name            = "default"
   subnet_name         = "default"
