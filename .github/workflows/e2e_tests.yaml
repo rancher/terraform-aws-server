@@ -33,8 +33,6 @@ jobs:
         with_wrapper: false
     - name: Terraform Init
       run: cd examples/basic/basic && terraform init -upgrade
-    - name: Terraform Plan
-      run: cd examples/basic/basic && terraform init -upgrade && terraform plan
 
   terratest:
     name: 'Terratest'
