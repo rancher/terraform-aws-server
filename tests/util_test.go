@@ -15,13 +15,13 @@ import (
 )
 
 func teardown(t *testing.T, category string, directory string, keyPair *aws.Ec2Keypair) {
-	files, err := filepath.Glob(fmt.Sprintf("../examples/%s/.terraform*", directory))
+	files, err := filepath.Glob(fmt.Sprintf("../examples/%s/%s/.terraform*", category, directory))
 	require.NoError(t, err)
 	for _, f := range files {
 		err1 := os.RemoveAll(f)
 		require.NoError(t, err1)
 	}
-	files, err2 := filepath.Glob(fmt.Sprintf("../examples/%s/terraform.*", directory))
+	files, err2 := filepath.Glob(fmt.Sprintf("../examples/%s/%s/terraform.*", category, directory))
 	require.NoError(t, err2)
 	for _, f := range files {
 		err3 := os.RemoveAll(f)
