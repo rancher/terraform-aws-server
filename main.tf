@@ -13,7 +13,7 @@ locals {
   server_security_group_name = var.security_group_name
   server_subnet_name         = var.subnet_name
 
-  skip_server = ((local.id == "" && local.name == "") ? true : false)
+  skip_server = ((local.server_id == "" && local.server_name == "") ? true : false)
 }
 
 # image module can't be skipped, but it can select an image based on the image_id rather than the image variable
