@@ -13,6 +13,44 @@ You will need an API access key id and API secret key, you can get the API keys 
 The Terraform AWS provider uses the AWS Go SDK, which allows the use of either environment variables or [config files](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html#cli-configure-files-settings) for authentication.
 You do not need the AWS cli to generate the files, just place them in the proper place and Terraform will find and read them.
 
+## Server Types
+
+This module provides a pre-chosen set of "types" of servers in order to reduce choice fatigue for the user and streamline testing.
+The choices are detailed [in the server module](./modules/server/types.tf) and below:
+
+```
+    small = {
+      id      = "t3.small",
+      cpu     = "2",
+      ram     = "2",
+      storage = "20",
+    },
+    medium = {
+      id      = "m5.large",
+      cpu     = "2",
+      ram     = "8",
+      storage = "200",
+    },
+    large = {
+      id      = "c5.xlarge",
+      cpu     = "4",
+      ram     = "8",
+      storage = "500",
+    },
+    xl = {
+      id      = "t3.xlarge",
+      cpu     = "4",
+      ram     = "16",
+      storage = "1000",
+    }
+    xxl = {
+      id      = "t3.2xlarge",
+      cpu     = "8",
+      ram     = "32",
+      storage = "2000",
+
+```
+
 ## Examples
 
 ### Local State
