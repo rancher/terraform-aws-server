@@ -5,7 +5,7 @@ variable "name" {
     The name should be unique within your region.
     The name will be used as the value for the "Name" tag on the server.
     The name should give some indication of the purpose of the server.
-    This value is ignored when overriding with the server_id.
+    This value is ignored when overriding with the id.
     If both the name and id are empty, no server will be created or selected and data will be empty.
   EOT
   default     = ""
@@ -88,7 +88,7 @@ variable "user" {
   default     = ""
   validation {
     condition = (
-      var.user == "" ? true : (length(var.server_user) <= 32 ? true : false)
+      var.user == "" ? true : (length(var.user) <= 32 ? true : false)
     )
     error_message = "If specified, this must be 32 characters or less."
   }
@@ -99,7 +99,7 @@ variable "ssh_key" {
   description = <<-EOT
     The contents of the public key to use for ssh access.
     This will be placed in the /home/.ssh/authorized_keys for the user provided.
-    This value is ignored when overriding with the server_id.
+    This value is ignored when overriding with the id.
   EOT
   default     = ""
 }
