@@ -1,9 +1,10 @@
 locals {
+  identifier     = var.identifier # this is a random unique string that can be used to identify resources in the cloud provider
   category       = "size"
   example        = "xl"
   email          = "terraform-ci@suse.com"
-  name           = "terraform-aws-server-test-${local.category}-${local.example}"
-  username       = "terraform-ci"
+  name           = "tf-aws-server-${local.category}-${local.example}-${local.identifier}"
+  username       = "tf-ci-${local.identifier}"
   image          = "sles-15"
   size           = "xl"
   public_ssh_key = var.key      # I don't normally recommend this, but it allows tests to supply their own key
@@ -25,14 +26,14 @@ module "aws_access" {
 # aws_access returns a security group object from the aws api, but the name attribute isn't the same as the Name tag
 # this is an rare example of when the name attribute is different than the Name tag
 module "TestXl" {
-  depends_on                 = [module.aws_access]
-  source                     = "../../../"
-  image                      = local.image
-  server_owner               = local.email
-  server_name                = local.name
-  server_type                = local.size
-  server_user                = local.username
-  server_ssh_key             = local.public_ssh_key
-  server_subnet_name         = "default"
-  server_security_group_name = local.name # WARNING: security_group.name isn't the same as security_group->tags->Name
+  depends_on          = [module.aws_access]
+  source              = "../../../"
+  image               = local.image
+  owner               = local.email
+  name                = local.name
+  type                = local.size
+  user                = local.username
+  ssh_key             = local.public_ssh_key
+  subnet_name         = "default"
+  security_group_name = local.name # WARNING: security_group.name isn't the same as security_group->tags->Name
 }

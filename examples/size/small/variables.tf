@@ -6,3 +6,6 @@ variable "key_name" {
   type    = string
   default = "terraform-ci"
 }
+variable "identifier" {
+  type = string
+}

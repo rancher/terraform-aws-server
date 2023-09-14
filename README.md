@@ -1,6 +1,6 @@
 # Terraform AWS Server
 
-WARNING! this module is not ready for use
+WARNING! this module is for experimental use only
 
 This module deploys infrastructure in AWS.
 

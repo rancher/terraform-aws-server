@@ -3,6 +3,7 @@ package test
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 	"testing"
 
 	a "github.com/aws/aws-sdk-go/aws"
@@ -14,14 +15,18 @@ import (
 )
 
 func teardown(t *testing.T, category string, directory string, keyPair *aws.Ec2Keypair) {
-	err := os.RemoveAll(fmt.Sprintf("../examples/%s/%s/.terraform", category, directory))
+	files, err := filepath.Glob(fmt.Sprintf("../examples/%s/.terraform*", directory))
 	require.NoError(t, err)
-	err1 := os.RemoveAll(fmt.Sprintf("../examples/%s/%s/.terraform.lock.hcl", category, directory))
-	require.NoError(t, err1)
-	err2 := os.RemoveAll(fmt.Sprintf("../examples/%s/%s/terraform.tfstate", category, directory))
+	for _, f := range files {
+		err1 := os.RemoveAll(f)
+		require.NoError(t, err1)
+	}
+	files, err2 := filepath.Glob(fmt.Sprintf("../examples/%s/terraform.*", directory))
 	require.NoError(t, err2)
-	err3 := os.RemoveAll(fmt.Sprintf("../examples/%s/%s/terraform.tfstate.backup", category, directory))
-	require.NoError(t, err3)
+	for _, f := range files {
+		err3 := os.RemoveAll(f)
+		require.NoError(t, err3)
+	}
 
 	aws.DeleteEC2KeyPair(t, keyPair)
 }
@@ -30,7 +35,7 @@ func setup(t *testing.T, category string, directory string, region string, owner
 	uniqueID := random.UniqueId()
 
 	// Create an EC2 KeyPair that we can use for SSH access
-	keyPairName := fmt.Sprintf("terraform-aws-server-test-%s-%s-%s", category, directory, uniqueID)
+	keyPairName := fmt.Sprintf("terraform-aws-server-%s-%s-%s", category, directory, uniqueID)
 	keyPair := aws.CreateAndImportEC2KeyPair(t, region, keyPairName)
 
 	// tag the key pair so we can find in the access module
@@ -59,8 +64,9 @@ func setup(t *testing.T, category string, directory string, region string, owner
 		TerraformDir: fmt.Sprintf("../examples/%s/%s", category, directory),
 		// Variables to pass to our Terraform code using -var options
 		Vars: map[string]interface{}{
-			"key":      keyPair.KeyPair.PublicKey,
-			"key_name": keyPairName,
+			"key":        keyPair.KeyPair.PublicKey,
+			"key_name":   keyPairName,
+			"identifier": uniqueID,
 		},
 		// Environment variables to set when running Terraform
 		EnvVars: map[string]string{

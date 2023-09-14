@@ -4,16 +4,16 @@ locals {
   image_initial_user = var.image_initial_user
   image_admin_group  = var.image_admin_group
 
-  server_id                  = var.server_id
-  server_name                = var.server_name
-  server_owner               = var.server_owner
-  server_type                = var.server_type
-  server_user                = var.server_user
-  server_ssh_key             = var.server_ssh_key
-  server_security_group_name = var.server_security_group_name
-  server_subnet_name         = var.server_subnet_name
+  server_id                  = var.id
+  server_name                = var.name
+  server_owner               = var.owner
+  server_type                = var.type
+  server_user                = var.user
+  server_ssh_key             = var.ssh_key
+  server_security_group_name = var.security_group_name
+  server_subnet_name         = var.subnet_name
 
-  skip_server = ((local.server_id == "" && local.server_name == "") ? true : false)
+  skip_server = ((local.id == "" && local.name == "") ? true : false)
 }
 
 # image module can't be skipped, but it can select an image based on the image_id rather than the image variable
