@@ -79,51 +79,24 @@ resource "aws_instance" "created" {
   connection {
     type        = "ssh"
     user        = local.initial_user
-    script_path = "/home/${local.initial_user}/initial"
+    script_path = "/home/${local.initial_user}/initial_script"
     agent       = true
     host        = self.public_ip
   }
-
+  provisioner "file" {
+    source      = "${path.module}/initial.sh"
+    destination = "/home/${local.initial_user}/initial.sh"
+  }
   provisioner "remote-exec" {
+    # injecting values with export rather than using a
+    # template so that we can automatically check the script with shellcheck
     inline = [<<-EOT
-      if [ -z $(which cloud-init) ]; then
-        echo "cloud-init not found";
-        # check for user, if it doesn't exist generate it
-        if [ -z $(awk -F: '{ print $1 }' /etc/passwd | grep ${local.user}) ]; then
-          sudo addgroup ${local.user}
-          sudo adduser -g "${local.user}" -s "/bin/sh" -G "${local.user}" -D ${local.user}
-          sudo addgroup ${local.user} ${local.admin_group}
-          sudo install -d -m 0700 /home/${local.user}/.ssh
-          sudo cp .ssh/authorized_keys /home/${local.user}/.ssh
-          sudo chown -R ${local.user}:${local.user} /home/${local.user}
-          sudo passwd -d ${local.user}
-        fi
-        exit 0;
-      fi
-
-      max_attempts=15
-      attempts=0
-      interval=5
-      while [ "$(sudo cloud-init status)" != "status: done" ]; do
-        echo "cloud init is \"$(sudo cloud-init status)\""
-        attempts=$(expr $attempts + 1)
-        if [ $attempts = $max_attempts ]; then break; fi
-        sleep $interval;
-      done
-      echo "cloud init is \"$(sudo cloud-init status)\""
-
-      # some images set sshd config to only allow initial user to connect (CIS)
-      # add our user to the list of allowed users and restart sshd
-      if [ "${local.initial_user}" != "${local.user}" ]; then
-        sudo sed -i 's/^AllowUsers.*/& ${local.user}/' /etc/ssh/sshd_config
-        sudo systemctl restart sshd
-      fi
-      # we need to make sure the hostname is set properly if possible
-      if [ -z "$(which hostnamectl)" ]; then
-        echo "hostnamectl not found";
-      else
-        sudo hostnamectl set-hostname ${local.name}
-      fi
+      export USER=${local.user}
+      export ADMIN_GROUP=${local.admin_group}
+      export INITIAL_USER=${local.initial_user}
+      export NAME=${local.name}
+      sudo chmod +x /home/${local.initial_user}/initial.sh
+      /home/${local.initial_user}/initial.sh
     EOT
     ]
   }
@@ -138,6 +111,7 @@ resource "aws_instance" "created" {
 resource "null_resource" "remove_initial_user" {
   count      = (local.create ? 1 : 0) # clean up initial user when creating
   depends_on = [aws_instance.created]
+
   connection {
     type        = "ssh"
     user        = local.user
@@ -146,14 +120,15 @@ resource "null_resource" "remove_initial_user" {
     host        = aws_instance.created[0].public_ip
   }
 
+  provisioner "file" {
+    source      = "${path.module}/remove_initial_user.sh"
+    destination = "/home/${local.user}/remove_initial_user.sh"
+  }
   provisioner "remote-exec" {
     inline = [<<-EOT
-      # wait for previous connection to close
-      sleep 2
-      sudo killall -TERM -u ${local.initial_user}
-      # wait for killall to finish
-      sleep 2 
-      sudo userdel -r ${local.initial_user}
+      export INITIAL_USER=${local.initial_user}
+      chmod +x /home/${local.user}/remove_initial_user.sh
+      /home/${local.user}/remove_initial_user.sh
     EOT
     ]
   }
