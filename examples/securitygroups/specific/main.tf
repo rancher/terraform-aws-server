@@ -1,9 +1,10 @@
 locals {
+  identifier     = var.identifier # this is a random unique string that can be used to identify resources in the cloud provider
   category       = "securitygroups"
   example        = "specific"
   email          = "terraform-ci@suse.com"
-  name           = "terraform-aws-server-test-${local.category}-${local.example}"
-  username       = "terraform-ci"
+  name           = "tf-aws-server-${local.category}-${local.example}-${local.identifier}"
+  username       = "tf-ci-${local.identifier}"
   image          = "sles-15"
   public_ssh_key = var.key      # I don't normally recommend this, but it allows tests to supply their own key
   key_name       = var.key_name # A lot of troubleshooting during critical times can be saved by hard coding variables in root modules
@@ -26,13 +27,13 @@ module "TestSpecific" {
   depends_on = [
     module.aws_access,
   ]
-  source                     = "../../../"
-  image                      = local.image
-  server_owner               = local.email
-  server_name                = local.name
-  server_type                = "small"
-  server_user                = local.username
-  server_ssh_key             = module.aws_access.ssh_key.public_key
-  server_subnet_name         = "default"
-  server_security_group_name = module.aws_access.security_group_name
+  source              = "../../../"
+  image               = local.image
+  owner               = local.email
+  name                = local.name
+  type                = "small"
+  user                = local.username
+  ssh_key             = module.aws_access.ssh_key.public_key
+  subnet_name         = "default"
+  security_group_name = module.aws_access.security_group_name
 }

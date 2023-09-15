@@ -1,9 +1,9 @@
 # Select Only Example
 
-This example has been validated using [Terratest](https://terratest.gruntwork.io/), a Go sdk and test suite for Terraform.
-If you would like to test this example go to the ./tests directory and run the test with `go test overrides_test.go` or `go test -v -run TestSelectOnly`.
-
 This is an example of using this module to select an image and server without deploying anything.
+
+This example has been validated using [Terratest](https://terratest.gruntwork.io/), a Go sdk and test suite for Terraform.
+If you would like to test this example go to the ./tests directory and run the test with `go test -v -run TestSelectOnly`.
 
 WARNING! Server values override image values in outputs.
 This means that if you select both an image and a server, and the image is not the one that the server uses, then you will not get the image information you selected.

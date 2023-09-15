@@ -1,12 +1,14 @@
 locals {
+  identifier     = var.identifier # this is a random unique string that can be used to identify resources in the cloud provider
   category       = "basic"
   example        = "basic"
   email          = "terraform-ci@suse.com"
-  name           = "terraform-aws-server-test-${local.category}-${local.example}"
-  username       = "terraform-ci"
+  name           = "tf-aws-server-${local.category}-${local.example}-${local.identifier}"
+  username       = "tf-${local.identifier}"
+  key_name       = var.key_name
   image          = "sles-15"
-  public_ssh_key = var.key      # I don't normally recommend this, but it allows tests to supply their own key
-  key_name       = var.key_name # A lot of troubleshooting during critical times can be saved by hard coding variables in root modules
+  public_ssh_key = var.key # I don't normally recommend this, but it allows tests to supply their own key
+  # A lot of troubleshooting during critical times can be saved by hard coding variables in root modules
   # root modules should be secured properly (including the state), and should represent your running infrastructure
 }
 
@@ -26,13 +28,13 @@ module "TestBasic" {
   depends_on = [
     module.aws_access,
   ]
-  source                     = "../../../"
-  image                      = local.image
-  server_owner               = local.email
-  server_name                = local.name
-  server_type                = "small"
-  server_user                = local.username
-  server_ssh_key             = module.aws_access.ssh_key.public_key
-  server_subnet_name         = "default"
-  server_security_group_name = local.name # WARNING: security_group.name isn't the same as security_group->tags->Name
+  source              = "../../../"
+  image               = local.image
+  owner               = local.email
+  name                = local.name
+  type                = "small"
+  user                = local.username
+  ssh_key             = module.aws_access.ssh_key.public_key
+  subnet_name         = "default"
+  security_group_name = local.name # WARNING: security_group.name isn't the same as security_group->tags->Name
 }
