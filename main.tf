@@ -12,6 +12,7 @@ locals {
   server_ssh_key             = var.ssh_key
   server_security_group_name = var.security_group_name
   server_subnet_name         = var.subnet_name
+  server_az                  = var.availability_zone
 
   skip_server = ((local.server_id == "" && local.server_name == "") ? true : false)
 }
@@ -42,4 +43,5 @@ module "server" {
   ssh_key            = local.server_ssh_key
   security_group     = local.server_security_group_name
   subnet             = local.server_subnet_name
+  availability_zone  = local.server_az
 }

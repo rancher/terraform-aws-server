@@ -86,3 +86,15 @@ variable "id" {
   EOT
   default     = ""
 }
+
+variable "availability_zone" {
+  type        = string
+  description = <<-EOT
+    The availability zone to provision the server in.
+    If you are using the "id" field then this field is ignored.
+    This is not the region, a few examples of availability zones are: us-east-1a, us-east-1b, us-east-1c.
+    It is helpful for highly available applications to provision servers in different availability zones.
+    Each region has a default AZ in AWS, leaving this blank will use the default AZ for the region.
+  EOT
+  default     = ""
+}
