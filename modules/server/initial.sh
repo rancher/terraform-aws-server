@@ -16,9 +16,9 @@ if [ "$(which cloud-init)" = "" ]; then
   exit 0;
 fi
 
-max_attempts=15
+max_attempts=20
 attempts=0
-interval=5
+interval=10
 while [ "$(sudo cloud-init status)" != "status: done" ]; do
   echo "cloud init is \"$(sudo cloud-init status)\""
   attempts=$((attempts + 1))
