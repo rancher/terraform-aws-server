@@ -15,7 +15,7 @@ locals {
 
 module "aws_access" {
   source              = "rancher/access/aws"
-  version             = "v0.0.5"
+  version             = "v0.0.6"
   owner               = local.email
   vpc_name            = "default"
   subnet_name         = "default"

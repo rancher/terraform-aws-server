@@ -122,6 +122,7 @@ variable "subnet_name" {
     This must already exist in AWS, it will not be created by this module.
     If you would like help creating a subnet, please see the 'terraform-aws-access' module that we produce.
     This uses the "Name" tag on the subnet to select it, this is preferrable to make multi-region deployments easier.
+    Subnets are tied to a specific availability zone, so when you select a subnet you are also selecting an availability zone.
   EOT
   default     = ""
 }
@@ -135,18 +136,6 @@ variable "id" {
     This can be helpful if you want to ensure a server exists and get data about it, without managing it.
     If you would like to create a server, leave this empty.
     If both the name and id are empty, no server will be created or selected and data will be empty.
-  EOT
-  default     = ""
-}
-
-variable "availability_zone" {
-  type        = string
-  description = <<-EOT
-    The availability zone to provision the server in.
-    If you are using the "id" field then this field is ignored.
-    This is not the region, a few examples of availability zones are: us-east-1a, us-east-1b, us-east-1c.
-    It is helpful for highly available applications to provision servers in different availability zones.
-    Each region has a default AZ in AWS, leaving this blank will use the default AZ for the region.
   EOT
   default     = ""
 }

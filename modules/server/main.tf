@@ -19,7 +19,6 @@ locals {
     ssh_key      = local.ssh_key
     name         = local.name
   })
-  az = var.availability_zone
 }
 
 data "aws_instance" "selected" {
@@ -55,8 +54,8 @@ resource "aws_instance" "created" {
   subnet_id                            = data.aws_subnet.general_info[0].id
   associate_public_ip_address          = "true"
   instance_initiated_shutdown_behavior = "terminate"
-  availability_zone                    = local.az
   user_data_base64                     = base64encode(local.user_data)
+  availability_zone                    = data.aws_subnet.general_info[0].availability_zone
 
   tags = {
     Name  = local.name
