@@ -14,6 +14,13 @@ locals {
       owner        = "aws-marketplace",
       architecture = "x86_64",
     },
+    rhel-8-cis = { # WARNING! this AMI requires subscription to a service, it is not free
+      user         = "ec2-user",
+      group        = "wheel",
+      name         = "CIS Red Hat Enterprise Linux 8 STIG Benchmark",
+      owner        = "aws-marketplace",
+      architecture = "x86_64",
+    },
     ubuntu-20 = { # WARNING! you must subscribe and accept the terms to use this image
       user         = "ubuntu",
       group        = "admin",
