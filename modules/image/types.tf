@@ -42,5 +42,12 @@ locals {
       owner        = "aws-marketplace",
       architecture = "x86_64",
     },
+    rhel-9 = {
+      user         = "ec2-user",
+      group        = "wheel",
+      name         = "RHEL-9*_HVM-*-x86_64-*",
+      owner        = "amazon",
+      architecture = "x86_64",
+    },
   }
 }

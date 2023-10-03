@@ -104,3 +104,19 @@ func TestUbuntu22(t *testing.T) {
 	defer terraform.Destroy(t, terraformOptions)
 	terraform.InitAndApply(t, terraformOptions)
 }
+
+func TestRhel9(t *testing.T) {
+	t.Parallel()
+	category := "os"
+	directory := "rhel9"
+	region := "us-west-1"
+	owner := "terraform-ci@suse.com"
+	terraformOptions, keyPair := setup(t, category, directory, region, owner)
+
+	sshAgent := ssh.SshAgentWithKeyPair(t, keyPair.KeyPair)
+	defer sshAgent.Stop()
+	terraformOptions.SshAgent = sshAgent
+	defer teardown(t, category, directory, keyPair)
+	defer terraform.Destroy(t, terraformOptions)
+	terraform.InitAndApply(t, terraformOptions)
+}
