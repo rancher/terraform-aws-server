@@ -14,3 +14,6 @@ output "initial_user" {
 output "admin_group" {
   value = local.admin_group
 }
+output "workfolder" {
+  value = local.workfolder
+}

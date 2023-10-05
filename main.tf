@@ -3,6 +3,7 @@ locals {
   image_type         = var.image
   image_initial_user = var.image_initial_user
   image_admin_group  = var.image_admin_group
+  image_workfolder   = var.image_workfolder
 
   server_id                  = var.id
   server_name                = var.name
@@ -10,6 +11,7 @@ locals {
   server_type                = var.type
   server_user                = var.user
   server_ssh_key             = var.ssh_key
+  server_ssh_key_name        = var.ssh_key_name
   server_security_group_name = var.security_group_name
   server_subnet_name         = var.subnet_name
 
@@ -23,6 +25,7 @@ module "image" {
   type         = local.image_type
   initial_user = local.image_initial_user
   admin_group  = local.image_admin_group
+  workfolder   = local.image_workfolder
 }
 
 module "server" {
@@ -39,7 +42,9 @@ module "server" {
   image_id           = module.image.id
   image_admin_group  = module.image.admin_group
   image_initial_user = module.image.initial_user
+  image_workfolder   = module.image.workfolder
   ssh_key            = local.server_ssh_key
+  ssh_key_name       = local.server_ssh_key_name
   security_group     = local.server_security_group_name
   subnet             = local.server_subnet_name
 }

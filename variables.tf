@@ -64,6 +64,17 @@ variable "image_admin_group" {
   default     = ""
 }
 
+variable "image_workfolder" {
+  type        = string
+  description = <<-EOT
+    The folder where scripts will be copied to and run from on the AMI.
+    This defaults to "/home/<initial_user>", and is usually safe.
+    If you are using an AMI where your home directory is mounted with noexec, you will need to change this.
+    Use this only when overriding with the image_id (we already know the workfolder for preselected types).
+  EOT
+  default     = ""
+}
+
 variable "image_id" {
   type        = string
   description = <<-EOT
@@ -100,6 +111,16 @@ variable "ssh_key" {
     The contents of the public key to use for ssh access.
     This will be placed in the /home/.ssh/authorized_keys for the user provided.
     This value is ignored when overriding with the id.
+  EOT
+  default     = ""
+}
+variable "ssh_key_name" {
+  type        = string
+  description = <<-EOT
+    The name of the ssh key pair object in AWS to use for ssh access.
+    There must be a key pair object in AWS with the tag "Name:<ssh_key_name>" for this to work.
+    In most cases this is not necessary, as the key will be added using cloud-init. 
+    In some cases cloud-init is not allowed to write files (such as CIS STIG AMIs), and this is required.
   EOT
   default     = ""
 }

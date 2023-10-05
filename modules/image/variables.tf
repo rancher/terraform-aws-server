@@ -31,3 +31,12 @@ variable "admin_group" {
   EOT
   default     = ""
 }
+variable "workfolder" {
+  description = <<-EOT
+    This isn't used if a type is selected.
+    The folder where scripts will be copied to and run from on the AMI.
+    This defaults to "/home/<initial_user>", and is usually safe.
+    If you are using an AMI where your home directory is mounted with noexec, you will need to change this.
+  EOT
+  default     = ""
+}
