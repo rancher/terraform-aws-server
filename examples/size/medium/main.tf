@@ -27,8 +27,9 @@ module "aws_access" {
 # aws_access returns a security group object from the aws api, but the name attribute isn't the same as the Name tag
 # this is an rare example of when the name attribute is different than the Name tag
 module "TestMedium" {
-  depends_on          = [module.aws_access]
-  source              = "../../../"
+  depends_on = [module.aws_access]
+  source     = "../../../" # change this to "rancher/server/aws" per https://registry.terraform.io/modules/rancher/server/aws/latest
+  # version = "v0.0.15" # when using this example you will need to set the version
   image               = local.image
   owner               = local.email
   name                = local.name

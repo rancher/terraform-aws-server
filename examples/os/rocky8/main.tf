@@ -30,7 +30,8 @@ module "TestRocky8" {
   depends_on = [
     module.aws_access,
   ]
-  source              = "../../../"
+  source = "../../../" # change this to "rancher/server/aws" per https://registry.terraform.io/modules/rancher/server/aws/latest
+  # version = "v0.0.15" # when using this example you will need to set the version
   image               = local.image
   owner               = local.email
   name                = local.name
