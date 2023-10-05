@@ -35,6 +35,7 @@ module "TestBasic" {
   type                = "small"
   user                = local.username
   ssh_key             = module.aws_access.ssh_key.public_key
+  ssh_key_name        = local.key_name
   subnet_name         = "default"
   security_group_name = local.name # WARNING: security_group.name isn't the same as security_group->tags->Name
 }

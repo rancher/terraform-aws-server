@@ -37,6 +37,7 @@ module "TestUseast2" {
   type                = "small"
   user                = local.username
   ssh_key             = local.public_ssh_key
+  ssh_key_name        = local.key_name
   subnet_name         = "default"
   security_group_name = local.name # WARNING: security_group.name isn't the same as security_group->tags->Name
 }

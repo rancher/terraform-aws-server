@@ -9,6 +9,7 @@ locals {
 
   initial_user = (local.search ? local.type.user : var.initial_user)
   admin_group  = (local.search ? local.type.group : var.admin_group)
+  workfolder   = (local.search ? local.type.workfolder : var.workfolder)
 }
 
 data "aws_ami" "search" {
