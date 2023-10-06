@@ -53,3 +53,9 @@ output "user_data" {
     The cloud-init user data sent when generating the server.
   EOT
 }
+output "workfolder" {
+  value       = module.image.workfolder
+  description = <<-EOT
+    The folder for Terraform to work out of on the server.
+  EOT
+}
