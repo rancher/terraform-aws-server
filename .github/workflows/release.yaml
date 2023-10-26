@@ -1,0 +1,62 @@
+name: Release
+
+on:
+  push:
+    branches:
+    - main
+    paths_ignore: # this should prevent the release PR from triggering its own workflow
+    - CHANGELOG.md
+
+env:
+  AWS_REGION: us-west-1
+  TERRAFORM_VERSION: 1.5.7
+
+permissions:
+  id-token: write
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: release-please
+        id: release-please
+        uses: google-github-actions/release-please-action@v3
+        with:
+          release-type: terraform-module
+
+      - name: 'Remind to wait'
+        uses: peter-evans/create-or-update-comment@v3
+        with:
+          issue-number: ${{ fromJson(steps.release-please.outputs.pr).number }}
+          body: |
+            Please make sure e2e tests pass before merging this PR!
+            ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+      - name: 'Configure AWS credentials'
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::270074865685:role/terraform-module-ci-test
+          role-session-name: ${{github.job}}-${{github.run_id}}-${{github.run_number}}-${{github.run_attempt}}
+          aws-region: ${{env.AWS_REGION}}
+
+      - uses: actions/checkout@v2
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: ${{env.TERRAFORM_VERSION}}
+          with_wrapper: false
+
+      - name: 'Run Terratest'
+        run: cd ./tests && go test -v -timeout=40m -parallel=50
+
+      - name: 'Report Success'
+        uses: peter-evans/create-or-update-comment@v3
+        with:
+          issue-number: ${{ fromJson(steps.release-please.outputs.pr).number }}
+          body: |
+            End to End Tests Passed!
+            ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}

@@ -6,7 +6,7 @@ locals {
       name         = "suse-sles-15-sp5-v*-hvm-*",
       owner        = "amazon",
       architecture = "x86_64",
-      workfolder   = "/home/ec2-user"
+      workfolder   = "~"
     },
     sles-15-cis = { # WARNING! this AMI requires subscription to a service, it is not free
       user         = "ec2-user",
@@ -14,7 +14,7 @@ locals {
       name         = "CIS SUSE Linux Enterprise 15*",
       owner        = "aws-marketplace",
       architecture = "x86_64",
-      workfolder   = "/home/ec2-user"
+      workfolder   = "~"
     },
     rhel-8-cis = { # WARNING! this AMI requires subscription to a service, it is not free https://aws.amazon.com/marketplace/server/procurement?productId=ca1fe94d-9237-41c7-8fc8-78b6b0658c9f
       user         = "ec2-user",
@@ -30,7 +30,7 @@ locals {
       name         = "ubuntu/images/hvm-ssd/ubuntu-focal-20.04-*",
       owner        = "aws-marketplace",
       architecture = "x86_64",
-      workfolder   = "/home/ubuntu"
+      workfolder   = "~"
     },
     ubuntu-22 = { # WARNING! you must subscribe and accept the terms to use this image
       user         = "ubuntu",
@@ -38,7 +38,7 @@ locals {
       name         = "ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-*",
       owner        = "aws-marketplace",
       architecture = "x86_64",
-      workfolder   = "/home/ubuntu"
+      workfolder   = "~"
     },
     rhel-8 = {
       user         = "ec2-user",
@@ -46,7 +46,7 @@ locals {
       name         = "RHEL-8*_HVM-*-x86_64-*",
       owner        = "amazon",
       architecture = "x86_64",
-      workfolder   = "/home/ec2-user"
+      workfolder   = "~"
     },
     rocky-8 = { # WARNING! you must subscribe and accept the terms to use this image
       user         = "ec2-user",
@@ -54,7 +54,7 @@ locals {
       name         = "Rocky-8-EC2-Base-8*",
       owner        = "aws-marketplace",
       architecture = "x86_64",
-      workfolder   = "/home/ec2-user"
+      workfolder   = "~"
     },
     rhel-9 = {
       user         = "ec2-user",
@@ -62,7 +62,7 @@ locals {
       name         = "RHEL-9*_HVM-*-x86_64-*",
       owner        = "amazon",
       architecture = "x86_64",
-      workfolder   = "/home/ec2-user"
+      workfolder   = "~"
     },
   }
 }
