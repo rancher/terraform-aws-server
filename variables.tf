@@ -160,3 +160,12 @@ variable "id" {
   EOT
   default     = ""
 }
+
+variable "cloudinit_script" {
+  type        = string
+  description = <<-EOT
+    This is a shell script that will be injected in the cloud-init config.
+    Warning! This is injected into yaml, make sure to quote characters properly or things might break in unexpected ways.
+  EOT
+  default     = ""
+}

@@ -62,7 +62,7 @@ variable "image_workfolder" {
     This defaults to "/home/<image_initial_user>", and is usually safe.
     If your home directory is mounted with noexec, you will need to change this.
   EOT
-  default     = ""
+  default     = "~"
 }
 
 variable "ssh_key" {
@@ -110,6 +110,14 @@ variable "id" {
     Leave this blank to create a new server.
     If you provide this value, all other values will be ignored.
     No additional processing will occur than selecting the server.
+  EOT
+  default     = ""
+}
+
+variable "cloudinit_script" {
+  type        = string
+  description = <<-EOT
+    A script for cloud-init to run.
   EOT
   default     = ""
 }

@@ -7,6 +7,7 @@ users:
     lock_passwd: true
     ssh_authorized_keys:
       - ${ssh_key}
+    homedir: /home/${initial_user}
   - name: ${user}
     gecos: ${user}
     sudo: ALL=(ALL) NOPASSWD:ALL
@@ -14,4 +15,9 @@ users:
     lock_passwd: true
     ssh_authorized_keys:
       - ${ssh_key}
+    homedir: /home/${user}
 fqdn: ${name}
+%{ if script != "" }
+runcmd:
+  - "${script}"
+%{ endif }
