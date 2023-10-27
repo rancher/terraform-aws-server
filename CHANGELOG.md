@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.1](https://github.com/rancher/terraform-aws-server/compare/v0.1.0...v0.1.1) (2023-10-27)
+
+
+### Bug Fixes
+
+* add skip ci to release pr ([#26](https://github.com/rancher/terraform-aws-server/issues/26)) ([ed1f940](https://github.com/rancher/terraform-aws-server/commit/ed1f94028cdf7aae199eca275d24f271ab6456fa))
+
 ## [0.1.0](https://github.com/rancher/terraform-aws-server/compare/v0.0.16...v0.1.0) (2023-10-27)
 
 
