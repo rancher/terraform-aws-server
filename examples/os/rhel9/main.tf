@@ -25,7 +25,7 @@ module "aws_access" {
 
 # aws_access returns a security group object from the aws api, but the name attribute isn't the same as the Name tag
 # this is an rare example of when the name attribute is different than the Name tag
-module "TestRhel8" {
+module "TestRhel9" {
   depends_on = [
     module.aws_access,
   ]

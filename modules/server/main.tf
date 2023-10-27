@@ -1,25 +1,27 @@
 locals {
-  select         = (var.id != "" ? true : false)
-  create         = (var.id == "" ? true : false)
-  id             = var.id
-  name           = var.name
-  owner          = var.owner
-  user           = var.user
-  ssh_key        = var.ssh_key
-  ssh_key_name   = var.ssh_key_name
-  security_group = var.security_group
-  subnet         = var.subnet
-  type           = (local.create ? local.types[var.type] : {})
-  image_id       = var.image_id
-  initial_user   = var.image_initial_user
-  admin_group    = var.image_admin_group
-  workfolder     = (var.image_workfolder == "" ? "/home/${local.initial_user}" : var.image_workfolder)
+  select           = (var.id != "" ? true : false)
+  create           = (var.id == "" ? true : false)
+  id               = var.id
+  name             = var.name
+  owner            = var.owner
+  user             = var.user
+  ssh_key          = var.ssh_key
+  ssh_key_name     = var.ssh_key_name
+  security_group   = var.security_group
+  subnet           = var.subnet
+  type             = (local.create ? local.types[var.type] : {})
+  image_id         = var.image_id
+  initial_user     = var.image_initial_user
+  admin_group      = var.image_admin_group
+  workfolder       = ((var.image_workfolder == "~") ? "/home/${local.initial_user}" : var.image_workfolder)
+  cloudinit_script = var.cloudinit_script
   user_data = templatefile("${path.module}/cloudinit.tpl", {
     initial_user = local.initial_user
     admin_group  = local.admin_group
     user         = local.user
     ssh_key      = local.ssh_key
     name         = local.name
+    script       = local.cloudinit_script
   })
 }
 
