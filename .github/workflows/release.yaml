@@ -26,6 +26,7 @@ jobs:
         uses: google-github-actions/release-please-action@v3
         with:
           release-type: terraform-module
+          pull-request-title-pattern: "chore${scope}: release${component} ${version} [skip ci]"
 
       - name: 'Remind to wait'
         uses: peter-evans/create-or-update-comment@v3
