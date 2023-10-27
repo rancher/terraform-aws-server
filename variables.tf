@@ -72,7 +72,7 @@ variable "image_workfolder" {
     If you are using an AMI where your home directory is mounted with noexec, you will need to change this.
     Use this only when overriding with the image_id (we already know the workfolder for preselected types).
   EOT
-  default     = ""
+  default     = "~"
 }
 
 variable "image_id" {

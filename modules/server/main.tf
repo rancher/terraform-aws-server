@@ -13,7 +13,7 @@ locals {
   image_id         = var.image_id
   initial_user     = var.image_initial_user
   admin_group      = var.image_admin_group
-  workfolder       = ((var.image_workfolder == "~") ? "/home/${local.initial_user}" : var.image_workfolder)
+  workfolder       = ((var.image_workfolder == "~" || var.image_workfolder == "") ? "/home/${local.initial_user}" : var.image_workfolder)
   cloudinit_script = var.cloudinit_script
   user_data = templatefile("${path.module}/cloudinit.tpl", {
     initial_user = local.initial_user

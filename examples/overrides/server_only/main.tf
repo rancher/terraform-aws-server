@@ -29,9 +29,10 @@ module "aws_access" {
 module "TestServerOnly" {
   depends_on          = [module.aws_access]
   source              = "../../../"
-  image_id            = local.image # if you specify an image_id, you must also specify the admin_group and initial_user
-  image_admin_group   = "wheel"     # if you specify an image_id, you must also specify the admin_group and initial_user
-  image_initial_user  = "ec2-user"  # if you specify an image_id, you must also specify the admin_group and initial_user
+  image_id            = local.image # if you specify an image_id, you must also specify the initial_user, admin_group, and workfolder
+  image_initial_user  = "ec2-user"  # if you specify an image_id, you must also specify the initial_user, admin_group, and workfolder
+  image_admin_group   = "wheel"     # if you specify an image_id, you must also specify the initial_user, admin_group, and workfolder
+  image_workfolder    = "~"         # if you specify an image_id, you must also specify the initial_user, admin_group, and workfolder
   owner               = local.email
   name                = local.name
   type                = "small"
