@@ -19,7 +19,6 @@ jobs:
         id: release-please
         with:
           release-type: terraform-module
-          pull-request-title-pattern: "chore${scope}: release${component} ${version}"
       - uses: peter-evans/create-or-update-comment@v3
         name: 'Remind to wait'
         if: steps.release-please.outputs.pr
