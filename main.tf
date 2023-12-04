@@ -15,6 +15,7 @@ locals {
   server_security_group_name = var.security_group_name
   server_subnet_name         = var.subnet_name
   server_cloudinit_script    = var.cloudinit_script
+  server_cloudinit_timeout   = var.cloudinit_timeout
 
   skip_server = ((local.server_id == "" && local.server_name == "") ? true : false)
 }
@@ -49,4 +50,5 @@ module "server" {
   security_group     = local.server_security_group_name
   subnet             = local.server_subnet_name
   cloudinit_script   = local.server_cloudinit_script
+  cloudinit_timeout  = local.server_cloudinit_timeout
 }

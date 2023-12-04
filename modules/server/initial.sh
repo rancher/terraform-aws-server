@@ -6,6 +6,7 @@ INITIAL_USER="${1}"
 USER="${2}"
 NAME="${3}"
 ADMIN_GROUP="${4}"
+TIMEOUT="${5}" # this is the timeout in minutes to wait for cloud-init
 
 if [ -z "${INITIAL_USER}" ]; then echo "INITIAL_USER is not set"; exit 1; fi
 if [ -z "${USER}" ]; then echo "USER is not set"; exit 1; fi
@@ -27,7 +28,7 @@ if [ "$(which cloud-init)" = "" ]; then
   exit 0;
 fi
 
-max_attempts=20
+max_attempts=$((TIMEOUT * 60 / 10))
 attempts=0
 interval=10
 while [ "$(cloud-init status)" != "status: done" ]; do
