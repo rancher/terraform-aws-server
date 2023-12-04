@@ -169,3 +169,12 @@ variable "cloudinit_script" {
   EOT
   default     = ""
 }
+
+variable "cloudinit_timeout" {
+  type        = string
+  description = <<-EOT
+    The number of minutes to wait for cloud-init to finish.
+    Defaults to '5' which checks the cloud-init status for 'done' every 10 seconds for 5 minutes / 300 seconds.
+  EOT
+  default     = "5"
+}
