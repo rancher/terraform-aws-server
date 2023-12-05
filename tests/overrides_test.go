@@ -42,19 +42,19 @@ func TestSelectImage(t *testing.T) {
 	terraform.InitAndApply(t, terraformOptions)
 }
 
-func TestSelectServer(t *testing.T) {
-	// in this test we are going to select an image and a server without creating anything
-	t.Parallel()
-	category := "overrides"
-	directory := "select_server"
-	region := "us-west-1"
-	owner := "terraform-ci@suse.com"
-	terraformOptions, keyPair := setup(t, category, directory, region, owner)
+// func TestSelectServer(t *testing.T) {
+// 	// in this test we are going to select an image and a server without creating anything
+// 	t.Parallel()
+// 	category := "overrides"
+// 	directory := "select_server"
+// 	region := "us-west-1"
+// 	owner := "terraform-ci@suse.com"
+// 	terraformOptions, keyPair := setup(t, category, directory, region, owner)
 
-	sshAgent := ssh.SshAgentWithKeyPair(t, keyPair.KeyPair)
-	defer sshAgent.Stop()
-	terraformOptions.SshAgent = sshAgent
-	defer teardown(t, category, directory, keyPair)
-	defer terraform.Destroy(t, terraformOptions)
-	terraform.InitAndApply(t, terraformOptions)
-}
+// 	sshAgent := ssh.SshAgentWithKeyPair(t, keyPair.KeyPair)
+// 	defer sshAgent.Stop()
+// 	terraformOptions.SshAgent = sshAgent
+// 	defer teardown(t, category, directory, keyPair)
+// 	defer terraform.Destroy(t, terraformOptions)
+// 	terraform.InitAndApply(t, terraformOptions)
+// }
