@@ -48,14 +48,13 @@ func TestSelectServer(t *testing.T) {
 	category := "overrides"
 	directory := "select_server"
 	region := "us-west-1"
-	terraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
-		TerraformDir: fmt.Sprintf("../examples/%s/%s", category, directory),
-		// Environment variables to set when running Terraform
-		EnvVars: map[string]string{
-			"AWS_DEFAULT_REGION": region,
-		},
-	})
+	owner := "terraform-ci@suse.com"
+	terraformOptions, keyPair := setup(t, category, directory, region, owner)
 
+	sshAgent := ssh.SshAgentWithKeyPair(t, keyPair.KeyPair)
+	defer sshAgent.Stop()
+	terraformOptions.SshAgent = sshAgent
+	defer teardown(t, category, directory, keyPair)
 	defer terraform.Destroy(t, terraformOptions)
 	terraform.InitAndApply(t, terraformOptions)
 }
