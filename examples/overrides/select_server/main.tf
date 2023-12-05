@@ -47,6 +47,6 @@ module "TestSelectServer" {
     module.basic,
   ]
   source   = "../../../"
-  image_id = module.basic.ami # this must be an image in your region, it should be the image used to create the server_id
+  image_id = "ami-09b2a1e33ce552e68" # this must be an image in your region, it should be the image used to create the server_id
   id       = module.basic.id  # this must be an instance in your region
 }
