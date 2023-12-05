@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.1.1](https://github.com/rancher/terraform-aws-server/compare/v0.1.0...v0.1.1) (2023-12-05)
+
+
+### Bug Fixes
+
+* actually remove test ([#35](https://github.com/rancher/terraform-aws-server/issues/35)) ([173085b](https://github.com/rancher/terraform-aws-server/commit/173085b3ee4c8232f548f1bd78bd130ac1b48a65))
+* add cloud-init timeout, update dev env, update workflows ([#28](https://github.com/rancher/terraform-aws-server/issues/28)) ([89f0ff0](https://github.com/rancher/terraform-aws-server/commit/89f0ff09d9d1e0d515cfdd627e68b4e46151829b))
+* add skip ci to release pr ([#26](https://github.com/rancher/terraform-aws-server/issues/26)) ([ed1f940](https://github.com/rancher/terraform-aws-server/commit/ed1f94028cdf7aae199eca275d24f271ab6456fa))
+* deploy a basic server to test selecting ([#32](https://github.com/rancher/terraform-aws-server/issues/32)) ([855aa88](https://github.com/rancher/terraform-aws-server/commit/855aa888f2703b01a199c5ca794c2fd3b9d91e79))
+* don't specify release title ([#29](https://github.com/rancher/terraform-aws-server/issues/29)) ([318684a](https://github.com/rancher/terraform-aws-server/commit/318684aa7558c09a27553ba0b4e88239885b1e66))
+* show cloudinit timeout ([#30](https://github.com/rancher/terraform-aws-server/issues/30)) ([e90f8c7](https://github.com/rancher/terraform-aws-server/commit/e90f8c711837397937eeca55313c59d325328691))
+* temporarily remove the select_server test ([#34](https://github.com/rancher/terraform-aws-server/issues/34)) ([b69a50c](https://github.com/rancher/terraform-aws-server/commit/b69a50c723b76e67d208b051c1a6e542bf0ce37c))
+* use the preset ami ([#33](https://github.com/rancher/terraform-aws-server/issues/33)) ([a99a71e](https://github.com/rancher/terraform-aws-server/commit/a99a71eebc204c403395e444911375ab3efaee2f))
+
 ## [0.1.1](https://github.com/rancher/terraform-aws-server/compare/v0.1.0...v0.1.1) (2023-10-27)
 
 
