@@ -15,27 +15,27 @@ jobs:
     - run: sudo install -d /nix/store
     - name: 'Restore Nix Store Cache'
       id: cache-nix-store-restore
-      uses: actions/cache/restore@v3
+      uses: actions/cache/restore@v4
       with:
         path: /nix/store
         key: nixstore
     - uses: nicknovitski/nix-develop@v1
     - name: 'Cache Nix Store'
       id: cache-nix-store-save
-      uses: actions/cache/save@v3
+      uses: actions/cache/save@v4
       with:
         path: /nix/store
         key: ${{ steps.cache-nix-store-restore.outputs.cache-primary-key }}
     - name: 'Restore Terraform Cache'
       id: cache-terraform-restore
-      uses: actions/cache/restore@v3
+      uses: actions/cache/restore@v4
       with:
         path: ${{ github.workspace }}/.terraform
         key: terraform
     - run: terraform init -upgrade
     - name: 'Cache Terraform'
       id: cache-terraform-save
-      uses: actions/cache/save@v3
+      uses: actions/cache/save@v4
       with:
         path: ${{ github.workspace }}/.terraform
         key: ${{ steps.cache-terraform-restore.outputs.cache-primary-key }}

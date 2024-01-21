@@ -36,7 +36,7 @@ jobs:
       - name: 'Restore Nix Store Cache'
         if: steps.release-please.outputs.pr
         id: cache-nix-store-restore
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v4
         with:
           path: /nix/store
           key: nixstore
@@ -45,7 +45,7 @@ jobs:
       - name: 'Cache Nix Store'
         if: steps.release-please.outputs.pr
         id: cache-nix-store-save
-        uses: actions/cache/save@v3
+        uses: actions/cache/save@v4
         with:
           path: /nix/store
           key: ${{ steps.cache-nix-store-restore.outputs.cache-primary-key }}
@@ -58,7 +58,7 @@ jobs:
       - name: 'Restore Terraform Cache'
         if: steps.release-please.outputs.pr
         id: cache-terraform-restore
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v4
         with:
           path: ${{ github.workspace }}/.terraform
           key: terraform
@@ -67,7 +67,7 @@ jobs:
       - name: 'Cache Terraform'
         if: steps.release-please.outputs.pr
         id: cache-terraform-save
-        uses: actions/cache/save@v3
+        uses: actions/cache/save@v4
         with:
           path: ${{ github.workspace }}/.terraform
           key: ${{ steps.cache-terraform-restore.outputs.cache-primary-key }}
