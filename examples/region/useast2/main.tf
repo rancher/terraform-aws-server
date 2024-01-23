@@ -1,5 +1,10 @@
 provider "aws" {
   region = "us-east-2"
+  default_tags {
+    tags = {
+      Id = local.identifier
+    }
+  }
 }
 
 locals {
@@ -18,7 +23,7 @@ locals {
 # selecting the vpc, subnet, and ssh key pair, generating a security group specific to the runner
 module "aws_access" {
   source              = "rancher/access/aws"
-  version             = "v0.0.8"
+  version             = "v1.0.0"
   owner               = local.email
   vpc_name            = "default"
   subnet_name         = "default"
