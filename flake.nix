@@ -97,9 +97,11 @@
             bashInteractive
             curl
             git
+            go # need go for terratest
+            gnupg # need gpg for signing commits
             jq
             less
-            openssh
+            openssh # need openssh for running remote provisioners
             shellcheck
             tflint
             tfswitch

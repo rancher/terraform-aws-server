@@ -13,9 +13,13 @@ locals {
   server_ssh_key             = var.ssh_key
   server_ssh_key_name        = var.ssh_key_name
   server_security_group_name = var.security_group_name
-  server_subnet_name         = var.subnet_name
-  server_cloudinit_script    = var.cloudinit_script
-  server_cloudinit_timeout   = var.cloudinit_timeout
+
+  security_group_association_force_create = var.security_group_association_force_create
+  disable_scripts                         = var.disable_scripts
+
+  server_subnet_name       = var.subnet_name
+  server_cloudinit_script  = var.cloudinit_script
+  server_cloudinit_timeout = var.cloudinit_timeout
 
   skip_server = ((local.server_id == "" && local.server_name == "") ? true : false)
 }
@@ -51,4 +55,7 @@ module "server" {
   subnet             = local.server_subnet_name
   cloudinit_script   = local.server_cloudinit_script
   cloudinit_timeout  = local.server_cloudinit_timeout
+
+  security_group_association_force_create = local.security_group_association_force_create
+  disable_scripts                         = local.disable_scripts
 }

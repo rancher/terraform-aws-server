@@ -42,8 +42,8 @@ module "TestPublic" {
   name                = local.name
   type                = "small"
   user                = local.username
-  ssh_key             = module.aws_access.ssh_key.public_key
+  ssh_key             = local.public_ssh_key
   ssh_key_name        = local.key_name
   subnet_name         = "default"
-  security_group_name = module.aws_access.security_group_name
+  security_group_name = local.name
 }

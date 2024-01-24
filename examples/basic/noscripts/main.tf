@@ -8,14 +8,15 @@ provider "aws" {
 
 locals {
   identifier     = var.identifier # this is a random unique string that can be used to identify resources in the cloud provider
-  category       = "securitygroups"
-  example        = "internal"
+  category       = "basic"
+  example        = "noscripts"
   email          = "terraform-ci@suse.com"
   name           = "tf-aws-server-${local.category}-${local.example}-${local.identifier}"
-  username       = "tf-ci-${local.identifier}"
+  username       = "tf-${local.identifier}"
+  key_name       = var.key_name
   image          = "sles-15"
-  public_ssh_key = var.key      # I don't normally recommend this, but it allows tests to supply their own key
-  key_name       = var.key_name # A lot of troubleshooting during critical times can be saved by hard coding variables in root modules
+  public_ssh_key = var.key # I don't normally recommend this, but it allows tests to supply their own key
+  # A lot of troubleshooting during critical times can be saved by hard coding variables in root modules
   # root modules should be secured properly (including the state), and should represent your running infrastructure
 }
 
@@ -27,11 +28,11 @@ module "aws_access" {
   vpc_name            = "default"
   subnet_name         = "default"
   security_group_name = local.name
-  security_group_type = "internal"
+  security_group_type = "specific"
   ssh_key_name        = local.key_name
 }
 
-module "TestInternal" {
+module "this" {
   depends_on = [
     module.aws_access,
   ]
@@ -45,5 +46,7 @@ module "TestInternal" {
   ssh_key             = local.public_ssh_key
   ssh_key_name        = local.key_name
   subnet_name         = "default"
-  security_group_name = local.name
+  security_group_name = local.name # WARNING: security_group.name isn't the same as security_group->tags->Name
+  cloudinit_timeout   = "6"
+  disable_scripts     = true # disable running scripts on the server
 }
