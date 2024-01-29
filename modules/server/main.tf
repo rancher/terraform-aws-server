@@ -1,21 +1,24 @@
 locals {
-  select            = (var.id != "" ? true : false)
-  create            = (var.id == "" ? true : false)
-  id                = var.id
-  name              = var.name
-  owner             = var.owner
-  user              = var.user
-  ssh_key           = var.ssh_key
-  ssh_key_name      = var.ssh_key_name
-  security_group    = var.security_group
-  subnet            = var.subnet
-  type              = (local.create ? local.types[var.type] : {})
-  image_id          = var.image_id
-  initial_user      = var.image_initial_user
-  admin_group       = var.image_admin_group
-  workfolder        = ((var.image_workfolder == "~" || var.image_workfolder == "") ? "/home/${local.initial_user}" : var.image_workfolder)
-  cloudinit_script  = var.cloudinit_script
-  cloudinit_timeout = var.cloudinit_timeout
+  select                                  = (var.id != "" ? true : false)
+  create                                  = (var.id == "" ? true : false)
+  id                                      = var.id
+  name                                    = var.name
+  owner                                   = var.owner
+  user                                    = var.user
+  ssh_key                                 = var.ssh_key
+  ssh_key_name                            = var.ssh_key_name
+  security_group                          = var.security_group
+  security_group_association_force_create = var.security_group_association_force_create
+  subnet                                  = var.subnet
+  type                                    = (local.create ? local.types[var.type] : {})
+  image_id                                = var.image_id
+  initial_user                            = var.image_initial_user
+  admin_group                             = var.image_admin_group
+  workfolder                              = ((var.image_workfolder == "~" || var.image_workfolder == "") ? "/home/${local.initial_user}" : var.image_workfolder)
+  cloudinit_script                        = var.cloudinit_script
+  cloudinit_timeout                       = var.cloudinit_timeout
+  disable_scripts                         = var.disable_scripts
+  enable_scripts                          = (local.disable_scripts ? false : true) # enable scripts is the opposite of disable scripts
   user_data = templatefile("${path.module}/cloudinit.tpl", {
     initial_user = local.initial_user
     admin_group  = local.admin_group
@@ -25,7 +28,7 @@ locals {
     script       = local.cloudinit_script
   })
 }
-
+# WARNING! When selecting a server it is assumed that no additional resources are required (unless forcing group)
 data "aws_instance" "selected" {
   count       = (local.select ? 1 : 0)
   instance_id = local.id
@@ -36,7 +39,6 @@ data "aws_ec2_instance_type" "general_info" {
 }
 
 data "aws_security_group" "general_info" {
-  count = (local.create ? 1 : 0)
   filter {
     name   = "tag:Name"
     values = [local.security_group]
@@ -68,10 +70,9 @@ resource "aws_instance" "created" {
   ]
   ami                                  = local.image_id
   instance_type                        = local.type.id
-  vpc_security_group_ids               = [data.aws_security_group.general_info[0].id]
   subnet_id                            = data.aws_subnet.general_info[0].id
   associate_public_ip_address          = "true"
-  instance_initiated_shutdown_behavior = "terminate"
+  instance_initiated_shutdown_behavior = "stop"
   user_data_base64                     = base64encode(local.user_data)
   availability_zone                    = data.aws_subnet.general_info[0].availability_zone
   key_name                             = data.aws_key_pair.general_info[0].key_name
@@ -91,17 +92,45 @@ resource "aws_instance" "created" {
       Owner = local.owner
     }
   }
-
-  # there is a potential race condition here:
-  #   the initial connection is racing the cloud-init completion
-  #   this is why we add the initial user in the cloud-init
-  #   then we reconnect with the requested user and remove the initial user
+  lifecycle {
+    ignore_changes = [
+      tags,
+      root_block_device.0.tags,
+    ]
+  }
+}
+resource "aws_network_interface_sg_attachment" "sg_attachment" {
+  count = (local.create || local.security_group_association_force_create ? 1 : 0)
+  depends_on = [
+    data.aws_security_group.general_info,
+    data.aws_subnet.general_info,
+    data.aws_key_pair.general_info,
+    data.aws_instance.selected,
+    aws_instance.created,
+  ]
+  security_group_id = data.aws_security_group.general_info.id
+  network_interface_id = (
+    local.create ? aws_instance.created[0].primary_network_interface_id : data.aws_instance.selected[0].network_interface_id
+  )
+}
+resource "terraform_data" "initial" {
+  count = ((local.create && local.enable_scripts) ? 1 : 0) # initialize server when creating unless scripts are disabled
+  depends_on = [
+    data.aws_security_group.general_info,
+    data.aws_subnet.general_info,
+    data.aws_key_pair.general_info,
+    aws_instance.created,
+    aws_network_interface_sg_attachment.sg_attachment,
+  ]
+  triggers_replace = [
+    aws_instance.created[0].id,
+  ]
   connection {
     type        = "ssh"
     user        = local.initial_user
     script_path = "${local.workfolder}/initial_script"
     agent       = true
-    host        = self.public_ip
+    host        = aws_instance.created[0].public_ip
   }
   provisioner "file" {
     source      = "${path.module}/initial.sh"
@@ -116,18 +145,21 @@ resource "aws_instance" "created" {
     EOT
     ]
   }
-  lifecycle {
-    ignore_changes = [
-      tags,
-      root_block_device.0.tags,
-    ]
-  }
 }
 
-resource "null_resource" "remove_initial_user" {
-  count      = (local.create ? 1 : 0) # clean up initial user when creating
-  depends_on = [aws_instance.created]
-
+resource "terraform_data" "remove_initial_user" {
+  count = ((local.create && local.enable_scripts) ? 1 : 0) # remove initial user when creating unless scripts are disabled
+  depends_on = [
+    data.aws_security_group.general_info,
+    data.aws_subnet.general_info,
+    data.aws_key_pair.general_info,
+    aws_instance.created,
+    aws_network_interface_sg_attachment.sg_attachment,
+    terraform_data.initial,
+  ]
+  triggers_replace = [
+    aws_instance.created[0].id,
+  ]
   connection {
     type        = "ssh"
     user        = local.user
@@ -148,8 +180,5 @@ resource "null_resource" "remove_initial_user" {
       sudo ${(local.workfolder == "/home/${local.initial_user}" ? "/home/${local.user}" : local.workfolder)}/remove_initial_user.sh ${local.initial_user}
     EOT
     ]
-  }
-  triggers = {
-    server_id = aws_instance.created[0].id
   }
 }

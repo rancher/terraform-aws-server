@@ -39,15 +39,15 @@ while [ "$(cloud-init status)" != "status: done" ]; do
 done
 echo "cloud init is \"$(cloud-init status)\""
 
-# some images set sshd config to only allow initial user to connect (CIS)
-# add our user to the list of allowed users and restart sshd
-if [ "${INITIAL_USER}" != "${USER}" ]; then
-  sed -i 's/^AllowUsers.*/& '"${USER}"'/' /etc/ssh/sshd_config
-  systemctl restart sshd
-fi
 # we need to make sure the hostname is set properly if possible
 if [ "$(which hostnamectl)" = "" ]; then
   echo "hostnamectl not found";
 else
   hostnamectl set-hostname "${NAME}"
+fi
+# some images set sshd config to only allow initial user to connect (CIS)
+# add our user to the list of allowed users and restart sshd
+if [ "${INITIAL_USER}" != "${USER}" ]; then
+  sed -i 's/^AllowUsers.*/& '"${USER}"'/' /etc/ssh/sshd_config
+  systemctl restart sshd
 fi
