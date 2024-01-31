@@ -8,15 +8,15 @@ provider "aws" {
 
 locals {
   identifier     = var.identifier # this is a random unique string that can be used to identify resources in the cloud provider
-  category       = "securitygroups"
-  example        = "internal"
+  category       = "overrides"
+  example        = "association"
   email          = "terraform-ci@suse.com"
   name           = "tf-aws-server-${local.category}-${local.example}-${local.identifier}"
   username       = "tf-ci-${local.identifier}"
-  image          = "sles-15"
-  public_ssh_key = var.key      # I don't normally recommend this, but it allows tests to supply their own key
-  key_name       = var.key_name # A lot of troubleshooting during critical times can be saved by hard coding variables in root modules
-  # root modules should be secured properly (including the state), and should represent your running infrastructure
+  image          = "ami-09b2a1e33ce552e68" # this must be an AMI in your region
+  public_ssh_key = var.key
+  key_name       = var.key_name
+  server_id      = var.server
 }
 
 # selecting the vpc, subnet, and ssh key pair, generating a security group specific to the runner
@@ -27,23 +27,26 @@ module "aws_access" {
   vpc_name            = "default"
   subnet_name         = "default"
   security_group_name = local.name
-  security_group_type = "internal"
+  security_group_type = "specific"
   ssh_key_name        = local.key_name
 }
 
-module "TestInternal" {
+module "this" {
   depends_on = [
     module.aws_access,
   ]
-  source = "../../../" # change this to "rancher/server/aws" per https://registry.terraform.io/modules/rancher/server/aws/latest
-  # version = "v0.0.15" # when using this example you will need to set the version
-  image               = local.image
+  source              = "../../../"
+  image_id            = local.image
+  image_initial_user  = "ec2-user"
+  image_admin_group   = "wheel"
+  image_workfolder    = "~"
   owner               = local.email
   name                = local.name
-  type                = "small"
-  user                = local.username
-  ssh_key             = local.public_ssh_key
-  ssh_key_name        = local.key_name
+  id                  = local.server_id # server must already exist outside of this terraform config
   subnet_name         = "default"
   security_group_name = local.name
+
+  # usually when selecting a server nothing is created,
+  # with this flag we force the association of the new security group on the server
+  security_group_association_force_create = true
 }

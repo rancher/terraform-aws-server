@@ -1,3 +1,11 @@
+provider "aws" {
+  default_tags {
+    tags = {
+      Id = local.identifier
+    }
+  }
+}
+
 locals {
   identifier     = var.identifier # this is a random unique string that can be used to identify resources in the cloud provider
   category       = "securitygroups"
@@ -14,7 +22,7 @@ locals {
 # selecting the vpc, subnet, and ssh key pair, generating a security group specific to the runner
 module "aws_access" {
   source              = "rancher/access/aws"
-  version             = "v0.0.8"
+  version             = "v1.0.0"
   owner               = local.email
   vpc_name            = "default"
   subnet_name         = "default"
@@ -34,8 +42,8 @@ module "TestSpecific" {
   name                = local.name
   type                = "small"
   user                = local.username
-  ssh_key             = module.aws_access.ssh_key.public_key
+  ssh_key             = local.public_ssh_key
   ssh_key_name        = local.key_name
   subnet_name         = "default"
-  security_group_name = module.aws_access.security_group_name
+  security_group_name = local.name
 }

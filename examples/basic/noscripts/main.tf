@@ -1,5 +1,4 @@
 provider "aws" {
-  region = "us-east-2"
   default_tags {
     tags = {
       Id = local.identifier
@@ -9,14 +8,15 @@ provider "aws" {
 
 locals {
   identifier     = var.identifier # this is a random unique string that can be used to identify resources in the cloud provider
-  category       = "region"
-  example        = "useast2"
+  category       = "basic"
+  example        = "noscripts"
   email          = "terraform-ci@suse.com"
   name           = "tf-aws-server-${local.category}-${local.example}-${local.identifier}"
-  username       = "tf-ci-${local.identifier}"
+  username       = "tf-${local.identifier}"
+  key_name       = var.key_name
   image          = "sles-15"
-  public_ssh_key = var.key      # I don't normally recommend this, but it allows tests to supply their own key
-  key_name       = var.key_name # A lot of troubleshooting during critical times can be saved by hard coding variables in root modules
+  public_ssh_key = var.key # I don't normally recommend this, but it allows tests to supply their own key
+  # A lot of troubleshooting during critical times can be saved by hard coding variables in root modules
   # root modules should be secured properly (including the state), and should represent your running infrastructure
 }
 
@@ -31,11 +31,12 @@ module "aws_access" {
   security_group_type = "specific"
   ssh_key_name        = local.key_name
 }
-# aws_access returns a security group object from the aws api, but the name attribute isn't the same as the Name tag
-# this is an rare example of when the name attribute is different than the Name tag
-module "TestUseast2" {
-  depends_on = [module.aws_access]
-  source     = "../../../" # change this to "rancher/server/aws" per https://registry.terraform.io/modules/rancher/server/aws/latest
+
+module "this" {
+  depends_on = [
+    module.aws_access,
+  ]
+  source = "../../../" # change this to "rancher/server/aws" per https://registry.terraform.io/modules/rancher/server/aws/latest
   # version = "v0.0.15" # when using this example you will need to set the version
   image               = local.image
   owner               = local.email
@@ -46,4 +47,6 @@ module "TestUseast2" {
   ssh_key_name        = local.key_name
   subnet_name         = "default"
   security_group_name = local.name # WARNING: security_group.name isn't the same as security_group->tags->Name
+  cloudinit_timeout   = "6"
+  disable_scripts     = true # disable running scripts on the server
 }

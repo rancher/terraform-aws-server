@@ -23,3 +23,19 @@ func TestBasic(t *testing.T) {
 	defer terraform.Destroy(t, terraformOptions)
 	terraform.InitAndApply(t, terraformOptions)
 }
+func TestNoscripts(t *testing.T) {
+	t.Parallel()
+	category := "basic"
+	directory := "noscripts"
+	region := "us-west-1"
+	owner := "terraform-ci@suse.com"
+	terraformOptions, keyPair := setup(t, category, directory, region, owner)
+
+	sshAgent := ssh.SshAgentWithKeyPair(t, keyPair.KeyPair)
+	defer sshAgent.Stop()
+	terraformOptions.SshAgent = sshAgent
+
+	defer teardown(t, category, directory, keyPair)
+	defer terraform.Destroy(t, terraformOptions)
+	terraform.InitAndApply(t, terraformOptions)
+}
