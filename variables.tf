@@ -136,6 +136,16 @@ variable "security_group_name" {
   default     = ""
 }
 
+variable "security_group_association_force_create" {
+  type        = bool
+  description = <<-EOT
+    Setting this to true will force the creation of an association object between the server and security group.
+    Normally this association will only be created when a new server is created.
+    This can be useful when isolating the lifecycle of the security group.
+  EOT
+  default     = false
+}
+
 variable "subnet_name" {
   type        = string
   description = <<-EOT
@@ -177,4 +187,15 @@ variable "cloudinit_timeout" {
     Defaults to '5' which checks the cloud-init status for 'done' every 10 seconds for 5 minutes / 300 seconds.
   EOT
   default     = "5"
+}
+
+variable "disable_scripts" {
+  type        = bool
+  description = <<-EOT
+    Normally there are a number of scripts that we run on every server to set it up.
+    This includes validating that cloud-init completed successfully, 
+      removing the initial user, generating a user for the CI, etc.
+    Enable this flag to disable all of those scripts, this is useful when ssh is disabled on the server.
+  EOT
+  default     = false
 }

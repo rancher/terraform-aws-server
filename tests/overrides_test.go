@@ -41,20 +41,61 @@ func TestSelectImage(t *testing.T) {
 	defer terraform.Destroy(t, terraformOptions)
 	terraform.InitAndApply(t, terraformOptions)
 }
+func TestSelectAll(t *testing.T) {
+	// in this test we are going to select everything in the server module and create nothing
+	t.Parallel()
+	category := "overrides"
+	directory := "select_all"
+	region := "us-west-1"
+	owner := "terraform-ci@suse.com"
 
-// func TestSelectServer(t *testing.T) {
-// 	// in this test we are going to select an image and a server without creating anything
-// 	t.Parallel()
-// 	category := "overrides"
-// 	directory := "select_server"
-// 	region := "us-west-1"
-// 	owner := "terraform-ci@suse.com"
-// 	terraformOptions, keyPair := setup(t, category, directory, region, owner)
+	// multi part terraform, setup is an independent module in the test directory that sets up this test
+	setupDirectory := fmt.Sprintf("%s/setup", directory)
+	setupTerraformOptions, setupKeyPair := setup(t, category, setupDirectory, region, owner)
+	setupSshAgent := ssh.SshAgentWithKeyPair(t, setupKeyPair.KeyPair)
+	setupTerraformOptions.SshAgent = setupSshAgent
+	defer setupSshAgent.Stop()
+	defer teardown(t, category, setupDirectory, setupKeyPair)
+	defer terraform.Destroy(t, setupTerraformOptions)
+	terraform.InitAndApply(t, setupTerraformOptions)
+	output := terraform.Output(t, setupTerraformOptions, "id")
 
-// 	sshAgent := ssh.SshAgentWithKeyPair(t, keyPair.KeyPair)
-// 	defer sshAgent.Stop()
-// 	terraformOptions.SshAgent = sshAgent
-// 	defer teardown(t, category, directory, keyPair)
-// 	defer terraform.Destroy(t, terraformOptions)
-// 	terraform.InitAndApply(t, terraformOptions)
-// }
+	// after setup completes we can run the actual test, passing in the server id from setup
+	terraformOptions, keyPair := setup(t, category, directory, region, owner)
+	sshAgent := ssh.SshAgentWithKeyPair(t, keyPair.KeyPair)
+	terraformOptions.SshAgent = sshAgent
+	defer sshAgent.Stop()
+	defer teardown(t, category, directory, keyPair)
+	defer terraform.Destroy(t, terraformOptions)
+	terraformOptions.Vars["server"] = output
+	terraform.InitAndApply(t, terraformOptions)
+}
+func TestAssociation(t *testing.T) {
+	// in this test we are going to select everything in the server module, but force the association of a new security group onto the selected server
+	t.Parallel()
+	category := "overrides"
+	directory := "association"
+	region := "us-west-1"
+	owner := "terraform-ci@suse.com"
+
+	// multi part terraform, setup is an independent module in the test directory that sets up this test
+	setupDirectory := fmt.Sprintf("%s/setup", directory)
+	setupTerraformOptions, setupKeyPair := setup(t, category, setupDirectory, region, owner)
+	setupSshAgent := ssh.SshAgentWithKeyPair(t, setupKeyPair.KeyPair)
+	setupTerraformOptions.SshAgent = setupSshAgent
+	defer setupSshAgent.Stop()
+	defer teardown(t, category, setupDirectory, setupKeyPair)
+	defer terraform.Destroy(t, setupTerraformOptions)
+	terraform.InitAndApply(t, setupTerraformOptions)
+	output := terraform.Output(t, setupTerraformOptions, "id")
+
+	// after setup completes we can run the actual test, passing in the server id from setup
+	terraformOptions, keyPair := setup(t, category, directory, region, owner)
+	sshAgent := ssh.SshAgentWithKeyPair(t, keyPair.KeyPair)
+	terraformOptions.SshAgent = sshAgent
+	defer sshAgent.Stop()
+	defer teardown(t, category, directory, keyPair)
+	defer terraform.Destroy(t, terraformOptions)
+	terraformOptions.Vars["server"] = output
+	terraform.InitAndApply(t, terraformOptions)
+}

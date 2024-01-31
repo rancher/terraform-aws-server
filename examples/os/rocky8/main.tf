@@ -1,3 +1,11 @@
+provider "aws" {
+  default_tags {
+    tags = {
+      Id = local.identifier
+    }
+  }
+}
+
 locals {
   identifier     = var.identifier # this is a random unique string that can be used to identify resources in the cloud provider
   category       = "os"
@@ -15,7 +23,7 @@ locals {
 
 module "aws_access" {
   source              = "rancher/access/aws"
-  version             = "v0.0.8"
+  version             = "v1.0.0"
   owner               = local.email
   vpc_name            = "default"
   subnet_name         = "default"
