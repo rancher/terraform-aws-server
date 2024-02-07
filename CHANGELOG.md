@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.2.0](https://github.com/rancher/terraform-aws-server/compare/v0.1.3...v0.2.0) (2024-02-07)
+
+
+### Features
+
+* add ability to disable ssh and specify private ip ([#41](https://github.com/rancher/terraform-aws-server/issues/41)) ([16b806e](https://github.com/rancher/terraform-aws-server/commit/16b806ee6cd1f4afabd9b2b6e63392b2041b62d6))
+
+
+### Bug Fixes
+
+* remove unneccesary nix cache ([#43](https://github.com/rancher/terraform-aws-server/issues/43)) ([512e893](https://github.com/rancher/terraform-aws-server/commit/512e8931199a684ce9b1ac88fbac430e13948e1f))
+
 ## [0.1.3](https://github.com/rancher/terraform-aws-server/compare/v0.1.2...v0.1.3) (2024-01-31)
 
 
