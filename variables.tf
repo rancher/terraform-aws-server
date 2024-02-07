@@ -105,6 +105,15 @@ variable "user" {
   }
 }
 
+variable "skip_key" {
+  type        = bool
+  description = <<-EOT
+    Set this to true to skip associating an ssh key to the server.
+    This is helpful for generating air gapped deployments using golden images.
+  EOT
+  default     = false
+}
+
 variable "ssh_key" {
   type        = string
   description = <<-EOT
@@ -114,6 +123,7 @@ variable "ssh_key" {
   EOT
   default     = ""
 }
+
 variable "ssh_key_name" {
   type        = string
   description = <<-EOT
@@ -154,6 +164,15 @@ variable "subnet_name" {
     If you would like help creating a subnet, please see the 'terraform-aws-access' module that we produce.
     This uses the "Name" tag on the subnet to select it, this is preferrable to make multi-region deployments easier.
     Subnets are tied to a specific availability zone, so when you select a subnet you are also selecting an availability zone.
+  EOT
+  default     = ""
+}
+
+variable "private_ip" {
+  type        = string
+  description = <<-EOT
+    The name of an available private ip to assign to the server.
+    This must be within the subnet assigned to the server.
   EOT
   default     = ""
 }

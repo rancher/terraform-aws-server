@@ -15,27 +15,31 @@ locals {
   name           = "tf-aws-server-${local.category}-${local.example}-${local.identifier}"
   username       = "tf-ci-${local.identifier}"
   image          = "sles-15"
-  public_ssh_key = var.key      # I don't normally recommend this, but it allows tests to supply their own key
-  key_name       = var.key_name # A lot of troubleshooting during critical times can be saved by hard coding variables in root modules
-  # root modules should be secured properly (including the state), and should represent your running infrastructure
+  public_ssh_key = var.key
+  key_name       = var.key_name
 }
 
-# selecting the vpc, subnet, and ssh key pair, generating a security group specific to the runner
 module "aws_access" {
   source              = "rancher/access/aws"
-  version             = "v1.0.0"
+  version             = "v1.1.0"
   owner               = local.email
-  vpc_name            = "test"
-  subnet_name         = "test"
+  vpc_name            = local.name
+  vpc_cidr            = "10.0.255.0/24" # gives 256 usable addresses from .1 to .254, but AWS reserves .1 to .4 and .255, leaving .5 to .254
+  subnet_name         = local.name
+  subnet_cidr         = "10.0.255.224/28" # gives 14 usable addresses from .225 to .238, but AWS reserves .225 to .227 and .238, leaving .227 to .237
+  subnet_public_ip    = true
   security_group_name = local.name
-  security_group_type = "specific"
+  security_group_type = "internal"
   ssh_key_name        = local.key_name
 }
+
 # aws_access returns a security group object from the aws api, but the name attribute isn't the same as the Name tag
 # this is an rare example of when the name attribute is different than the Name tag
 module "TestUswest2" {
-  depends_on = [module.aws_access]
-  source     = "../../../" # change this to "rancher/server/aws" per https://registry.terraform.io/modules/rancher/server/aws/latest
+  depends_on = [
+    module.aws_access
+  ]
+  source = "../../../" # change this to "rancher/server/aws" per https://registry.terraform.io/modules/rancher/server/aws/latest
   # version = "v0.0.15" # when using this example you will need to set the version
   image               = local.image
   owner               = local.email
@@ -44,6 +48,6 @@ module "TestUswest2" {
   user                = local.username
   ssh_key             = local.public_ssh_key
   ssh_key_name        = local.key_name
-  subnet_name         = "test"
+  subnet_name         = local.name
   security_group_name = local.name # WARNING: security_group.name isn't the same as security_group->tags->Name
 }

@@ -64,7 +64,13 @@ variable "image_workfolder" {
   EOT
   default     = "~"
 }
-
+variable "skip_key" {
+  type        = bool
+  description = <<-EOT
+    Set this to true to skip the association of an ssh key to the server.
+  EOT
+  default     = false
+}
 variable "ssh_key" {
   type        = string
   description = <<-EOT
@@ -97,6 +103,21 @@ variable "security_group_association_force_create" {
   EOT
   default     = false
 }
+variable "ip" {
+  type        = string
+  description = <<-EOT
+    Ipv4 address to associate with the server, it must be within the usable addresses in the subnet given.
+  EOT
+  default     = ""
+}
+variable "ipv6" {
+  type        = string
+  description = <<-EOT
+    Ipv6 address to associate with the server, it must be within the usable addresses in the subnet given.
+  EOT
+  default     = ""
+}
+
 variable "subnet" {
   type        = string
   description = <<-EOT
