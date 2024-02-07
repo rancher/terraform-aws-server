@@ -10,9 +10,11 @@ locals {
   server_owner               = var.owner
   server_type                = var.type
   server_user                = var.user
+  server_skip_key            = var.skip_key
   server_ssh_key             = var.ssh_key
   server_ssh_key_name        = var.ssh_key_name
   server_security_group_name = var.security_group_name
+  server_private_ip          = var.private_ip
 
   security_group_association_force_create = var.security_group_association_force_create
   disable_scripts                         = var.disable_scripts
@@ -51,8 +53,10 @@ module "server" {
   image_workfolder   = module.image.workfolder
   ssh_key            = local.server_ssh_key
   ssh_key_name       = local.server_ssh_key_name
+  skip_key           = local.server_skip_key
   security_group     = local.server_security_group_name
   subnet             = local.server_subnet_name
+  ip                 = local.server_private_ip
   cloudinit_script   = local.server_cloudinit_script
   cloudinit_timeout  = local.server_cloudinit_timeout
 

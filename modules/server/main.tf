@@ -5,8 +5,9 @@ locals {
   name                                    = var.name
   owner                                   = var.owner
   user                                    = var.user
-  ssh_key                                 = var.ssh_key
-  ssh_key_name                            = var.ssh_key_name
+  ip                                      = var.ip # specify the private ip to assign to the server (must be within the subnet)
+  ipv4                                    = (strcontains(local.ip, ":") ? "" : local.ip)
+  ipv6                                    = (strcontains(local.ip, ":") ? local.ip : "")
   security_group                          = var.security_group
   security_group_association_force_create = var.security_group_association_force_create
   subnet                                  = var.subnet
@@ -17,8 +18,12 @@ locals {
   workfolder                              = ((var.image_workfolder == "~" || var.image_workfolder == "") ? "/home/${local.initial_user}" : var.image_workfolder)
   cloudinit_script                        = var.cloudinit_script
   cloudinit_timeout                       = var.cloudinit_timeout
-  disable_scripts                         = var.disable_scripts
-  enable_scripts                          = (local.disable_scripts ? false : true) # enable scripts is the opposite of disable scripts
+  skip_key                                = var.skip_key                                           # skip the association of a keypair to the server
+  ssh_key                                 = (local.skip_key ? "" : var.ssh_key)                    # empty key if not associating a key
+  ssh_key_name                            = (local.skip_key ? "" : var.ssh_key_name)               # empty key name if not associating a key
+  associate_key                           = (local.skip_key ? false : true)                        # associate key is the opposite of skip_key
+  disable_scripts                         = (var.disable_scripts || local.skip_key ? true : false) # disable scripts if not associating an ssh key
+  enable_scripts                          = (local.disable_scripts ? false : true)                 # enable scripts is the opposite of disable scripts
   user_data = templatefile("${path.module}/cloudinit.tpl", {
     initial_user = local.initial_user
     admin_group  = local.admin_group
@@ -54,10 +59,24 @@ data "aws_subnet" "general_info" {
 }
 
 data "aws_key_pair" "general_info" {
-  count = (local.create ? 1 : 0)
+  count = (local.create && local.associate_key ? 1 : 0)
   filter {
     name   = "tag:Name"
     values = [local.ssh_key_name]
+  }
+}
+
+resource "aws_network_interface" "created" {
+  count = (local.create ? 1 : 0)
+  depends_on = [
+    data.aws_subnet.general_info,
+  ]
+  subnet_id      = data.aws_subnet.general_info[0].id
+  private_ips    = (local.ipv4 != "" ? [local.ipv4] : [])
+  ipv6_addresses = (local.ipv6 != "" ? [local.ipv6] : [])
+  tags = {
+    Name  = local.name
+    Owner = local.owner
   }
 }
 
@@ -67,15 +86,20 @@ resource "aws_instance" "created" {
     data.aws_security_group.general_info,
     data.aws_subnet.general_info,
     data.aws_key_pair.general_info,
+    aws_network_interface.created,
   ]
-  ami                                  = local.image_id
-  instance_type                        = local.type.id
-  subnet_id                            = data.aws_subnet.general_info[0].id
-  associate_public_ip_address          = "true"
-  instance_initiated_shutdown_behavior = "stop"
+  ami           = local.image_id
+  instance_type = local.type.id
+
+  #associate_public_ip_address          = false  # this will be handled in interfaces attached to the instance
+  network_interface {
+    network_interface_id = aws_network_interface.created[0].id
+    device_index         = 0
+  }
+  instance_initiated_shutdown_behavior = "stop" # termination can be handled by destroy or separately
   user_data_base64                     = base64encode(local.user_data)
   availability_zone                    = data.aws_subnet.general_info[0].availability_zone
-  key_name                             = data.aws_key_pair.general_info[0].key_name
+  key_name                             = (local.associate_key ? data.aws_key_pair.general_info[0].key_name : "")
 
   tags = {
     Name  = local.name
@@ -99,6 +123,8 @@ resource "aws_instance" "created" {
     ]
   }
 }
+
+
 resource "aws_network_interface_sg_attachment" "sg_attachment" {
   count = (local.create || local.security_group_association_force_create ? 1 : 0)
   depends_on = [
@@ -107,10 +133,11 @@ resource "aws_network_interface_sg_attachment" "sg_attachment" {
     data.aws_key_pair.general_info,
     data.aws_instance.selected,
     aws_instance.created,
+    aws_network_interface.created,
   ]
   security_group_id = data.aws_security_group.general_info.id
   network_interface_id = (
-    local.create ? aws_instance.created[0].primary_network_interface_id : data.aws_instance.selected[0].network_interface_id
+    local.create ? aws_network_interface.created[0].id : data.aws_instance.selected[0].network_interface_id
   )
 }
 resource "terraform_data" "initial" {

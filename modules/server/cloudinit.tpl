@@ -13,11 +13,14 @@ users:
     sudo: ALL=(ALL) NOPASSWD:ALL
     groups: users, ${admin_group}
     lock_passwd: true
+%{ if ssh_key != "" }
     ssh_authorized_keys:
       - ${ssh_key}
+%{ endif }
     homedir: /home/${user}
 fqdn: ${name}
 %{ if script != "" }
 runcmd:
-  - "${script}"
+  - |
+    ${script}
 %{ endif }
