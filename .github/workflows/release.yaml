@@ -33,22 +33,8 @@ jobs:
           token: ${{secrets.GITHUB_TOKEN}}
       - uses: DeterminateSystems/nix-installer-action@main
         if: steps.release-please.outputs.pr
-      - name: 'Restore Nix Store Cache'
-        if: steps.release-please.outputs.pr
-        id: cache-nix-store-restore
-        uses: actions/cache/restore@v4
-        with:
-          path: /nix/store
-          key: nixstore
       - uses: nicknovitski/nix-develop@v1
         if: steps.release-please.outputs.pr
-      - name: 'Cache Nix Store'
-        if: steps.release-please.outputs.pr
-        id: cache-nix-store-save
-        uses: actions/cache/save@v4
-        with:
-          path: /nix/store
-          key: ${{ steps.cache-nix-store-restore.outputs.cache-primary-key }}
       - uses: aws-actions/configure-aws-credentials@v4
         if: steps.release-please.outputs.pr
         with:
