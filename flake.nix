@@ -97,6 +97,7 @@
             bashInteractive
             curl
             git
+            gitleaks
             go # need go for terratest
             gnupg # need gpg for signing commits
             jq
