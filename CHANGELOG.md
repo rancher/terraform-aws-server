@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.2.1](https://github.com/rancher/terraform-aws-server/compare/v0.2.0...v0.2.1) (2024-02-09)
+
+
+### Bug Fixes
+
+* update access mod in examples ([#47](https://github.com/rancher/terraform-aws-server/issues/47)) ([0d7dbaa](https://github.com/rancher/terraform-aws-server/commit/0d7dbaab1f89022eee276f844fddbde010e3d112))
+* update image search for rhel and explain why ([#44](https://github.com/rancher/terraform-aws-server/issues/44)) ([90fb039](https://github.com/rancher/terraform-aws-server/commit/90fb0395d001fe851268e0f73496845f12b6d81f))
+* update required version of tf to the latest open source version ([#46](https://github.com/rancher/terraform-aws-server/issues/46)) ([1e7e0d4](https://github.com/rancher/terraform-aws-server/commit/1e7e0d4715f94a1092463885f06cc29f3aee1db6))
+
 ## [0.2.0](https://github.com/rancher/terraform-aws-server/compare/v0.1.3...v0.2.0) (2024-02-07)
 
 
