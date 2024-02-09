@@ -23,7 +23,7 @@ locals {
 
 module "aws_access" {
   source              = "rancher/access/aws"
-  version             = "v1.0.0"
+  version             = "v1.1.1"
   owner               = local.email
   vpc_name            = "default"
   subnet_name         = "default"

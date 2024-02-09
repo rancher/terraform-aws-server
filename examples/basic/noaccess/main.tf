@@ -18,7 +18,7 @@ locals {
 # selecting the vpc, subnet, and ssh key pair, generating a security group specific to the runner
 module "aws_access" {
   source              = "rancher/access/aws"
-  version             = "v1.0.0"
+  version             = "v1.1.1"
   owner               = local.email
   vpc_name            = local.name
   vpc_cidr            = "10.0.255.0/24" # gives 256 usable addresses from .1 to .254, but AWS reserves .1 to .4 and .255, leaving .5 to .254
