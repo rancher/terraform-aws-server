@@ -22,7 +22,7 @@ locals {
 # selecting the vpc, subnet, and ssh key pair, generating a security group specific to the runner
 module "aws_access" {
   source              = "rancher/access/aws"
-  version             = "v1.0.0"
+  version             = "v1.1.1"
   owner               = local.email
   vpc_name            = "default"
   subnet_name         = "default"
