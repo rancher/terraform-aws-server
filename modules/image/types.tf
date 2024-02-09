@@ -40,14 +40,6 @@ locals {
       architecture = "x86_64",
       workfolder   = "~"
     },
-    rhel-8 = {
-      user         = "ec2-user",
-      group        = "wheel",
-      name         = "RHEL-8*_HVM-*-x86_64-*",
-      owner        = "amazon",
-      architecture = "x86_64",
-      workfolder   = "~"
-    },
     rocky-8 = { # WARNING! you must subscribe and accept the terms to use this image
       user         = "ec2-user",
       group        = "wheel",
@@ -56,10 +48,25 @@ locals {
       architecture = "x86_64",
       workfolder   = "~"
     },
+    # the goal for these search strings is to keep them as stable as possible without specifying a version that is EOL
+    # our users often rely on extended support from RHEL, so we don't consider odd numbered minors which are inelegible for that
+    # https://access.redhat.com/support/policy/updates/errata
+    # therefore the search found here is the most recent even minor that has been released
+    # expect RHEL 9.4 in June 2024
     rhel-9 = {
       user         = "ec2-user",
       group        = "wheel",
-      name         = "RHEL-9*_HVM-*-x86_64-*",
+      name         = "RHEL-9.2.*_HVM-*-x86_64-*-Hourly2-GP3",
+      owner        = "amazon",
+      architecture = "x86_64",
+      workfolder   = "~"
+    },
+    # following the same lines as rhel-9 this will be the most recent even minor that has been released
+    # expect RHEL 8.10 in June 2024
+    rhel-8 = {
+      user         = "ec2-user",
+      group        = "wheel",
+      name         = "RHEL-8.8.*_HVM-*-x86_64-*-Hourly2-GP3",
       owner        = "amazon",
       architecture = "x86_64",
       workfolder   = "~"
