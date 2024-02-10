@@ -15,6 +15,7 @@ locals {
   server_ssh_key_name        = var.ssh_key_name
   server_security_group_name = var.security_group_name
   server_private_ip          = var.private_ip
+  server_eip                 = var.add_public_ip
 
   security_group_association_force_create = var.security_group_association_force_create
   disable_scripts                         = var.disable_scripts
@@ -57,6 +58,7 @@ module "server" {
   security_group     = local.server_security_group_name
   subnet             = local.server_subnet_name
   ip                 = local.server_private_ip
+  eip                = local.server_eip
   cloudinit_script   = local.server_cloudinit_script
   cloudinit_timeout  = local.server_cloudinit_timeout
 

@@ -5,7 +5,8 @@ locals {
   name                                    = var.name
   owner                                   = var.owner
   user                                    = var.user
-  ip                                      = var.ip # specify the private ip to assign to the server (must be within the subnet)
+  eip                                     = var.eip # should we deploy a public elastic ip with the server?
+  ip                                      = var.ip  # specify the private ip to assign to the server (must be within the subnet)
   ipv4                                    = (strcontains(local.ip, ":") ? "" : local.ip)
   ipv6                                    = (strcontains(local.ip, ":") ? local.ip : "")
   security_group                          = var.security_group
@@ -30,7 +31,7 @@ locals {
     user         = local.user
     ssh_key      = local.ssh_key
     name         = local.name
-    script       = local.cloudinit_script
+    script       = indent(6, local.cloudinit_script)
   })
 }
 # WARNING! When selecting a server it is assumed that no additional resources are required (unless forcing group)
@@ -66,6 +67,14 @@ data "aws_key_pair" "general_info" {
   }
 }
 
+resource "aws_eip" "created" {
+  count = (local.create && local.eip ? 1 : 0)
+  depends_on = [
+    data.aws_subnet.general_info,
+  ]
+  domain = "vpc"
+}
+
 resource "aws_network_interface" "created" {
   count = (local.create ? 1 : 0)
   depends_on = [
@@ -80,6 +89,17 @@ resource "aws_network_interface" "created" {
   }
 }
 
+resource "aws_eip_association" "created" {
+  count = (local.create && local.eip ? 1 : 0)
+  depends_on = [
+    data.aws_subnet.general_info,
+    aws_network_interface.created,
+  ]
+  allocation_id        = aws_eip.created[0].id
+  network_interface_id = aws_network_interface.created[0].id
+  allow_reassociation  = true # this should allow the server to be destroyed without the ip changing
+}
+
 resource "aws_instance" "created" {
   count = (local.create ? 1 : 0)
   depends_on = [
@@ -88,10 +108,11 @@ resource "aws_instance" "created" {
     data.aws_key_pair.general_info,
     aws_network_interface.created,
   ]
-  ami           = local.image_id
-  instance_type = local.type.id
+  ami                         = local.image_id
+  instance_type               = local.type.id
+  user_data_replace_on_change = true # forces a replace when the user data changes, this is often what we want to prevent security issues
 
-  #associate_public_ip_address          = false  # this will be handled in interfaces attached to the instance
+  #associate_public_ip_address          = false  # this will be handled in interfaces attached to the instance and subnet rules
   network_interface {
     network_interface_id = aws_network_interface.created[0].id
     device_index         = 0
