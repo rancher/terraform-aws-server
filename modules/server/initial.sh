@@ -12,6 +12,8 @@ if [ -z "${INITIAL_USER}" ]; then echo "INITIAL_USER is not set"; exit 1; fi
 if [ -z "${USER}" ]; then echo "USER is not set"; exit 1; fi
 if [ -z "${NAME}" ]; then echo "NAME is not set"; exit 1; fi
 if [ -z "${ADMIN_GROUP}" ]; then echo "ADMIN_GROUP is not set"; exit 1; fi
+# default timeout to 5min
+if [ -z "${TIMEOUT}" ]; then TIMEOUT=5; fi
 
 if [ "$(which cloud-init)" = "" ]; then
   echo "cloud-init not found";
@@ -28,13 +30,15 @@ if [ "$(which cloud-init)" = "" ]; then
   exit 0;
 fi
 
+EXIT=0
 max_attempts=$((TIMEOUT * 60 / 10))
 attempts=0
 interval=10
 while [ "$(cloud-init status)" != "status: done" ]; do
+  if [ "$(cloud-init status)" == "status: error" ]; then EXIT=1 break; fi
   echo "cloud init is \"$(cloud-init status)\""
   attempts=$((attempts + 1))
-  if [ ${attempts} = ${max_attempts} ]; then break; fi
+  if [ ${attempts} = ${max_attempts} ]; then EXIT=1; break; fi
   sleep ${interval};
 done
 echo "cloud init is \"$(cloud-init status)\""
@@ -51,3 +55,5 @@ if [ "${INITIAL_USER}" != "${USER}" ]; then
   sed -i 's/^AllowUsers.*/& '"${USER}"'/' /etc/ssh/sshd_config
   systemctl restart sshd
 fi
+
+exit $EXIT

@@ -103,6 +103,15 @@ variable "security_group_association_force_create" {
   EOT
   default     = false
 }
+
+variable "eip" {
+  type        = bool
+  description = <<-EOT
+    Set this to true to deploy a public elastic IP address with this server.
+  EOT
+  default     = false
+}
+
 variable "ip" {
   type        = string
   description = <<-EOT

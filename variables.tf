@@ -177,6 +177,14 @@ variable "private_ip" {
   default     = ""
 }
 
+variable "add_public_ip" {
+  type        = bool
+  description = <<-EOT
+    Deploy an elastic public ip for this server.
+  EOT
+  default     = false
+}
+
 variable "id" {
   type        = string
   description = <<-EOT
