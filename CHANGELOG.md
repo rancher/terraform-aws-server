@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.0](https://github.com/rancher/terraform-aws-server/compare/v0.2.1...v0.3.0) (2024-02-12)
+
+
+### Features
+
+* add eip and handle cloud-init scripts better ([#48](https://github.com/rancher/terraform-aws-server/issues/48)) ([3ca9ba0](https://github.com/rancher/terraform-aws-server/commit/3ca9ba05d1c130be745b65a315817dafc9b03815))
+
 ## [0.2.1](https://github.com/rancher/terraform-aws-server/compare/v0.2.0...v0.2.1) (2024-02-09)
 
 
