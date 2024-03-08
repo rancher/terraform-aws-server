@@ -46,13 +46,10 @@ func TestNoAccess(t *testing.T) {
 	region := "us-west-1"
 	owner := "terraform-ci@suse.com"
 	terraformOptions, keyPair := setup(t, category, directory, region, owner)
-
-	sshAgent := ssh.SshAgentWithKeyPair(t, keyPair.KeyPair)
-	defer sshAgent.Stop()
-	terraformOptions.SshAgent = sshAgent
-
 	defer teardown(t, category, directory, keyPair)
 	defer terraform.Destroy(t, terraformOptions)
+	delete(terraformOptions.Vars, "key")
+	delete(terraformOptions.Vars, "key_name")
 	terraform.InitAndApply(t, terraformOptions)
 }
 func TestPrivateIp(t *testing.T) {
@@ -62,12 +59,9 @@ func TestPrivateIp(t *testing.T) {
 	region := "us-west-1"
 	owner := "terraform-ci@suse.com"
 	terraformOptions, keyPair := setup(t, category, directory, region, owner)
-
-	sshAgent := ssh.SshAgentWithKeyPair(t, keyPair.KeyPair)
-	defer sshAgent.Stop()
-	terraformOptions.SshAgent = sshAgent
-
 	defer teardown(t, category, directory, keyPair)
 	defer terraform.Destroy(t, terraformOptions)
+	delete(terraformOptions.Vars, "key")
+	delete(terraformOptions.Vars, "key_name")
 	terraform.InitAndApply(t, terraformOptions)
 }
