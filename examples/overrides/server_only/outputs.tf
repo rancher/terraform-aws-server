@@ -1,21 +1,21 @@
 output "private_ip" {
-  value = module.TestServerOnly.private_ip
+  value = module.this.private_ip
 }
 output "public_ip" {
-  value = module.TestServerOnly.public_ip
+  value = module.this.public_ip
 }
 output "id" {
-  value = module.TestServerOnly.id
+  value = module.this.id
 }
 output "ami" {
-  value = module.TestServerOnly.ami
+  value = module.this.ami
 }
 output "ram" {
-  value = module.TestServerOnly.ram
+  value = module.this.ram
 }
 output "cpu" {
-  value = module.TestServerOnly.cpu
+  value = module.this.cpu
 }
 output "storage" {
-  value = module.TestServerOnly.storage
+  value = module.this.storage
 }

@@ -18,21 +18,22 @@ locals {
   key_name       = var.key_name
 }
 
-# selecting the vpc, subnet, and ssh key pair, generating a security group specific to the runner
-module "aws_access" {
+module "access" {
   source              = "rancher/access/aws"
   version             = "v1.1.1"
   owner               = local.email
-  vpc_name            = "default"
-  subnet_name         = "default"
+  vpc_name            = local.name
+  vpc_cidr            = "10.0.255.0/24" # gives 256 usable addresses from .1 to .254, but AWS reserves .1 to .4 and .255, leaving .5 to .254
+  subnet_name         = local.name
+  subnet_cidr         = "10.0.255.224/28" # gives 14 usable addresses from .225 to .238, but AWS reserves .225 to .227 and .238, leaving .227 to .237
   security_group_name = local.name
   security_group_type = "specific"
-  ssh_key_name        = local.key_name
+  skip_ssh            = true
 }
 
 module "this" {
   depends_on = [
-    module.aws_access,
+    module.access,
   ]
   source              = "../../../../"
   image_id            = local.image # if you specify an image_id, you must also specify the initial_user, admin_group, and workfolder
@@ -45,6 +46,6 @@ module "this" {
   user                = local.username
   ssh_key             = local.public_ssh_key
   ssh_key_name        = local.key_name
-  subnet_name         = "default"
+  subnet_name         = local.name
   security_group_name = local.name
 }

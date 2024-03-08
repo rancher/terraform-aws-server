@@ -1,4 +1,5 @@
 variable "id" {
+  type        = string
   description = <<-EOT
     An AMI to select.
     Don't use this is if you want to search for an AMI.
@@ -7,6 +8,7 @@ variable "id" {
   default     = ""
 }
 variable "type" {
+  type        = string
   description = <<-EOT
     A type from the types.tf file.
     Types represent a standard set of opinionated options that we select for you.
@@ -15,6 +17,7 @@ variable "type" {
   default     = ""
 }
 variable "initial_user" {
+  type        = string
   description = <<-EOT
     This isn't used if a type is selected.
     The initial user on the AMI, this is used for the initial connection.
@@ -24,6 +27,7 @@ variable "initial_user" {
   default     = ""
 }
 variable "admin_group" {
+  type        = string
   description = <<-EOT
     The linux group considered 'admin' on the AMI.
     The initial user will be added to this group, it must have sudo access.
@@ -32,6 +36,7 @@ variable "admin_group" {
   default     = ""
 }
 variable "workfolder" {
+  type        = string
   description = <<-EOT
     This isn't used if a type is selected.
     The folder where scripts will be copied to and run from on the AMI.

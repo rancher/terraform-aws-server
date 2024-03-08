@@ -115,14 +115,8 @@ variable "eip" {
 variable "ip" {
   type        = string
   description = <<-EOT
-    Ipv4 address to associate with the server, it must be within the usable addresses in the subnet given.
-  EOT
-  default     = ""
-}
-variable "ipv6" {
-  type        = string
-  description = <<-EOT
-    Ipv6 address to associate with the server, it must be within the usable addresses in the subnet given.
+    Private IP address to associate with the server, it must be within the usable addresses in the subnet given.
+    Assigning a specific public IP address is not available yet.
   EOT
   default     = ""
 }
