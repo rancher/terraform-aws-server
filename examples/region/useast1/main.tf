@@ -12,12 +12,11 @@ locals {
   category       = "region"
   example        = "useast1"
   email          = "terraform-ci@suse.com"
-  name           = "tf-aws-server-${local.category}-${local.example}-${local.identifier}"
-  username       = "tf-ci-${local.identifier}"
+  name           = "tf-${local.category}-${local.example}-${local.identifier}"
+  username       = "tf-${local.identifier}"
   image          = "sles-15"
-  public_ssh_key = var.key      # I don't normally recommend this, but it allows tests to supply their own key
-  key_name       = var.key_name # A lot of troubleshooting during critical times can be saved by hard coding variables in root modules
-  # root modules should be secured properly (including the state), and should represent your running infrastructure
+  public_ssh_key = var.key
+  key_name       = var.key_name
 }
 
 module "access" {
@@ -30,6 +29,7 @@ module "access" {
   subnet_cidr         = "10.0.255.224/28" # gives 14 usable addresses from .225 to .238, but AWS reserves .225 to .227 and .238, leaving .227 to .237
   security_group_name = local.name
   security_group_type = "specific"
+  availability_zone   = "us-east-1a" # specific region because there is a random chance us-east-1e will be chosen which doesn't allow this server type
   skip_ssh            = true
 }
 
