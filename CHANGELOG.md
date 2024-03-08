@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.3.1](https://github.com/rancher/terraform-aws-server/compare/v0.3.0...v0.3.1) (2024-03-08)
+
+
+### Bug Fixes
+
+* remove unnecessary variables in tests ([#53](https://github.com/rancher/terraform-aws-server/issues/53)) ([082e6d0](https://github.com/rancher/terraform-aws-server/commit/082e6d0733664ac82d01167a9e94b0ebe7929881))
+* select zone for region tests and remove key and key_name when not necessary ([#52](https://github.com/rancher/terraform-aws-server/issues/52)) ([db4e01a](https://github.com/rancher/terraform-aws-server/commit/db4e01a3f2a534cc753be7ef426ea3cc94baf59e))
+* update all tests to stop using the default vpc and subnet ([#50](https://github.com/rancher/terraform-aws-server/issues/50)) ([7bcdeeb](https://github.com/rancher/terraform-aws-server/commit/7bcdeebe8ba7ac14ca3e05a9e3d20a6ad3044cbc))
+
 ## [0.3.0](https://github.com/rancher/terraform-aws-server/compare/v0.2.1...v0.3.0) (2024-02-12)
 
 
