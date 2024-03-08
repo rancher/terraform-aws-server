@@ -28,7 +28,7 @@ module "access" {
   subnet_cidr         = "10.0.255.224/28" # gives 14 usable addresses from .225 to .238, but AWS reserves .225 to .227 and .238, leaving .227 to .237
   security_group_name = local.name
   security_group_type = "specific"
-  skip_ssh            = true
+  ssh_key_name        = local.key_name
 }
 
 module "this" {
