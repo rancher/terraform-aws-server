@@ -11,7 +11,7 @@ locals {
   category   = "overrides"
   example    = "select_all"
   email      = "terraform-ci@suse.com"
-  name       = "tf-aws-server-${local.category}-${local.example}-${local.identifier}"
+  name       = "tf-${local.category}-${local.example}-${local.identifier}"
   image      = "ami-09b2a1e33ce552e68" # this must be an AMI in your region
   server_id  = var.server
 }

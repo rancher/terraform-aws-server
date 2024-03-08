@@ -22,3 +22,6 @@ output "storage" {
 output "identifier" {
   value = local.identifier
 }
+output "key_name" {
+  value = local.key_name
+}
