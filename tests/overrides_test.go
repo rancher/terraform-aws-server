@@ -62,12 +62,11 @@ func TestSelectAll(t *testing.T) {
 
 	// after setup completes we can run the actual test, passing in the server id from setup
 	terraformOptions, keyPair := setup(t, category, directory, region, owner)
-	sshAgent := ssh.SshAgentWithKeyPair(t, keyPair.KeyPair)
-	terraformOptions.SshAgent = sshAgent
-	defer sshAgent.Stop()
 	defer teardown(t, category, directory, keyPair)
 	defer terraform.Destroy(t, terraformOptions)
 	terraformOptions.Vars["server"] = output
+	delete(terraformOptions.Vars, "key_name")
+	delete(terraformOptions.Vars, "key")
 	terraform.InitAndApply(t, terraformOptions)
 }
 func TestAssociation(t *testing.T) {
@@ -89,15 +88,15 @@ func TestAssociation(t *testing.T) {
 	terraform.InitAndApply(t, setupTerraformOptions)
 	serverId := terraform.Output(t, setupTerraformOptions, "id")
 	uniqueId := terraform.Output(t, setupTerraformOptions, "identifier")
+	keyName := terraform.Output(t, setupTerraformOptions, "key_name")
 
 	// after setup completes we can run the actual test, passing in the server id from setup
 	terraformOptions, keyPair := setup(t, category, directory, region, owner)
-	sshAgent := ssh.SshAgentWithKeyPair(t, keyPair.KeyPair)
-	terraformOptions.SshAgent = sshAgent
-	defer sshAgent.Stop()
 	defer teardown(t, category, directory, keyPair)
 	defer terraform.Destroy(t, terraformOptions)
 	terraformOptions.Vars["identifier"] = uniqueId
 	terraformOptions.Vars["server"] = serverId
+	terraformOptions.Vars["key_name"] = keyName
+	delete(terraformOptions.Vars, "key")
 	terraform.InitAndApply(t, terraformOptions)
 }
