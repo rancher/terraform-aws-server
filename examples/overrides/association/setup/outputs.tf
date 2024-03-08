@@ -19,3 +19,6 @@ output "cpu" {
 output "storage" {
   value = module.this.storage
 }
+output "identifier" {
+  value = local.identifier
+}

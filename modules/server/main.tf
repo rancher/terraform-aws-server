@@ -15,16 +15,20 @@ locals {
   type                                    = (local.create ? local.types[var.type] : {})
   image_id                                = var.image_id
   initial_user                            = var.image_initial_user
+  initial_user_home                       = "/home/${local.initial_user}"
+  initial_workspace                       = replace(var.image_workfolder, "~", "") # WARNING! '~' can't go to the server! you will see "scp: permission denied" errors
+  workfolder                              = (local.initial_workspace == "" ? local.initial_user_home : local.initial_workspace)
   admin_group                             = var.image_admin_group
-  workfolder                              = ((var.image_workfolder == "~" || var.image_workfolder == "") ? "/home/${local.initial_user}" : var.image_workfolder)
   cloudinit_script                        = var.cloudinit_script
   cloudinit_timeout                       = var.cloudinit_timeout
-  skip_key                                = var.skip_key                                           # skip the association of a keypair to the server
-  ssh_key                                 = (local.skip_key ? "" : var.ssh_key)                    # empty key if not associating a key
-  ssh_key_name                            = (local.skip_key ? "" : var.ssh_key_name)               # empty key name if not associating a key
-  associate_key                           = (local.skip_key ? false : true)                        # associate key is the opposite of skip_key
-  disable_scripts                         = (var.disable_scripts || local.skip_key ? true : false) # disable scripts if not associating an ssh key
-  enable_scripts                          = (local.disable_scripts ? false : true)                 # enable scripts is the opposite of disable scripts
+  skip_key                                = var.skip_key                                                                 # skip the association of a keypair to the server
+  ssh_key                                 = (local.skip_key ? "" : var.ssh_key)                                          # empty key if not associating a key
+  ssh_key_name                            = (local.skip_key ? "" : var.ssh_key_name)                                     # empty key name if not associating a key
+  associate_key                           = (local.skip_key ? false : true)                                              # associate key is the opposite of skip_key
+  no_public_ip                            = (local.eip ? false : true)                                                   # opposite of add_public_ip
+  disable_scripts                         = (var.disable_scripts || local.skip_key || local.no_public_ip ? true : false) # disable scripts if not associating an ssh key or public ip
+  enable_scripts                          = (local.disable_scripts ? false : true)                                       # enable scripts is the opposite of disable scripts
+
   user_data = templatefile("${path.module}/cloudinit.tpl", {
     initial_user = local.initial_user
     admin_group  = local.admin_group
@@ -34,7 +38,7 @@ locals {
     script       = indent(6, local.cloudinit_script)
   })
 }
-# WARNING! When selecting a server it is assumed that no additional resources are required (unless forcing group)
+# WARNING! When selecting a server it is assumed that no additional resources are required (unless forcing security group creation)
 data "aws_instance" "selected" {
   count       = (local.select ? 1 : 0)
   instance_id = local.id
@@ -112,11 +116,15 @@ resource "aws_instance" "created" {
   instance_type               = local.type.id
   user_data_replace_on_change = true # forces a replace when the user data changes, this is often what we want to prevent security issues
 
-  #associate_public_ip_address          = false  # this will be handled in interfaces attached to the instance and subnet rules
+  # kubernetes expects the primary interface to keep its IP
+  #   the server resource will generate a device 0 interface if one is not given
+  #   so the only way to control the primary interface is to provide it like this
+  # this necessitates the network interface being created before the server
   network_interface {
     network_interface_id = aws_network_interface.created[0].id
     device_index         = 0
   }
+
   instance_initiated_shutdown_behavior = "stop" # termination can be handled by destroy or separately
   user_data_base64                     = base64encode(local.user_data)
   availability_zone                    = data.aws_subnet.general_info[0].availability_zone
@@ -126,6 +134,7 @@ resource "aws_instance" "created" {
     Name  = local.name
     User  = local.user
     Owner = local.owner
+    Home  = local.workfolder
   }
 
   root_block_device {
@@ -139,8 +148,11 @@ resource "aws_instance" "created" {
   }
   lifecycle {
     ignore_changes = [
-      tags,
-      root_block_device.0.tags,
+      tags,                          # amazon updates tags automatically, ignore this change
+      tags_all,                      # amazon updates tags automatically, ignore this change
+      root_block_device[0].tags_all, # amazon updates tags automatically, ignore this change
+      availability_zone,             # this is dependant on the aws subnet lookup and if not ignored will cause the server to always rebuild
+      network_interface,             # this is dependant on the aws subnet lookup and if not ignored will cause the server to always rebuild
     ]
   }
 }

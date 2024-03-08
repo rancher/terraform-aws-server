@@ -87,7 +87,8 @@ func TestAssociation(t *testing.T) {
 	defer teardown(t, category, setupDirectory, setupKeyPair)
 	defer terraform.Destroy(t, setupTerraformOptions)
 	terraform.InitAndApply(t, setupTerraformOptions)
-	output := terraform.Output(t, setupTerraformOptions, "id")
+	serverId := terraform.Output(t, setupTerraformOptions, "id")
+	uniqueId := terraform.Output(t, setupTerraformOptions, "identifier")
 
 	// after setup completes we can run the actual test, passing in the server id from setup
 	terraformOptions, keyPair := setup(t, category, directory, region, owner)
@@ -96,6 +97,7 @@ func TestAssociation(t *testing.T) {
 	defer sshAgent.Stop()
 	defer teardown(t, category, directory, keyPair)
 	defer terraform.Destroy(t, terraformOptions)
-	terraformOptions.Vars["server"] = output
+	terraformOptions.Vars["identifier"] = uniqueId
+	terraformOptions.Vars["server"] = serverId
 	terraform.InitAndApply(t, terraformOptions)
 }

@@ -16,7 +16,7 @@ locals {
 }
 
 # selecting the vpc, subnet, and ssh key pair, generating a security group specific to the runner
-module "aws_access" {
+module "access" {
   source              = "rancher/access/aws"
   version             = "v1.1.1"
   owner               = local.email
@@ -33,7 +33,7 @@ module "aws_access" {
 # we are expecting the server to not get a public ip, preventing outside access
 module "this" {
   depends_on = [
-    module.aws_access,
+    module.access,
   ]
   source = "../../../" # change this to "rancher/server/aws" per https://registry.terraform.io/modules/rancher/server/aws/latest
   # version = "v0.0.15" # when using this example you will need to set the version

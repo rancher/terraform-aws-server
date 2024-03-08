@@ -1,21 +1,21 @@
 output "private_ip" {
-  value = module.TestSelectImage.private_ip
+  value = module.this.private_ip
 }
 output "public_ip" {
-  value = module.TestSelectImage.public_ip
+  value = module.this.public_ip
 }
 output "id" {
-  value = module.TestSelectImage.id
+  value = module.this.id
 }
 output "ami" {
-  value = module.TestSelectImage.ami
+  value = module.this.ami
 }
 output "ram" {
-  value = module.TestSelectImage.ram
+  value = module.this.ram
 }
 output "cpu" {
-  value = module.TestSelectImage.cpu
+  value = module.this.cpu
 }
 output "storage" {
-  value = module.TestSelectImage.storage
+  value = module.this.storage
 }
