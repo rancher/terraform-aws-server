@@ -35,7 +35,17 @@ max_attempts=$((TIMEOUT * 60 / 10))
 attempts=0
 interval=10
 while [ "$(cloud-init status)" != "status: done" ]; do
-  if [ "$(cloud-init status)" == "status: error" ]; then EXIT=1 break; fi
+  if [ "$(cloud-init status)" = "status: error" ]; then
+    EXIT=1
+    echo "cloud-init is errored..."
+    echo "instance data: "
+    cat /var/lib/cloud/instance/cloud-config.txt
+    echo "failed script: "
+    cat /var/lib/cloud/instance/scripts/config.sh
+    echo "log: "
+    cat /var/log/cloud-init.log
+    break
+  fi
   echo "cloud init is \"$(cloud-init status)\""
   attempts=$((attempts + 1))
   if [ ${attempts} = ${max_attempts} ]; then EXIT=1; break; fi

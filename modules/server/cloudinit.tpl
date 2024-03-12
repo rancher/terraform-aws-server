@@ -21,13 +21,10 @@ users:
 %{ endif ~}
     homedir: /home/${user}
 fqdn: ${name}
-%{ if script != "" ~}
 runcmd:
-  - "/bin/env bash -c /var/tmp/init.sh"
-write_files:
-  - path: /var/tmp/init.sh
-    content: |
-      ${script}
-    owner: 'root:root'
-    permissions: '0755'
-%{ endif ~}
+  - chmod +x /var/lib/cloud/instance/scripts/config.sh
+  - chmod 0755 /var/lib/cloud/instance/scripts/config.sh
+  - echo "ami is ${ami}"
+  - echo "public_ip is ${eip}"
+  - echo "subnet id is ${subnet}"
+  - echo "az it ${az}"

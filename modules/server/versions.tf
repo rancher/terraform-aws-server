@@ -9,8 +9,10 @@ terraform {
       source  = "hashicorp/aws"
       version = ">= 5.11"
     }
-    # NOTE: this is only required for the examples
-    # this is used by the aws_access module
+    cloudinit = {
+      source  = "hashicorp/cloudinit"
+      version = ">= 2.3.3"
+    }
     http = {
       source  = "hashicorp/http"
       version = ">= 3.4"
