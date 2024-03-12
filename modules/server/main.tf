@@ -5,13 +5,14 @@ locals {
   name                                    = var.name
   owner                                   = var.owner
   user                                    = var.user
-  eip                                     = var.eip # should we deploy a public elastic ip with the server?
-  ip                                      = var.ip  # specify the private ip to assign to the server (must be within the subnet)
+  subnet                                  = var.subnet # the name of the subnet to find
+  eip                                     = var.eip    # should we deploy a public elastic ip with the server?
+  default_ip                              = cidrhost(data.aws_subnet.general_info[0].cidr_block, -2)
+  ip                                      = (var.ip == "" ? local.default_ip : var.ip) # specify the private ip to assign to the server (must be within the subnet)
   ipv4                                    = (strcontains(local.ip, ":") ? "" : local.ip)
   ipv6                                    = (strcontains(local.ip, ":") ? local.ip : "")
   security_group                          = var.security_group
   security_group_association_force_create = var.security_group_association_force_create
-  subnet                                  = var.subnet
   type                                    = (local.create ? local.types[var.type] : {})
   image_id                                = var.image_id
   initial_user                            = var.image_initial_user
@@ -19,7 +20,11 @@ locals {
   initial_workspace                       = replace(var.image_workfolder, "~", "") # WARNING! '~' can't go to the server! you will see "scp: permission denied" errors
   workfolder                              = (local.initial_workspace == "" ? local.initial_user_home : local.initial_workspace)
   admin_group                             = var.image_admin_group
-  cloudinit_script                        = var.cloudinit_script
+  default_cloudinit_script                = <<-EOT
+  #!/bin/sh
+  echo "default script..."
+  EOT
+  cloudinit_script                        = (var.cloudinit_script == "" ? local.default_cloudinit_script : var.cloudinit_script)
   cloudinit_timeout                       = var.cloudinit_timeout
   skip_key                                = var.skip_key                                                                 # skip the association of a keypair to the server
   ssh_key                                 = (local.skip_key ? "" : var.ssh_key)                                          # empty key if not associating a key
@@ -28,15 +33,6 @@ locals {
   no_public_ip                            = (local.eip ? false : true)                                                   # opposite of add_public_ip
   disable_scripts                         = (var.disable_scripts || local.skip_key || local.no_public_ip ? true : false) # disable scripts if not associating an ssh key or public ip
   enable_scripts                          = (local.disable_scripts ? false : true)                                       # enable scripts is the opposite of disable scripts
-
-  user_data = templatefile("${path.module}/cloudinit.tpl", {
-    initial_user = local.initial_user
-    admin_group  = local.admin_group
-    user         = local.user
-    ssh_key      = local.ssh_key
-    name         = local.name
-    script       = indent(6, local.cloudinit_script)
-  })
 }
 # WARNING! When selecting a server it is assumed that no additional resources are required (unless forcing security group creation)
 data "aws_instance" "selected" {
@@ -71,6 +67,7 @@ data "aws_key_pair" "general_info" {
   }
 }
 
+
 resource "aws_eip" "created" {
   count = (local.create && local.eip ? 1 : 0)
   depends_on = [
@@ -104,6 +101,36 @@ resource "aws_eip_association" "created" {
   allow_reassociation  = true # this should allow the server to be destroyed without the ip changing
 }
 
+data "cloudinit_config" "created" {
+  depends_on = [
+    aws_eip.created,
+    aws_network_interface.created,
+    data.aws_subnet.general_info,
+  ]
+  count         = (local.create ? 1 : 0)
+  gzip          = false
+  base64_encode = true
+  part {
+    filename     = "config.sh"
+    content_type = "text/x-shellscript"
+    content      = local.cloudinit_script
+  }
+  part {
+    filename     = "cloud-config.yaml"
+    content_type = "text/cloud-config"
+    content = templatefile("${path.module}/cloudinit.tpl", {
+      initial_user = local.initial_user
+      admin_group  = local.admin_group
+      user         = local.user
+      ssh_key      = local.ssh_key
+      name         = local.name
+      ami          = local.image_id
+      eip          = aws_eip.created[0].public_ip
+      subnet       = data.aws_subnet.general_info[0].id
+      az           = data.aws_subnet.general_info[0].availability_zone
+    })
+  }
+}
 resource "aws_instance" "created" {
   count = (local.create ? 1 : 0)
   depends_on = [
@@ -111,10 +138,10 @@ resource "aws_instance" "created" {
     data.aws_subnet.general_info,
     data.aws_key_pair.general_info,
     aws_network_interface.created,
+    data.cloudinit_config.created,
   ]
-  ami                         = local.image_id
-  instance_type               = local.type.id
-  user_data_replace_on_change = true # forces a replace when the user data changes, this is often what we want to prevent security issues
+  ami           = local.image_id
+  instance_type = local.type.id
 
   # kubernetes expects the primary interface to keep its IP
   #   the server resource will generate a device 0 interface if one is not given
@@ -126,7 +153,8 @@ resource "aws_instance" "created" {
   }
 
   instance_initiated_shutdown_behavior = "stop" # termination can be handled by destroy or separately
-  user_data_base64                     = base64encode(local.user_data)
+  user_data_replace_on_change          = true   # forces a replace when the user data changes, this is often what we want to prevent security issues
+  user_data_base64                     = data.cloudinit_config.created[0].rendered
   availability_zone                    = data.aws_subnet.general_info[0].availability_zone
   key_name                             = (local.associate_key ? data.aws_key_pair.general_info[0].key_name : "")
 
@@ -134,7 +162,6 @@ resource "aws_instance" "created" {
     Name  = local.name
     User  = local.user
     Owner = local.owner
-    Home  = local.workfolder
   }
 
   root_block_device {
@@ -147,16 +174,19 @@ resource "aws_instance" "created" {
     }
   }
   lifecycle {
+    # so what does cause the server to rebuild?
+    #   - directly changing: name, user data, instance type, storage type
+    #   - indirectly changing (via the user data): subnet, ami, availability zone, EIP
     ignore_changes = [
       tags,                          # amazon updates tags automatically, ignore this change
       tags_all,                      # amazon updates tags automatically, ignore this change
       root_block_device[0].tags_all, # amazon updates tags automatically, ignore this change
       availability_zone,             # this is dependant on the aws subnet lookup and if not ignored will cause the server to always rebuild
       network_interface,             # this is dependant on the aws subnet lookup and if not ignored will cause the server to always rebuild
+      ami,                           # this is dependant on the aws ami lookup and if not ignored will cause the server to always rebuild
     ]
   }
 }
-
 
 resource "aws_network_interface_sg_attachment" "sg_attachment" {
   count = (local.create || local.security_group_association_force_create ? 1 : 0)
@@ -173,6 +203,7 @@ resource "aws_network_interface_sg_attachment" "sg_attachment" {
     local.create ? aws_network_interface.created[0].id : data.aws_instance.selected[0].network_interface_id
   )
 }
+
 resource "terraform_data" "initial" {
   count = ((local.create && local.enable_scripts) ? 1 : 0) # initialize server when creating unless scripts are disabled
   depends_on = [
