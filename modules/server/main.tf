@@ -125,7 +125,7 @@ data "cloudinit_config" "created" {
       ssh_key      = local.ssh_key
       name         = local.name
       ami          = local.image_id
-      eip          = aws_eip.created[0].public_ip
+      eip          = length(aws_eip.created) > 0 ? aws_eip.created[0].public_ip : local.ip
       subnet       = data.aws_subnet.general_info[0].id
       az           = data.aws_subnet.general_info[0].availability_zone
     })
