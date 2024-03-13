@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.4.0](https://github.com/rancher/terraform-aws-server/compare/v0.3.1...v0.4.0) (2024-03-13)
+
+
+### Features
+
+* added more official cloud init support, added cloud init debugging logs, added a default private ip selection, updated dev functions ([#54](https://github.com/rancher/terraform-aws-server/issues/54)) ([29b186c](https://github.com/rancher/terraform-aws-server/commit/29b186cc4754b6c72cdb727c6a361102d797c72a))
+
+
+### Bug Fixes
+
+* eip needs to be created to pass it ([#56](https://github.com/rancher/terraform-aws-server/issues/56)) ([5e9fc78](https://github.com/rancher/terraform-aws-server/commit/5e9fc78a690fbee077ef3c7e330d4c7404349e3c))
+* full output was a debug, remove ([#58](https://github.com/rancher/terraform-aws-server/issues/58)) ([4ed2622](https://github.com/rancher/terraform-aws-server/commit/4ed262244fa472b8f345d3f4889d541c8b4e9a17))
+* make sure default ip is always available, send owners from aws to image outputs, validate image names ([#57](https://github.com/rancher/terraform-aws-server/issues/57)) ([6d2cac7](https://github.com/rancher/terraform-aws-server/commit/6d2cac777b33a9277d4fb8c55d02852cce9fcc02))
+
 ## [0.3.1](https://github.com/rancher/terraform-aws-server/compare/v0.3.0...v0.3.1) (2024-03-08)
 
 
