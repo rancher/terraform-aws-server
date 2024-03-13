@@ -1,4 +1,3 @@
-
 output "id" {
   value = (local.search ? data.aws_ami.search[0].id : data.aws_ami.select[0].id)
 }
@@ -19,7 +18,4 @@ output "admin_group" {
 }
 output "workfolder" {
   value = local.workfolder
-}
-output "full" {
-  value = data.aws_ami.search[0]
 }
