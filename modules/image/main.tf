@@ -3,7 +3,7 @@ locals {
   search       = (local.id == "" ? true : false) # search if no id is given
   select       = (local.id == "" ? false : true) # select if id is given
   type         = (local.search ? local.types[var.type] : null)
-  owner        = (local.search ? local.type.owner : null)
+  owners       = (local.search ? local.type.owners : [])
   architecture = (local.search ? local.type.architecture : null)
   name         = (local.search ? local.type.name : null)
 
@@ -15,7 +15,7 @@ locals {
 data "aws_ami" "search" {
   count       = (local.search ? 1 : 0)
   most_recent = true
-  owners      = [local.owner]
+  owners      = local.owners
 
   filter {
     name   = "virtualization-type"

@@ -94,6 +94,7 @@
         devShells.default = pkgs.mkShell {
           buildInputs = with pkgs; [
             actionlint
+            awscli
             bashInteractive
             curl
             git
@@ -107,6 +108,7 @@
             tflint
             tfswitch
             vim
+            which
           ];
           shellHook = ''
             homebin=$HOME/bin;

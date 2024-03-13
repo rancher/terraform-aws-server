@@ -26,7 +26,7 @@ module "access" {
   vpc_cidr            = "10.0.255.0/24" # gives 256 usable addresses from .1 to .254, but AWS reserves .1 to .4 and .255, leaving .5 to .254
   subnet_name         = local.name
   subnet_cidr         = "10.0.255.224/28" # gives 14 usable addresses from .225 to .238, but AWS reserves .225 to .227 and .238, leaving .227 to .237
-  security_group_name = local.name
+  security_group_name = local.name        # WARNING: security_group.name isn't the same as security_group->tags->Name
   security_group_type = "specific"
   skip_ssh            = true
 }
@@ -47,5 +47,6 @@ module "this" {
   ssh_key             = local.public_ssh_key
   ssh_key_name        = local.key_name
   subnet_name         = local.name
-  security_group_name = local.name # WARNING: security_group.name isn't the same as security_group->tags->Name
+  security_group_name = local.name
+  add_public_ip       = true
 }
