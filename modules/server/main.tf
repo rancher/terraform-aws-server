@@ -7,7 +7,7 @@ locals {
   user                                    = var.user
   subnet                                  = var.subnet # the name of the subnet to find
   eip                                     = var.eip    # should we deploy a public elastic ip with the server?
-  default_ip                              = cidrhost(data.aws_subnet.general_info[0].cidr_block, -2)
+  default_ip                              = (length(data.aws_subnet.general_info) > 0 ? cidrhost(data.aws_subnet.general_info[0].cidr_block, -2) : "")
   ip                                      = (var.ip == "" ? local.default_ip : var.ip) # specify the private ip to assign to the server (must be within the subnet)
   ipv4                                    = (strcontains(local.ip, ":") ? "" : local.ip)
   ipv6                                    = (strcontains(local.ip, ":") ? local.ip : "")

@@ -64,6 +64,9 @@ jobs:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
           GITHUB_OWNER: rancher
           IDENTIFIER: ${{github.job}}-${{github.run_id}}-${{github.run_number}}-${{github.run_attempt}}
+      - run: ./validate-image.sh
+        name: 'ImageCheck'
+        if: steps.release-please.outputs.pr
       - uses: peter-evans/create-or-update-comment@v4
         name: 'Report Success'
         if: steps.release-please.outputs.pr
