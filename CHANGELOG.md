@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.4.1](https://github.com/rancher/terraform-aws-server/compare/v0.4.0...v0.4.1) (2024-03-14)
+
+
+### Bug Fixes
+
+* ignore subnet id changes and specify when server gets recreated ([#59](https://github.com/rancher/terraform-aws-server/issues/59)) ([759efac](https://github.com/rancher/terraform-aws-server/commit/759efac5def838e87ce926c2a63e3bc7887df47f))
+* this trigger is undertermined at plan time ([#61](https://github.com/rancher/terraform-aws-server/issues/61)) ([fd6ed07](https://github.com/rancher/terraform-aws-server/commit/fd6ed078e1f171080d84c00ebf66a3b064e02c0c))
+
 ## [0.4.0](https://github.com/rancher/terraform-aws-server/compare/v0.3.1...v0.4.0) (2024-03-13)
 
 
