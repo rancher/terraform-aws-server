@@ -88,6 +88,11 @@ resource "aws_network_interface" "created" {
     Name  = local.name
     Owner = local.owner
   }
+  lifecycle {
+    ignore_changes = [
+      subnet_id, # this is dependant on the aws subnet lookup and if not ignored will cause the interface to always rebuild
+    ]
+  }
 }
 
 resource "aws_eip_association" "created" {
@@ -153,7 +158,6 @@ resource "aws_instance" "created" {
   }
 
   instance_initiated_shutdown_behavior = "stop" # termination can be handled by destroy or separately
-  user_data_replace_on_change          = true   # forces a replace when the user data changes, this is often what we want to prevent security issues
   user_data_base64                     = data.cloudinit_config.created[0].rendered
   availability_zone                    = data.aws_subnet.general_info[0].availability_zone
   key_name                             = (local.associate_key ? data.aws_key_pair.general_info[0].key_name : "")
@@ -175,8 +179,7 @@ resource "aws_instance" "created" {
   }
   lifecycle {
     # so what does cause the server to rebuild?
-    #   - directly changing: name, user data, instance type, storage type
-    #   - indirectly changing (via the user data): subnet, ami, availability zone, EIP
+    #   - directly changing: name, instance type, or storage type
     ignore_changes = [
       tags,                          # amazon updates tags automatically, ignore this change
       tags_all,                      # amazon updates tags automatically, ignore this change
@@ -184,6 +187,9 @@ resource "aws_instance" "created" {
       availability_zone,             # this is dependant on the aws subnet lookup and if not ignored will cause the server to always rebuild
       network_interface,             # this is dependant on the aws subnet lookup and if not ignored will cause the server to always rebuild
       ami,                           # this is dependant on the aws ami lookup and if not ignored will cause the server to always rebuild
+    ]
+    replace_triggered_by = [
+      aws_eip.created[0].id,
     ]
   }
 }
