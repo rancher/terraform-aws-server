@@ -188,9 +188,6 @@ resource "aws_instance" "created" {
       network_interface,             # this is dependant on the aws subnet lookup and if not ignored will cause the server to always rebuild
       ami,                           # this is dependant on the aws ami lookup and if not ignored will cause the server to always rebuild
     ]
-    replace_triggered_by = [
-      aws_eip.created[0].id,
-    ]
   }
 }
 
