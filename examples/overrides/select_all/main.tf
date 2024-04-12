@@ -29,18 +29,18 @@ module "access" {
   skip_ssh            = true
 }
 
-module "this" {
-  depends_on = [
-    module.access,
-  ]
-  source              = "../../../"
-  image_id            = local.image
-  image_initial_user  = "ec2-user"
-  image_admin_group   = "wheel"
-  image_workfolder    = "~"
-  owner               = local.email
-  name                = local.name
-  id                  = local.server_id # server must already exist outside of this terraform config
-  subnet_name         = local.name
-  security_group_name = local.name
-}
+# module "this" {
+#   depends_on = [
+#     module.access,
+#   ]
+#   source              = "../../../"
+#   image_id            = local.image
+#   image_initial_user  = "ec2-user"
+#   image_admin_group   = "wheel"
+#   image_workfolder    = "~"
+#   owner               = local.email
+#   name                = local.name
+#   id                  = local.server_id # server must already exist outside of this terraform config
+#   subnet_name         = local.name
+#   security_group_name = local.name
+# }

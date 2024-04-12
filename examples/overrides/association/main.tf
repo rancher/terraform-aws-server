@@ -29,22 +29,22 @@ module "access" {
   ssh_key_name        = local.key_name
 }
 
-module "this" {
-  depends_on = [
-    module.access,
-  ]
-  source              = "../../../"
-  image_id            = local.image
-  image_initial_user  = "ec2-user"
-  image_admin_group   = "wheel"
-  image_workfolder    = "~"
-  owner               = local.email
-  name                = local.name
-  id                  = local.server_id # server must already exist outside of this terraform config, see ./setup/
-  subnet_name         = local.setup
-  security_group_name = local.name
+# module "this" {
+#   depends_on = [
+#     module.access,
+#   ]
+#   source              = "../../../"
+#   image_id            = local.image
+#   image_initial_user  = "ec2-user"
+#   image_admin_group   = "wheel"
+#   image_workfolder    = "~"
+#   owner               = local.email
+#   name                = local.name
+#   id                  = local.server_id # server must already exist outside of this terraform config, see ./setup/
+#   subnet_name         = local.setup
+#   security_group_name = local.name
 
-  # usually when selecting a server nothing is created,
-  # with this flag we force the association of the new security group on the server
-  security_group_association_force_create = true
-}
+#   # usually when selecting a server nothing is created,
+#   # with this flag we force the association of the new security group on the server
+#   security_group_association_force_create = true
+# }

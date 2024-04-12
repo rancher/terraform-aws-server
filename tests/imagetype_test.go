@@ -1,18 +1,26 @@
 package test
 
 import (
+	"os"
 	"testing"
+
+	"github.com/gruntwork-io/terratest/modules/random"
 	"github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestImageTypesBasic(t *testing.T) {
 	t.Parallel()
-	category := "imagetype"
+	domain := os.Getenv("DOMAIN")
+	uniqueID := os.Getenv("IDENTIFIER")
+	if uniqueID == "" {
+		uniqueID = random.UniqueId()
+	}
+	category 	:= "imagetype"
 	directory := "basic"
-	region := "us-west-1"
-	owner := "terraform-ci@suse.com"
-	terraformOptions, keypair := setup(t, category, directory, region, owner)
+	region 		:= "us-west-1"
+	owner 		:= "terraform-ci@suse.com"
+	terraformOptions, keypair := setup(t, category, directory, region, owner, domain, uniqueID)
 
 	defer teardown(t, category, directory, keypair)
 	defer terraform.Destroy(t, terraformOptions)
@@ -20,23 +28,18 @@ func TestImageTypesBasic(t *testing.T) {
 	delete(terraformOptions.Vars, "key")
 	delete(terraformOptions.Vars, "key_name")
 	terraform.InitAndApply(t, terraformOptions)
-
-	rhel8 := terraform.OutputMap(t, terraformOptions, "rhel-8")
-	rhel8Cis := terraform.OutputMap(t, terraformOptions, "rhel-8-cis")
-	rhel9 := terraform.OutputMap(t, terraformOptions, "rhel-9")
-	rocky8 := terraform.OutputMap(t, terraformOptions, "rocky-8")
-	sles15 := terraform.OutputMap(t, terraformOptions, "sles-15")
-	sles15Cis := terraform.OutputMap(t, terraformOptions, "sles-15-cis")
-	ubuntu20 := terraform.OutputMap(t, terraformOptions, "ubuntu-20")
-	ubuntu22 := terraform.OutputMap(t, terraformOptions, "ubuntu-22")
-
+	info := terraform.OutputMap(t, terraformOptions, "image_info")
 	// Validate the names of the images
-	assert.Contains(t, rhel8["name"], "RHEL", "RHEL image name should contain 'RHEL'")
-	assert.Contains(t, rhel8Cis["name"], "CIS Red Hat", "RHEL image name should contain 'CIS Red Hat'")
-	assert.Contains(t, rhel9["name"], "RHEL", "RHEL image name should contain 'RHEL'")
-	assert.Contains(t, rocky8["name"], "Rocky", "Rocky image name should contain 'Rocky'")
-	assert.Contains(t, sles15["name"], "sles", "SLES image name should contain 'sles'")
-	assert.Contains(t, sles15Cis["name"], "CIS SUSE", "SLES image name should contain 'CIS SUSE'")
-	assert.Contains(t, ubuntu20["name"], "ubuntu", "Ubuntu image name should contain 'ubuntu'")
-	assert.Contains(t, ubuntu22["name"], "ubuntu", "Ubuntu image name should contain 'ubuntu'")
+	assert.Contains(t, info["sles-15"], "suse-sles-15-sp5", "SLES image name should contain 'suse-sles-15-sp5'")
+	assert.Contains(t, info["sles-15-byos"], "suse-sles-15-sp5-chost-byos", "SLES image name should contain 'suse-sles-15-sp5-chost-byos'")
+	assert.Contains(t, info["sles-15-cis"], "CIS SUSE Linux Enterprise 15 Benchmark", "SLES image name should contain 'CIS SUSE Linux Enterprise 15 Benchmark'")
+	assert.Contains(t, info["sle-micro-55-llc"], "suse-sle-micro-5-5", "SLE Micro image name should contain 'suse-sle-micro-5-5'")
+	assert.Contains(t, info["sle-micro-55-ltd"], "suse-sle-micro-5-5", "SLE Micro image name should contain 'suse-sle-micro-5-5'")
+	assert.Contains(t, info["sle-micro-55-byos"], "suse-sle-micro-5-5-byos", "SLE Micro image name should contain 'suse-sle-micro-5-5-byos'")
+	assert.Contains(t, info["rhel-8-cis"], "CIS Red Hat", "RHEL image name should contain 'CIS Red Hat'")
+	assert.Contains(t, info["ubuntu-20"], "ubuntu", "Ubuntu image name should contain 'ubuntu'")
+	assert.Contains(t, info["ubuntu-22"], "ubuntu", "Ubuntu image name should contain 'ubuntu'")
+	assert.Contains(t, info["rocky-8"], "Rocky", "Rocky image name should contain 'Rocky'")
+	assert.Contains(t, info["rhel-8"], "RHEL", "RHEL image name should contain 'RHEL'")
+	assert.Contains(t, info["rhel-9"], "RHEL", "RHEL image name should contain 'RHEL'")
 }

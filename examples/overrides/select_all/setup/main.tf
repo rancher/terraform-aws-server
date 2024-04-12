@@ -31,21 +31,21 @@ module "access" {
   skip_ssh            = true
 }
 
-module "this" {
-  depends_on = [
-    module.access,
-  ]
-  source              = "../../../../"
-  image_id            = local.image # if you specify an image_id, you must also specify the initial_user, admin_group, and workfolder
-  image_initial_user  = "ec2-user"
-  image_admin_group   = "wheel"
-  image_workfolder    = "~"
-  owner               = local.email
-  name                = local.name
-  type                = "small"
-  user                = local.username
-  ssh_key             = local.public_ssh_key
-  ssh_key_name        = local.key_name
-  subnet_name         = local.name
-  security_group_name = local.name
-}
+# module "this" {
+#   depends_on = [
+#     module.access,
+#   ]
+#   source              = "../../../../"
+#   image_id            = local.image # if you specify an image_id, you must also specify the initial_user, admin_group, and workfolder
+#   image_initial_user  = "ec2-user"
+#   image_admin_group   = "wheel"
+#   image_workfolder    = "~"
+#   owner               = local.email
+#   name                = local.name
+#   type                = "small"
+#   user                = local.username
+#   ssh_key             = local.public_ssh_key
+#   ssh_key_name        = local.key_name
+#   subnet_name         = local.name
+#   security_group_name = local.name
+# }

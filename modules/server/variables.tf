@@ -1,107 +1,76 @@
-
-variable "owner" {
+variable "use" {
   type        = string
   description = <<-EOT
-    The owner to tag resources with.
-    If you are using the "id" field then this field is ignored.
+    The strategy to use for selecting or creating a server.
+    Options are "select" or "create".
   EOT
+  default     = "create"
 }
-
+variable "id" {
+  type        = string
+  description = <<-EOT
+    The id of a server to select.
+    This should be blank when creating a new server.
+    If you are using this field then the other fields are ignored.
+    No additional resources are created when selecting a resource.
+  EOT
+  default     = ""
+}
 variable "name" {
   type        = string
   description = <<-EOT
-    The name to give the server.
-    If you are using the "id" field then this field is ignored.
+    The name to give the new server.
   EOT
+  default     = ""
 }
-
-variable "user" {
-  type        = string
-  description = <<-EOT
-    The user to install on the server, it will have sudo access.
-    If you are using the "id" field then this field is ignored.
-  EOT
-}
-
 variable "type" {
   type        = string
   description = <<-EOT
-    The designation from types.tf of the EC2 instance type to use.
-    If you are using the "id" field then this field is ignored.
+    The designation from types.tf of the EC2 instance type to create.
   EOT
 }
-
-variable "image_id" {
+variable "image" {
+  type = object({
+    id           = string
+    initial_user = string
+    admin_group  = string
+    workfolder   = string
+  })
+  description = <<-EOT
+    The image object to use for creating the ec2 instance.
+  EOT
+  default = {
+    id           = ""
+    initial_user = ""
+    admin_group  = ""
+    workfolder   = ""
+  }
+}
+variable "subnet" {
   type        = string
   description = <<-EOT
-    The id of the AMI to use.
-    If you are using the "id" field then this field is ignored.
-  EOT
-}
-
-variable "image_initial_user" {
-  type        = string
-  description = <<-EOT
-    The initial or default user on the AMI.
-    If you are using the "id" field then this field is ignored.
-  EOT
-}
-
-variable "image_admin_group" {
-  type        = string
-  description = <<-EOT
-    The group defined as an 'admin' on the AMI.
-    If you are using the "id" field then this field is ignored.
-  EOT
-}
-variable "image_workfolder" {
-  type        = string
-  description = <<-EOT
-    The folder where scripts will be copied to and run from.
-    If you are using the "id" field then this field is ignored.
-    This defaults to "/home/<image_initial_user>", and is usually safe.
-    If your home directory is mounted with noexec, you will need to change this.
-  EOT
-  default     = "~"
-}
-variable "skip_key" {
-  type        = bool
-  description = <<-EOT
-    Set this to true to skip the association of an ssh key to the server.
-  EOT
-  default     = false
-}
-variable "ssh_key" {
-  type        = string
-  description = <<-EOT
-    The contents of the public key to add to the server for ssh access.
-    If you are using the "id" field then this field is ignored.
-  EOT
-}
-variable "ssh_key_name" {
-  type        = string
-  description = <<-EOT
-    The name of the ssh key pair which already exists in AWS to apply to the server.
+    The name of the subnet which already exists in AWS to 
+      attach to the server.
+    WARNING: Subnets are availability zone specific,
+      so this is selecting an availability zone for the server.
   EOT
   default     = ""
 }
 variable "security_group" {
   type        = string
   description = <<-EOT
-    The name of the security group which already exists in AWS to apply to the server.
-    WARNING: Security groups are region specific, so if you are using this module in multiple regions, you will need to create a security group in each region.
-    It is helpful to use the same name for security groups across regions.
-    If you would like help accomplishing this, see the terraform-aws-access module that we produce.
+    The name of the security group which already exists in AWS to 
+      attach to the server.
   EOT
+  default     = ""
 }
-variable "security_group_association_force_create" {
-  type        = bool
+variable "ip" {
+  type        = string
   description = <<-EOT
-    Setting this to true will force the creation of an association object between the server and security group.
-    Normally this association will only be created when a new server is created.
-    This can be useful when isolating the lifecycle of the security group.
+    Private IP address to associate with the server,
+     it must be within the usable addresses in the subnet given.
   EOT
-  default     = false
+  default     = ""
 }
 
 variable "eip" {
@@ -111,64 +80,94 @@ variable "eip" {
   EOT
   default     = false
 }
-
-variable "ip" {
+variable "server_ports" {
+  type        = list(number)
+  description = <<-EOT
+    List of ports to allow ingress to the server.
+  EOT
+  default     = []
+}
+variable "load_balancer_use" {
   type        = string
   description = <<-EOT
-    Private IP address to associate with the server, it must be within the usable addresses in the subnet given.
-    Assigning a specific public IP address is not available yet.
+    The strategy to use for selecting or creating a load balancer.
+    Options are "select" or "skip".
+  EOT
+  default     = "select"
+}
+variable "load_balanced_ports" {
+  type        = list(number)
+  description = <<-EOT
+    List of ports to forward to the server from the load balancer.
+  EOT
+  default     = []
+}
+variable "load_balancer" {
+  type        = string
+  description = <<-EOT
+    The name of the load balancer to attach the server to.
   EOT
   default     = ""
 }
-
-variable "subnet" {
-  type        = string
+variable "access_ips" {
+  type        = list(string)
   description = <<-EOT
-    The name of the subnet which already exists in AWS to provision the server on.
-    WARNING: Subnets are region specific, so if you are using this module in multiple regions, you will need to create a subnet in each region.
-    It is helpful to use the same name for subnets across regions.
-    If you would like help accomplishing this, see the terraform-aws-access module that we produce.
-    If you are using the "id" field then this field is ignored.
+    List of CIDR blocks to allow ingress access to the server.
   EOT
+  default     = []
 }
-
-variable "id" {
+variable "domain_use" {
   type        = string
   description = <<-EOT
-    The id of a server to select.
-    Setting this will cause the module to select a server and short circuit.
-    This is useful for when you want to use the module to ensure a server exists, but not manage it.
-    Leave this blank to create a new server.
-    If you provide this value, all other values will be ignored.
-    No additional processing will occur than selecting the server.
+    The strategy to use for selecting, creating, or skipping a domain.
+    Options are "select", "create", or "skip".
+  EOT
+  default     = "create"
+}
+variable "domain" {
+  type        = string
+  description = <<-EOT
+    The domain name to associate with the server.
   EOT
   default     = ""
 }
-
-variable "cloudinit_script" {
+variable "cloudinit" {
   type        = string
   description = <<-EOT
-    A script for cloud-init to run.
+    The cloud-init config or user-data to send to the server.
+    In some cases the OS may prevent cloud-init from writing to the filesystem,
+      most commonly seen in STIG CIS hardened images.
   EOT
   default     = ""
 }
-
 variable "cloudinit_timeout" {
-  type        = string
+  type        = number
   description = <<-EOT
-    The number of minutes to wait for cloud-init to finish.
-    Defaults to '5' which checks the cloud-init status for 'done' every 10 seconds for 5 minutes / 300 seconds.
+    The number of minutes to wait for cloud-init to complete.
   EOT
-  default     = "5"
+  default     = 5
 }
-
-variable "disable_scripts" {
+variable "setup" {
   type        = bool
   description = <<-EOT
-    Normally there are a number of scripts that we run on every server to set it up.
-    This includes validating that cloud-init completed successfully, 
-      removing the initial user, generating a user for the CI, etc.
-    Enable this flag to disable all of those scripts, this is useful when ssh is disabled on the server.
+    Sane default script to run on the server to set it up.
+    This will generate a user with sodoers access and ssh key login.
+    The goal is to provide a normal secure way to access the server for further setup.
+    This is ignored when selecting a server, no action will be taken against the selected server.
   EOT
-  default     = false
+  default     = true
+}
+variable "user" {
+  type        = string
+  description = <<-EOT
+    The username to create on the server.
+  EOT
+  default     = ""
+}
+variable "ssh_key" {
+  type        = string
+  description = <<-EOT
+    The public ssh key to add to the user's authorized_keys file.
+  EOT
+  default     = ""
 }

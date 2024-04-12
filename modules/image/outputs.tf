@@ -1,9 +1,6 @@
 output "id" {
   value = (local.search ? data.aws_ami.search[0].id : data.aws_ami.select[0].id)
 }
-output "ami" {
-  value = (local.search ? data.aws_ami.search[0].id : data.aws_ami.select[0].id)
-}
 output "name" {
   value = (local.search ? data.aws_ami.search[0].name : data.aws_ami.select[0].name)
 }
@@ -18,4 +15,20 @@ output "admin_group" {
 }
 output "workfolder" {
   value = local.workfolder
+}
+output "ami" {
+  value = (local.search ? data.aws_ami.search[0] : data.aws_ami.select[0])
+}
+output "image" {
+  value = (local.search ? {
+    id           = data.aws_ami.search[0].id
+    initial_user = local.initial_user
+    admin_group  = local.admin_group
+    workfolder   = local.workfolder
+    } : {
+    id           = data.aws_ami.select[0].id
+    initial_user = local.initial_user
+    admin_group  = local.admin_group
+    workfolder   = local.workfolder
+  })
 }

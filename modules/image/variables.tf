@@ -1,11 +1,14 @@
-variable "id" {
+variable "use_strategy" {
   type        = string
   description = <<-EOT
-    An AMI to select.
-    Don't use this is if you want to search for an AMI.
-    WARNING! AMI's are region specific.
+    Whether to find or select an image.
+    If set to `find`, type is required and must be in the list of types.
+    If set to `select`, type is ignored and image is required.
   EOT
-  default     = ""
+  validation {
+    condition     = contains(["find", "select"], var.use_strategy)
+    error_message = "The use_strategy value must be either `find` or `select`."
+  }
 }
 variable "type" {
   type        = string
@@ -14,34 +17,17 @@ variable "type" {
     Types represent a standard set of opinionated options that we select for you.
     Don't use this if you want to supply your own AMI id.
   EOT
-  default     = ""
 }
-variable "initial_user" {
-  type        = string
+variable "image" {
+  type = object({
+    id          = string
+    user        = string
+    admin_group = string
+    workfolder  = string
+  })
   description = <<-EOT
-    This isn't used if a type is selected.
-    The initial user on the AMI, this is used for the initial connection.
-    The initial connection is used to set up secure access for the user.
-    This is required if you are supplying your own AMI id.
+    An image type to inject and use.
+    This is required when the use_strategy is "select".
   EOT
-  default     = ""
-}
-variable "admin_group" {
-  type        = string
-  description = <<-EOT
-    The linux group considered 'admin' on the AMI.
-    The initial user will be added to this group, it must have sudo access.
-    This is required if you are supplying your own AMI id.
-  EOT
-  default     = ""
-}
-variable "workfolder" {
-  type        = string
-  description = <<-EOT
-    This isn't used if a type is selected.
-    The folder where scripts will be copied to and run from on the AMI.
-    This defaults to "/home/<initial_user>", and is usually safe.
-    If you are using an AMI where your home directory is mounted with noexec, you will need to change this.
-  EOT
-  default     = ""
+  default     = null
 }

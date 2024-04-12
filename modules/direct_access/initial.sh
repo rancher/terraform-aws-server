@@ -1,5 +1,5 @@
 #!/bin/sh
-# script assumes run by sudo
+# script assumes run by sudoer
 set -x
 set -e
 INITIAL_USER="${1}"

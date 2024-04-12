@@ -10,11 +10,25 @@ provider "aws" {
 
 locals {
   identifier = var.identifier # this is a random unique string that can be used to identify resources in the cloud provider
-  types      = ["sles-15", "sles-15-cis", "rhel-8-cis", "ubuntu-20", "ubuntu-22", "rocky-8", "rhel-9", "rhel-8"]
+  types = [
+    "sles-15",
+    "sles-15-byos",
+    "sles-15-cis",
+    "sle-micro-55-llc",
+    "sle-micro-55-ltd",
+    "sle-micro-55-byos",
+    "rhel-8-cis",
+    "ubuntu-20",
+    "ubuntu-22",
+    "rocky-8",
+    "rhel-8",
+    "rhel-9",
+  ]
+  image_info = { for type in local.types : type => module.this[type].name }
 }
 
-module "this" {
-  for_each = toset(local.types)
-  source   = "../../../modules/image"
-  type     = each.key
-}
+# module "this" {
+#   for_each = toset(local.types)
+#   source   = "../../../modules/image"
+#   type     = each.key
+# }

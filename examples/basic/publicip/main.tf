@@ -29,26 +29,26 @@ module "access" {
   skip_ssh            = true
 }
 
-# we are expecting the server to not get a public ip, preventing outside access
-module "this" {
-  depends_on = [
-    module.access,
-  ]
-  source = "../../../" # change this to "rancher/server/aws" per https://registry.terraform.io/modules/rancher/server/aws/latest
-  # version = "v0.0.15" # when using this example you will need to set the version
-  image               = "sles-15"
-  owner               = local.email
-  name                = local.name
-  type                = "small"
-  user                = local.username
-  subnet_name         = local.name
-  security_group_name = local.name
-  private_ip          = cidrhost(local.subnet_cidr, -3) # get third to last ip from cidr, should be 10.0.255.236
-  add_public_ip       = true
-  ssh_key             = var.key
-  ssh_key_name        = var.key_name
-  disable_scripts     = true # disable running scripts on the server, this includes the usual initialization scripts
-  # generally you should include a cloud-init script to initialize the server if using this option
-  cloudinit_timeout = "10"
-  cloudinit_script  = file("${path.root}/init.sh")
-}
+# # we are expecting the server to not get a public ip, preventing outside access
+# module "this" {
+#   depends_on = [
+#     module.access,
+#   ]
+#   source = "../../../" # change this to "rancher/server/aws" per https://registry.terraform.io/modules/rancher/server/aws/latest
+#   # version = "v0.0.15" # when using this example you will need to set the version
+#   image               = "sles-15"
+#   owner               = local.email
+#   name                = local.name
+#   type                = "small"
+#   user                = local.username
+#   subnet_name         = local.name
+#   security_group_name = local.name
+#   private_ip          = cidrhost(local.subnet_cidr, -3) # get third to last ip from cidr, should be 10.0.255.236
+#   add_public_ip       = true
+#   ssh_key             = var.key
+#   ssh_key_name        = var.key_name
+#   disable_scripts     = true # disable running scripts on the server, this includes the usual initialization scripts
+#   # generally you should include a cloud-init script to initialize the server if using this option
+#   cloudinit_timeout = "10"
+#   cloudinit_script  = file("${path.root}/init.sh")
+# }
