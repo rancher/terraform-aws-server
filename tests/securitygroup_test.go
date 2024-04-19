@@ -12,7 +12,7 @@ import (
 func TestSpecific(t *testing.T) {
 	// in this test we are going to create a small server
 	t.Parallel()
-	domain := os.Getenv("DOMAIN")
+	//domain := os.Getenv("DOMAIN")
 	uniqueID := os.Getenv("IDENTIFIER")
 	if uniqueID == "" {
 		uniqueID = random.UniqueId()
@@ -21,7 +21,7 @@ func TestSpecific(t *testing.T) {
 	directory := "specific"
 	region := "us-west-1"
 	owner := "terraform-ci@suse.com"
-	terraformOptions, keyPair := setup(t, category, directory, region, owner, domain, uniqueID)
+	terraformOptions, keyPair := setup(t, category, directory, region, owner, uniqueID)
 
 	sshAgent := ssh.SshAgentWithKeyPair(t, keyPair.KeyPair)
 	defer sshAgent.Stop()
@@ -33,7 +33,7 @@ func TestSpecific(t *testing.T) {
 func TestInternal(t *testing.T) {
 	// in this test we are going to create a medium server
 	t.Parallel()
-	domain := os.Getenv("DOMAIN")
+	//domain := os.Getenv("DOMAIN")
 	uniqueID := os.Getenv("IDENTIFIER")
 	if uniqueID == "" {
 		uniqueID = random.UniqueId()
@@ -42,7 +42,7 @@ func TestInternal(t *testing.T) {
 	directory := "internal"
 	region := "us-west-1"
 	owner := "terraform-ci@suse.com"
-	terraformOptions, keyPair := setup(t, category, directory, region, owner, domain, uniqueID)
+	terraformOptions, keyPair := setup(t, category, directory, region, owner, uniqueID)
 
 	sshAgent := ssh.SshAgentWithKeyPair(t, keyPair.KeyPair)
 	defer sshAgent.Stop()
@@ -54,7 +54,7 @@ func TestInternal(t *testing.T) {
 func TestEgress(t *testing.T) {
 	// in this test we are going to create a large server
 	t.Parallel()
-	domain := os.Getenv("DOMAIN")
+	//domain := os.Getenv("DOMAIN")
 	uniqueID := os.Getenv("IDENTIFIER")
 	if uniqueID == "" {
 		uniqueID = random.UniqueId()
@@ -63,7 +63,7 @@ func TestEgress(t *testing.T) {
 	directory := "egress"
 	region := "us-west-1"
 	owner := "terraform-ci@suse.com"
-	terraformOptions, keyPair := setup(t, category, directory, region, owner, domain, uniqueID)
+	terraformOptions, keyPair := setup(t, category, directory, region, owner, uniqueID)
 
 	sshAgent := ssh.SshAgentWithKeyPair(t, keyPair.KeyPair)
 	defer sshAgent.Stop()
@@ -75,7 +75,7 @@ func TestEgress(t *testing.T) {
 func TestPublic(t *testing.T) {
 	// in this test we are going to create a extra large server
 	t.Parallel()
-	domain := os.Getenv("DOMAIN")
+	//domain := os.Getenv("DOMAIN")
 	uniqueID := os.Getenv("IDENTIFIER")
 	if uniqueID == "" {
 		uniqueID = random.UniqueId()
@@ -84,7 +84,7 @@ func TestPublic(t *testing.T) {
 	directory := "public"
 	region := "us-west-1"
 	owner := "terraform-ci@suse.com"
-	terraformOptions, keyPair := setup(t, category, directory, region, owner, domain, uniqueID)
+	terraformOptions, keyPair := setup(t, category, directory, region, owner, uniqueID)
 
 	sshAgent := ssh.SshAgentWithKeyPair(t, keyPair.KeyPair)
 	defer sshAgent.Stop()

@@ -11,7 +11,7 @@ import (
 
 func TestSles15Cis(t *testing.T) {
 	t.Parallel()
-	domain := os.Getenv("DOMAIN")
+	//domain := os.Getenv("DOMAIN")
 	uniqueID := os.Getenv("IDENTIFIER")
 	if uniqueID == "" {
 		uniqueID = random.UniqueId()
@@ -22,7 +22,7 @@ func TestSles15Cis(t *testing.T) {
 	region := "us-west-1"
 	owner := "terraform-ci@suse.com"
 
-	terraformOptions, keyPair := setup(t, category, directory, region, owner, domain, uniqueID)
+	terraformOptions, keyPair := setup(t, category, directory, region, owner, uniqueID)
 
 	sshAgent := ssh.SshAgentWithKeyPair(t, keyPair.KeyPair)
 	defer sshAgent.Stop()
@@ -35,7 +35,7 @@ func TestSles15Cis(t *testing.T) {
 
 func TestSles15(t *testing.T) {
 	t.Parallel()
-	domain := os.Getenv("DOMAIN")
+	//domain := os.Getenv("DOMAIN")
 	uniqueID := os.Getenv("IDENTIFIER")
 	if uniqueID == "" {
 		uniqueID = random.UniqueId()
@@ -44,7 +44,7 @@ func TestSles15(t *testing.T) {
 	directory := "sles15"
 	region := "us-west-1"
 	owner := "terraform-ci@suse.com"
-	terraformOptions, keyPair := setup(t, category, directory, region, owner, domain, uniqueID)
+	terraformOptions, keyPair := setup(t, category, directory, region, owner, uniqueID)
 
 	sshAgent := ssh.SshAgentWithKeyPair(t, keyPair.KeyPair)
 	defer sshAgent.Stop()
@@ -56,7 +56,7 @@ func TestSles15(t *testing.T) {
 
 func TestRocky8(t *testing.T) {
 	t.Parallel()
-	domain := os.Getenv("DOMAIN")
+	//domain := os.Getenv("DOMAIN")
 	uniqueID := os.Getenv("IDENTIFIER")
 	if uniqueID == "" {
 		uniqueID = random.UniqueId()
@@ -65,7 +65,7 @@ func TestRocky8(t *testing.T) {
 	directory := "rocky8"
 	region := "us-west-1"
 	owner := "terraform-ci@suse.com"
-	terraformOptions, keyPair := setup(t, category, directory, region, owner, domain, uniqueID)
+	terraformOptions, keyPair := setup(t, category, directory, region, owner, uniqueID)
 
 	sshAgent := ssh.SshAgentWithKeyPair(t, keyPair.KeyPair)
 	defer sshAgent.Stop()
@@ -77,7 +77,7 @@ func TestRocky8(t *testing.T) {
 
 func TestRhel8(t *testing.T) {
 	t.Parallel()
-	domain := os.Getenv("DOMAIN")
+	//domain := os.Getenv("DOMAIN")
 	uniqueID := os.Getenv("IDENTIFIER")
 	if uniqueID == "" {
 		uniqueID = random.UniqueId()
@@ -86,7 +86,7 @@ func TestRhel8(t *testing.T) {
 	directory := "rhel8"
 	region := "us-west-1"
 	owner := "terraform-ci@suse.com"
-	terraformOptions, keyPair := setup(t, category, directory, region, owner, domain, uniqueID)
+	terraformOptions, keyPair := setup(t, category, directory, region, owner, uniqueID)
 
 	sshAgent := ssh.SshAgentWithKeyPair(t, keyPair.KeyPair)
 	defer sshAgent.Stop()
@@ -98,7 +98,7 @@ func TestRhel8(t *testing.T) {
 
 func TestUbuntu20(t *testing.T) {
 	t.Parallel()
-	domain := os.Getenv("DOMAIN")
+	//domain := os.Getenv("DOMAIN")
 	uniqueID := os.Getenv("IDENTIFIER")
 	if uniqueID == "" {
 		uniqueID = random.UniqueId()
@@ -107,7 +107,7 @@ func TestUbuntu20(t *testing.T) {
 	directory := "ubuntu20"
 	region := "us-west-1"
 	owner := "terraform-ci@suse.com"
-	terraformOptions, keyPair := setup(t, category, directory, region, owner, domain, uniqueID)
+	terraformOptions, keyPair := setup(t, category, directory, region, owner, uniqueID)
 
 	sshAgent := ssh.SshAgentWithKeyPair(t, keyPair.KeyPair)
 	defer sshAgent.Stop()
@@ -119,7 +119,7 @@ func TestUbuntu20(t *testing.T) {
 
 func TestUbuntu22(t *testing.T) {
 	t.Parallel()
-	domain := os.Getenv("DOMAIN")
+	//domain := os.Getenv("DOMAIN")
 	uniqueID := os.Getenv("IDENTIFIER")
 	if uniqueID == "" {
 		uniqueID = random.UniqueId()
@@ -128,7 +128,7 @@ func TestUbuntu22(t *testing.T) {
 	directory := "ubuntu22"
 	region := "us-west-1"
 	owner := "terraform-ci@suse.com"
-	terraformOptions, keyPair := setup(t, category, directory, region, owner, domain, uniqueID)
+	terraformOptions, keyPair := setup(t, category, directory, region, owner, uniqueID)
 
 	sshAgent := ssh.SshAgentWithKeyPair(t, keyPair.KeyPair)
 	defer sshAgent.Stop()
@@ -140,7 +140,7 @@ func TestUbuntu22(t *testing.T) {
 
 func TestRhel9(t *testing.T) {
 	t.Parallel()
-	domain := os.Getenv("DOMAIN")
+	//domain := os.Getenv("DOMAIN")
 	uniqueID := os.Getenv("IDENTIFIER")
 	if uniqueID == "" {
 		uniqueID = random.UniqueId()
@@ -150,7 +150,7 @@ func TestRhel9(t *testing.T) {
 	directory := "rhel9"
 	region := "us-west-1"
 	owner := "terraform-ci@suse.com"
-	terraformOptions, keyPair := setup(t, category, directory, region, owner, domain, uniqueID)
+	terraformOptions, keyPair := setup(t, category, directory, region, owner, uniqueID)
 
 	sshAgent := ssh.SshAgentWithKeyPair(t, keyPair.KeyPair)
 	defer sshAgent.Stop()
@@ -162,7 +162,7 @@ func TestRhel9(t *testing.T) {
 
 func TestRhel8Cis(t *testing.T) {
 	t.Parallel()
-	domain := os.Getenv("DOMAIN")
+	//domain := os.Getenv("DOMAIN")
 	uniqueID := os.Getenv("IDENTIFIER")
 	if uniqueID == "" {
 		uniqueID = random.UniqueId()
@@ -173,7 +173,7 @@ func TestRhel8Cis(t *testing.T) {
 	region := "us-west-1"
 	owner := "terraform-ci@suse.com"
 
-	terraformOptions, keyPair := setup(t, category, directory, region, owner, domain, uniqueID)
+	terraformOptions, keyPair := setup(t, category, directory, region, owner, uniqueID)
 
 	sshAgent := ssh.SshAgentWithKeyPair(t, keyPair.KeyPair)
 	defer sshAgent.Stop()

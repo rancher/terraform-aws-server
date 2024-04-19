@@ -36,8 +36,8 @@ module "access" {
 #     module.access,
 #   ]
 #   source              = "../../../../"
-#   image_id            = local.image # if you specify an image_id, you must also specify the initial_user, admin_group, and workfolder
-#   image_initial_user  = "ec2-user"
+#   image_id            = local.image # if you specify an image_id, you must also specify the user, admin_group, and workfolder
+#   image_user  = "ec2-user"
 #   image_admin_group   = "wheel"
 #   image_workfolder    = "~"
 #   owner               = local.email

@@ -1,35 +1,25 @@
 locals {
-  use            = var.use # the strategy to use for selecting or creating a server
+  use            = var.use            # the strategy to use for selecting or creating a server
+  image          = var.image          # the image object from the image module to use for the ec2 instance
   select         = (local.use == "select" ? 1 : 0)
   create         = (local.use == "create" ? 1 : 0)
-  id             = var.id   # the id of a server to select
-  type           = var.type # the designation from types.tf
+  id             = var.id             # the id of a server to select
+  name           = var.name           # the name to give the new server
+  type           = var.type           # the designation from types.tf
+  # tflint-ignore: terraform_unused_declarations
+  fail_type      = (local.server_type == null ? one([local.type, "type_not_found"]) : false)
   server_type    = lookup(local.types, local.type, null)
-  security_group = var.security_group # the name of the security group to find
-  subnet         = var.subnet         # the name of the subnet to find
-  ip             = var.ip             # ip to assign to the server
+  security_group = var.security_group # the name of the security group to find and assign to the server
+  subnet         = var.subnet         # the name of the subnet to find and assign to the server
+  cloudinit      = var.cloudinit      # the cloudinit content to associate with the server
+  #ssh_key        = var.ssh_key
+  ip             = var.ip             # private ip to assign to the server
   default_ip     = (length(data.aws_subnet.general_info_create) > 0 ? cidrhost(data.aws_subnet.general_info_create[0].cidr_block, -2) : "")
   server_ip      = (local.ip != "" ? local.ip : local.default_ip)
   ipv4           = (strcontains(local.server_ip, ":") ? "" : local.server_ip)
   ipv6           = (strcontains(local.server_ip, ":") ? local.server_ip : "")
   # tflint-ignore: terraform_unused_declarations
-  fail_ip = ((local.ipv4 == "" && local.ipv6 == "") ? one([local.server_ip, "ip_not_found"]) : false)
-  image   = var.image # the image object from the image module to use for the ec2 instance
-
-
-  name         = var.name         # the name to give the new server
-  eip          = var.eip          # should we deploy a public elastic ip with the server?
-  server_ports = var.server_ports # list of ports to allow ingress to the server
-  access_ips   = var.access_ips   # list of ip addresses to allow access to the server
-  domain_use   = var.domain_use   # the strategy to use for selecting, creating, or skipping a domain
-  domain       = var.domain       # the domain to associate with the server
-  cloudinit    = var.cloudinit    # the cloudinit content to associate with the server
-
-  # tflint-ignore: terraform_unused_declarations
-  fail_type = (local.server_type == null ? one([local.type, "type_not_found"]) : false)
-
-  server_access_ports = [for port in local.server_ports : tostring(port)]
-
+  fail_ip        = ((local.ipv4 == "" && local.ipv6 == "") ? one([local.server_ip, "ip_not_found"]) : false)
 }
 
 # select
@@ -38,16 +28,27 @@ data "aws_instance" "selected" {
   count       = local.select
   instance_id = local.id
 }
+data "aws_ec2_instance_type" "general_info_select" {
+  count         = local.select
+  instance_type = data.aws_instance.selected[0].instance_type
+}
+data "aws_security_group" "general_info_select" {
+  count = local.select
+  id    = element(data.aws_instance.selected[0].security_groups, 0).id
+}
+data "aws_subnet" "general_info_select" {
+  count = local.select
+  id    = data.aws_instance.selected[0].subnet_id
+}
+data "aws_vpc" "general_info_select" {
+  count = local.select
+  id    = data.aws_security_group.general_info_select[0].vpc_id
+}
 
 data "aws_ec2_instance_type" "general_info_create" {
   count         = local.create
   instance_type = local.server_type.id
 }
-data "aws_ec2_instance_type" "general_info_select" {
-  count         = local.select
-  instance_type = data.aws_instance.selected[0].instance_type
-}
-
 data "aws_security_group" "general_info_create" {
   count = local.create
   filter {
@@ -55,11 +56,6 @@ data "aws_security_group" "general_info_create" {
     values = [local.security_group]
   }
 }
-data "aws_security_group" "general_info_select" {
-  count = local.select
-  id    = element(data.aws_instance.selected[0].security_groups, 0).id
-}
-
 data "aws_subnet" "general_info_create" {
   count = local.create
   filter {
@@ -67,18 +63,9 @@ data "aws_subnet" "general_info_create" {
     values = [local.subnet]
   }
 }
-data "aws_subnet" "general_info_select" {
-  count = local.select
-  id    = data.aws_instance.selected[0].subnet_id
-}
-
 data "aws_vpc" "general_info_create" {
   count = local.create
   id    = data.aws_security_group.general_info_create[0].vpc_id
-}
-data "aws_vpc" "general_info_select" {
-  count = local.select
-  id    = data.aws_security_group.general_info_select[0].vpc_id
 }
 
 resource "aws_network_interface" "created" {
@@ -99,15 +86,23 @@ resource "aws_network_interface" "created" {
   }
 }
 
+# resource "aws_key_pair" "created" {
+#   count      = (local.ssh_key != "" ? 1 : 0)
+#   key_name   = local.name
+#   public_key = local.ssh_key
+# }
+
 resource "aws_instance" "created" {
   count = local.create
   depends_on = [
     data.aws_security_group.general_info_create,
     data.aws_subnet.general_info_create,
     aws_network_interface.created,
+    #aws_key_pair.created,
   ]
   ami           = local.image.id
   instance_type = data.aws_ec2_instance_type.general_info_create[0].id
+  #key_name      = (local.ssh_key != "" ? aws_key_pair.created[0].key_name : "")
 
   # kubernetes expects the primary interface to keep its IP
   #   the server resource will generate a device 0 interface if one is not given

@@ -7,8 +7,8 @@ output "name" {
 output "owners" {
   value = (local.search ? data.aws_ami.search[0].owners : data.aws_ami.select[0].owners)
 }
-output "initial_user" {
-  value = local.initial_user
+output "user" {
+  value = local.user
 }
 output "admin_group" {
   value = local.admin_group
@@ -21,14 +21,14 @@ output "ami" {
 }
 output "image" {
   value = (local.search ? {
-    id           = data.aws_ami.search[0].id
-    initial_user = local.initial_user
-    admin_group  = local.admin_group
-    workfolder   = local.workfolder
+    id          = data.aws_ami.search[0].id
+    user        = local.user
+    admin_group = local.admin_group
+    workfolder  = local.workfolder
     } : {
-    id           = data.aws_ami.select[0].id
-    initial_user = local.initial_user
-    admin_group  = local.admin_group
-    workfolder   = local.workfolder
+    id          = data.aws_ami.select[0].id
+    user        = local.user
+    admin_group = local.admin_group
+    workfolder  = local.workfolder
   })
 }

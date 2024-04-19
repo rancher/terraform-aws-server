@@ -12,7 +12,7 @@ import (
 func TestSmall(t *testing.T) {
 	// in this test we are going to create a small server
 	t.Parallel()
-	domain := os.Getenv("DOMAIN")
+	//domain := os.Getenv("DOMAIN")
 	uniqueID := os.Getenv("IDENTIFIER")
 	if uniqueID == "" {
 		uniqueID = random.UniqueId()
@@ -21,7 +21,7 @@ func TestSmall(t *testing.T) {
 	directory := "small"
 	region := "us-west-1"
 	owner := "terraform-ci@suse.com"
-	terraformOptions, keyPair := setup(t, category, directory, region, owner, domain, uniqueID)
+	terraformOptions, keyPair := setup(t, category, directory, region, owner, uniqueID)
 
 	sshAgent := ssh.SshAgentWithKeyPair(t, keyPair.KeyPair)
 	defer sshAgent.Stop()
@@ -33,7 +33,7 @@ func TestSmall(t *testing.T) {
 func TestMedium(t *testing.T) {
 	// in this test we are going to create a medium server
 	t.Parallel()
-	domain := os.Getenv("DOMAIN")
+	//domain := os.Getenv("DOMAIN")
 	uniqueID := os.Getenv("IDENTIFIER")
 	if uniqueID == "" {
 		uniqueID = random.UniqueId()
@@ -42,7 +42,7 @@ func TestMedium(t *testing.T) {
 	directory := "medium"
 	region := "us-west-1"
 	owner := "terraform-ci@suse.com"
-	terraformOptions, keyPair := setup(t, category, directory, region, owner, domain, uniqueID)
+	terraformOptions, keyPair := setup(t, category, directory, region, owner, uniqueID)
 
 	sshAgent := ssh.SshAgentWithKeyPair(t, keyPair.KeyPair)
 	defer sshAgent.Stop()
@@ -54,7 +54,7 @@ func TestMedium(t *testing.T) {
 func TestLarge(t *testing.T) {
 	// in this test we are going to create a large server
 	t.Parallel()
-	domain := os.Getenv("DOMAIN")
+	//domain := os.Getenv("DOMAIN")
 	uniqueID := os.Getenv("IDENTIFIER")
 	if uniqueID == "" {
 		uniqueID = random.UniqueId()
@@ -63,7 +63,7 @@ func TestLarge(t *testing.T) {
 	directory := "large"
 	region := "us-west-1"
 	owner := "terraform-ci@suse.com"
-	terraformOptions, keyPair := setup(t, category, directory, region, owner, domain, uniqueID)
+	terraformOptions, keyPair := setup(t, category, directory, region, owner, uniqueID)
 
 	sshAgent := ssh.SshAgentWithKeyPair(t, keyPair.KeyPair)
 	defer sshAgent.Stop()
@@ -75,7 +75,7 @@ func TestLarge(t *testing.T) {
 func TestXl(t *testing.T) {
 	// in this test we are going to create a extra large server
 	t.Parallel()
-	domain := os.Getenv("DOMAIN")
+	//domain := os.Getenv("DOMAIN")
 	uniqueID := os.Getenv("IDENTIFIER")
 	if uniqueID == "" {
 		uniqueID = random.UniqueId()
@@ -84,7 +84,7 @@ func TestXl(t *testing.T) {
 	directory := "xl"
 	region := "us-west-1"
 	owner := "terraform-ci@suse.com"
-	terraformOptions, keyPair := setup(t, category, directory, region, owner, domain, uniqueID)
+	terraformOptions, keyPair := setup(t, category, directory, region, owner, uniqueID)
 
 	sshAgent := ssh.SshAgentWithKeyPair(t, keyPair.KeyPair)
 	defer sshAgent.Stop()
@@ -96,7 +96,7 @@ func TestXl(t *testing.T) {
 func TestXxl(t *testing.T) {
 	// in this test we are going to create a extra-extra large server
 	t.Parallel()
-	domain := os.Getenv("DOMAIN")
+	//domain := os.Getenv("DOMAIN")
 	uniqueID := os.Getenv("IDENTIFIER")
 	if uniqueID == "" {
 		uniqueID = random.UniqueId()
@@ -105,7 +105,7 @@ func TestXxl(t *testing.T) {
 	directory := "xxl"
 	region := "us-west-1"
 	owner := "terraform-ci@suse.com"
-	terraformOptions, keyPair := setup(t, category, directory, region, owner, domain, uniqueID)
+	terraformOptions, keyPair := setup(t, category, directory, region, owner, uniqueID)
 
 	sshAgent := ssh.SshAgentWithKeyPair(t, keyPair.KeyPair)
 	defer sshAgent.Stop()

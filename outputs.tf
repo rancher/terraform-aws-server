@@ -1,3 +1,7 @@
+output "public_ip" {
+  value = (local.add_eip ? module.direct_access[0].eip.public_ip : module.server[0].public_ip)
+}
+
 output "server" {
   value = (local.server_mod == 1 ? module.server[0].server : {
     id                          = ""

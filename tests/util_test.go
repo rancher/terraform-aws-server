@@ -30,7 +30,7 @@ func teardown(t *testing.T, category string, directory string, keyPair *aws.Ec2K
 	aws.DeleteEC2KeyPair(t, keyPair)
 }
 
-func setup(t *testing.T, category string, directory string, region string, owner string, zone string, uniqueID string) (*terraform.Options, *aws.Ec2Keypair) {
+func setup(t *testing.T, category string, directory string, region string, owner string, uniqueID string) (*terraform.Options, *aws.Ec2Keypair) {
 
 	// Create an EC2 KeyPair that we can use for SSH access
 	keyPairName := fmt.Sprintf("terraform-aws-server-%s-%s-%s", category, directory, uniqueID)
@@ -64,7 +64,6 @@ func setup(t *testing.T, category string, directory string, region string, owner
 		Vars: map[string]interface{}{
 			"key":        keyPair.KeyPair.PublicKey,
 			"identifier": uniqueID,
-			"zone":     	zone,
 		},
 		// Environment variables to set when running Terraform
 		EnvVars: map[string]string{

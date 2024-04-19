@@ -13,7 +13,7 @@ import (
 func TestServerOnly(t *testing.T) {
 	// in this test we are going to create a server without touching the image module
 	t.Parallel()
-	domain := os.Getenv("DOMAIN")
+	//domain := os.Getenv("DOMAIN")
 	uniqueID := os.Getenv("IDENTIFIER")
 	if uniqueID == "" {
 		uniqueID = random.UniqueId()
@@ -23,7 +23,7 @@ func TestServerOnly(t *testing.T) {
 	directory := "server_only"
 	region := "us-west-1"
 	owner := "terraform-ci@suse.com"
-	terraformOptions, keyPair := setup(t, category, directory, region, owner, domain, uniqueID)
+	terraformOptions, keyPair := setup(t, category, directory, region, owner, uniqueID)
 
 	sshAgent := ssh.SshAgentWithKeyPair(t, keyPair.KeyPair)
 	defer sshAgent.Stop()
@@ -52,7 +52,7 @@ func TestSelectImage(t *testing.T) {
 func TestSelectAll(t *testing.T) {
 	// in this test we are going to select everything in the server module and create nothing
 	t.Parallel()
-	domain := os.Getenv("DOMAIN")
+	//domain := os.Getenv("DOMAIN")
 	uniqueID := os.Getenv("IDENTIFIER")
 	if uniqueID == "" {
 		uniqueID = random.UniqueId()
@@ -64,7 +64,7 @@ func TestSelectAll(t *testing.T) {
 
 	// multi part terraform, setup is an independent module in the test directory that sets up this test
 	setupDirectory := fmt.Sprintf("%s/setup", directory)
-	setupTerraformOptions, setupKeyPair := setup(t, category, setupDirectory, region, owner, domain, uniqueID)
+	setupTerraformOptions, setupKeyPair := setup(t, category, setupDirectory, region, owner, uniqueID)
 	setupSshAgent := ssh.SshAgentWithKeyPair(t, setupKeyPair.KeyPair)
 	setupTerraformOptions.SshAgent = setupSshAgent
 	defer setupSshAgent.Stop()
@@ -74,7 +74,7 @@ func TestSelectAll(t *testing.T) {
 	output := terraform.Output(t, setupTerraformOptions, "id")
 
 	// after setup completes we can run the actual test, passing in the server id from setup
-	terraformOptions, keyPair := setup(t, category, directory, region, owner, domain, uniqueID)
+	terraformOptions, keyPair := setup(t, category, directory, region, owner, uniqueID)
 	defer teardown(t, category, directory, keyPair)
 	defer terraform.Destroy(t, terraformOptions)
 	terraformOptions.Vars["server"] = output
@@ -85,7 +85,7 @@ func TestSelectAll(t *testing.T) {
 func TestAssociation(t *testing.T) {
 	// in this test we are going to select everything in the server module, but force the association of a new security group onto the selected server
 	t.Parallel()
-	domain := os.Getenv("DOMAIN")
+	//domain := os.Getenv("DOMAIN")
 	uniqueID := os.Getenv("IDENTIFIER")
 	if uniqueID == "" {
 		uniqueID = random.UniqueId()
@@ -97,7 +97,7 @@ func TestAssociation(t *testing.T) {
 
 	// multi part terraform, setup is an independent module in the test directory that sets up this test
 	setupDirectory := fmt.Sprintf("%s/setup", directory)
-	setupTerraformOptions, setupKeyPair := setup(t, category, setupDirectory, region, owner, domain, uniqueID)
+	setupTerraformOptions, setupKeyPair := setup(t, category, setupDirectory, region, owner, uniqueID)
 	setupSshAgent := ssh.SshAgentWithKeyPair(t, setupKeyPair.KeyPair)
 	setupTerraformOptions.SshAgent = setupSshAgent
 	defer setupSshAgent.Stop()
@@ -109,7 +109,7 @@ func TestAssociation(t *testing.T) {
 	keyName := terraform.Output(t, setupTerraformOptions, "key_name")
 
 	// after setup completes we can run the actual test, passing in the server id from setup
-	terraformOptions, keyPair := setup(t, category, directory, region, owner, domain, uniqueId)
+	terraformOptions, keyPair := setup(t, category, directory, region, owner, uniqueId)
 	defer teardown(t, category, directory, keyPair)
 	defer terraform.Destroy(t, terraformOptions)
 	terraformOptions.Vars["identifier"] = uniqueId

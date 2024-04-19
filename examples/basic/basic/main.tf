@@ -56,6 +56,6 @@ module "this" {
   image_type          = local.image
   server_name         = "${local.project_name}-${random_pet.server.id}"
   server_type         = "small"
-  subnet_name         = module.access.subnets[keys(module.access.subnets)[0]].tags_all.Name
+  subnet_name         = keys(module.access.subnets)[0]
   security_group_name = module.access.security_group.tags_all.Name
 }

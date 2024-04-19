@@ -12,6 +12,7 @@ variable "use_strategy" {
     error_message = "The use_strategy value must be either `network` or `ssh`."
   }
 }
+
 variable "server" {
   type = object({
     id                   = string
@@ -40,11 +41,31 @@ variable "image" {
 }
 
 variable "access_addresses" {
-  type        = map(list(string))
+  type = map(object({
+    port     = number
+    cidrs    = list(string)
+    protocol = string
+  }))
   description = <<-EOT
-    A map where the key is the port number and the value is a list of CIDRs to allow.
-    An example would be {"22" = ["0.0.0.0/0"]} to allow ssh access from anywhere.
-    Another example: {"22" = ["1.1.1.1/32"], "80" = ["100.0.1.1/8","1.1.1.1/32"]}
+    A map of objects with external ingress information.
+    Example:
+    {
+      security_team = {
+        port = 443,
+        cidrs = ["100.1.1.1/28"],
+        protocol = "tcp"
+      }
+      support_team = {
+        port = 443
+        cidrs = ["50.1.1.1/28"],
+        protocol = "tcp"
+      }
+      users = {
+        port = 443
+        cidrs = ["1.1.1.1/24"]
+        protocol = "tcp"
+      }
+    }
   EOT
 }
 

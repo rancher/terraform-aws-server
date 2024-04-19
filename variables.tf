@@ -214,45 +214,34 @@ variable "private_ip" {
 
 
 #####
-# Feature: balanced access
+# Feature: indirect access
 #####
 
-variable "load_balancer_use_strategy" {
+variable "indirect_access_use_strategy" {
   type        = string
   description = <<-EOT
     The strategy to use for a load balancer.
-    This can be "select" to select an existing load balancer, or "skip" to do nothing.
-    If you choose "select" you must provide the name of the load balancer to select in the load_balancer_name variable.
+    This can be "enable" to select an existing load balancer, or "skip" to do nothing.
+    If you choose "enable" you must provide the name of the load balancer to select in the load_balancer_name variable.
     If you choose "skip" no load balancer will be created or selected and data will be empty.
   EOT
   default     = "skip"
   validation {
     condition = (
-      contains(["select", "skip"], var.load_balancer_use_strategy)
+      contains(["enable", "skip"], var.indirect_access_use_strategy)
     )
-    error_message = "This must be one of 'select' or 'skip'."
+    error_message = "This must be one of 'enable' or 'skip'."
   }
 }
-variable "load_balancer_name" {
-  type        = string
+variable "load_balancer_target_groups" {
+  type        = list(string)
   description = <<-EOT
-    The name of the load balancer to attach the server to.
-    This must already exist in AWS, it will not be created by this module.
-    If you would like help creating a load balancer, please see the 'terraform-aws-access' module that we produce.
-    This uses the "Name" tag on the load balancer to select it.
-    Required when load_balanced_ports are specified.
-    The name must be unique to all of your objects, you can't have a security group and a load balancer with the same name.
+    The names of the target groups to attach the server to.
+    This must be a list of strings, each string is the name of a target group.
+    This is only used if indirect_access_use_strategy is set to "enable".
+    The target_group must have a tag "Name" with this exact value.
   EOT
-  default     = ""
-}
-variable "load_balanced_ports" {
-  type        = list(number)
-  description = <<-EOT
-    A list of ports to forward from the load balancer to the server.
-    This will be controlled by security group rules, load balancer target groups, and load balancer listeners.
-    When this is specified, load_balancer_name must also be specified.
-  EOT
-  default     = []
+  default     = [] 
 }
 
 
@@ -281,13 +270,31 @@ variable "direct_access_use_strategy" {
   }
 }
 variable "server_access_addresses" {
-  type        = map(list(string))
+  type = map(object({
+    port     = number
+    cidrs    = list(string)
+    protocol = string
+  }))
   default     = null
   description = <<-EOT
-    A map where the key is the port number and the value is a list of CIDRs to allow.
-    This is used when direct_access_use_strategy isn't "skip".
-    An example would be {"22" = ["0.0.0.0/0"]} to allow ssh access from anywhere.
-    Another example: {"22" = ["1.1.1.1/32"], "80" = ["100.0.1.1/8","1.1.1.1/32"]}
+    A map of objects with a single port, the cidrs to allow access to that port,
+    and the protocol to allow for access.
+    The port is the tcp port number to expose. eg. 80
+    The cidrs is a list of cidrs to allow to that port. eg ["1.1.1.1/32","2.2.2.2/24"]
+    The protocol is the tranfer protocol to allow, usually "tcp" or "udp".
+    Example: 
+      {
+        workstation = {
+          port = 443,
+          cidrs = ["100.1.1.1/32"],
+          protocol = "tcp"
+        }
+        ci = {
+          port = 443
+          cidrs = ["50.1.1.1/32"],
+          protocol = "tcp"
+        }
+      }
   EOT
 }
 variable "server_user" {
@@ -315,7 +322,7 @@ variable "add_domain" {
   type        = bool
   description = <<-EOT
     When this is true domain_name and domain_zone is required.
-    This will a an A or AAAA record with the server's public IP address to route53.
+    This will add a record with the server's public IP address to route53.
     You must already have a zone setup and configured properly for this to work.
   EOT
   default     = false

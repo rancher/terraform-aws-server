@@ -11,7 +11,7 @@ import (
 
 func TestImageTypesBasic(t *testing.T) {
 	t.Parallel()
-	domain := os.Getenv("DOMAIN")
+	// domain := os.Getenv("DOMAIN")
 	uniqueID := os.Getenv("IDENTIFIER")
 	if uniqueID == "" {
 		uniqueID = random.UniqueId()
@@ -20,7 +20,7 @@ func TestImageTypesBasic(t *testing.T) {
 	directory := "basic"
 	region 		:= "us-west-1"
 	owner 		:= "terraform-ci@suse.com"
-	terraformOptions, keypair := setup(t, category, directory, region, owner, domain, uniqueID)
+	terraformOptions, keypair := setup(t, category, directory, region, owner, uniqueID)
 
 	defer teardown(t, category, directory, keypair)
 	defer terraform.Destroy(t, terraformOptions)

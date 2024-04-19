@@ -17,7 +17,7 @@ locals {
   architecture = (local.search ? local.type.architecture : null)
   name         = (local.search ? local.type.name : null)
   name_regex   = (local.search ? local.type.name_regex : null)
-  initial_user = (local.search ? local.type.user : local.image.user)
+  user         = (local.search ? local.type.user : local.image.user)
   admin_group  = (local.search ? local.type.group : local.image.admin_group)
   workfolder   = (local.search ? local.type.workfolder : local.image.workfolder)
 }

@@ -11,7 +11,6 @@ import (
 
 func TestBasic(t *testing.T) {
 	t.Parallel()
-	domain := os.Getenv("ZONE")
 	uniqueID := os.Getenv("IDENTIFIER")
 	if uniqueID == "" {
 		uniqueID = random.UniqueId()
@@ -20,61 +19,16 @@ func TestBasic(t *testing.T) {
 	directory := "basic"
 	region := "us-west-2"
 	owner := "terraform-ci@suse.com"
-	terraformOptions, keyPair := setup(t, category, directory, region, owner, domain, uniqueID)
-
-	sshAgent := ssh.SshAgentWithKeyPair(t, keyPair.KeyPair)
-	defer sshAgent.Stop()
-	terraformOptions.SshAgent = sshAgent
-
-	defer teardown(t, category, directory, keyPair)
-	defer terraform.Destroy(t, terraformOptions)
-	terraform.InitAndApply(t, terraformOptions)
-}
-
-
-func TestNoscripts(t *testing.T) {
-	t.Parallel()
-	zone := os.Getenv("ZONE")
-	uniqueID := os.Getenv("IDENTIFIER")
-	if uniqueID == "" {
-		uniqueID = random.UniqueId()
-	}
-	category := "basic"
-	directory := "noscripts"
-	region := "us-west-1"
-	owner := "terraform-ci@suse.com"
-	terraformOptions, keyPair := setup(t, category, directory, region, owner, zone, uniqueID)
-
-	sshAgent := ssh.SshAgentWithKeyPair(t, keyPair.KeyPair)
-	defer sshAgent.Stop()
-	terraformOptions.SshAgent = sshAgent
-
-	defer teardown(t, category, directory, keyPair)
-	defer terraform.Destroy(t, terraformOptions)
-	terraform.InitAndApply(t, terraformOptions)
-}
-
-func TestPrivate(t *testing.T) {
-	t.Parallel()
-	zone := os.Getenv("ZONE")
-	uniqueID := os.Getenv("IDENTIFIER")
-	if uniqueID == "" {
-		uniqueID = random.UniqueId()
-	}
-	category := "basic"
-	directory := "noaccess"
-	region := "us-west-1"
-	owner := "terraform-ci@suse.com"
-	terraformOptions, keyPair := setup(t, category, directory, region, owner, zone, uniqueID)
-	defer teardown(t, category, directory, keyPair)
-	defer terraform.Destroy(t, terraformOptions)
+	terraformOptions, keyPair := setup(t, category, directory, region, owner, uniqueID)
 	delete(terraformOptions.Vars, "key")
 	delete(terraformOptions.Vars, "key_name")
+	defer teardown(t, category, directory, keyPair)
+	defer terraform.Destroy(t, terraformOptions)
 	terraform.InitAndApply(t, terraformOptions)
 }
+
 func TestPrivateIp(t *testing.T) {
 	t.Parallel()
-	zone := os.Getenv("ZONE")
 	uniqueID := os.Getenv("IDENTIFIER")
 	if uniqueID == "" {
 		uniqueID = random.UniqueId()
@@ -83,10 +37,127 @@ func TestPrivateIp(t *testing.T) {
 	directory := "privateip"
 	region := "us-west-1"
 	owner := "terraform-ci@suse.com"
-	terraformOptions, keyPair := setup(t, category, directory, region, owner, zone, uniqueID)
+	terraformOptions, keyPair := setup(t, category, directory, region, owner, uniqueID)
 	defer teardown(t, category, directory, keyPair)
 	defer terraform.Destroy(t, terraformOptions)
 	delete(terraformOptions.Vars, "key")
 	delete(terraformOptions.Vars, "key_name")
+	terraform.InitAndApply(t, terraformOptions)
+}
+func TestIndirectOnly(t *testing.T) {
+	t.Parallel()
+	uniqueID := os.Getenv("IDENTIFIER")
+	if uniqueID == "" {
+		uniqueID = random.UniqueId()
+	}
+	category := "basic"
+	directory := "indirectonly"
+	region := "us-west-1"
+	owner := "terraform-ci@suse.com"
+	terraformOptions, keyPair := setup(t, category, directory, region, owner, uniqueID)
+	defer teardown(t, category, directory, keyPair)
+	defer terraform.Destroy(t, terraformOptions)
+	delete(terraformOptions.Vars, "key")
+	delete(terraformOptions.Vars, "key_name")
+	terraform.InitAndApply(t, terraformOptions)
+}
+func TestIndirectDomain(t *testing.T) {
+	t.Parallel()
+	zone := os.Getenv("ZONE")
+	acmeserver := os.Getenv("ACME_SERVER_URL")
+	if acmeserver == "" {
+		os.Setenv("ACME_SERVER_URL", "https://acme-staging-v02.api.letsencrypt.org/directory")
+	}
+	uniqueID := os.Getenv("IDENTIFIER")
+	if uniqueID == "" {
+		uniqueID = random.UniqueId()
+	}
+	category := "basic"
+	directory := "indirectdomain"
+	region := "us-west-1"
+	owner := "terraform-ci@suse.com"
+	terraformOptions, keyPair := setup(t, category, directory, region, owner, uniqueID)
+	defer teardown(t, category, directory, keyPair)
+	defer terraform.Destroy(t, terraformOptions)
+	delete(terraformOptions.Vars, "key")
+	delete(terraformOptions.Vars, "key_name")
+	terraformOptions.Vars["zone"] = zone
+	terraform.InitAndApply(t, terraformOptions)
+}
+
+func TestDirectNetworkOnly(t *testing.T) {
+	t.Parallel()
+	zone := os.Getenv("ZONE")
+	acmeserver := os.Getenv("ACME_SERVER_URL")
+	if acmeserver == "" {
+		os.Setenv("ACME_SERVER_URL", "https://acme-staging-v02.api.letsencrypt.org/directory")
+	}
+	uniqueID := os.Getenv("IDENTIFIER")
+	if uniqueID == "" {
+		uniqueID = random.UniqueId()
+	}
+	category := "basic"
+	directory := "directnetworkonly"
+	region := "us-west-1"
+	owner := "terraform-ci@suse.com"
+	terraformOptions, keyPair := setup(t, category, directory, region, owner, uniqueID)
+	defer teardown(t, category, directory, keyPair)
+	defer terraform.Destroy(t, terraformOptions)
+	delete(terraformOptions.Vars, "key")
+	delete(terraformOptions.Vars, "key_name")
+	terraformOptions.Vars["zone"] = zone
+	terraform.InitAndApply(t, terraformOptions)
+}
+
+func TestDirectNetworkDomain(t *testing.T) {
+	t.Parallel()
+	zone := os.Getenv("ZONE")
+	acmeserver := os.Getenv("ACME_SERVER_URL")
+	if acmeserver == "" {
+		os.Setenv("ACME_SERVER_URL", "https://acme-staging-v02.api.letsencrypt.org/directory")
+	}
+	uniqueID := os.Getenv("IDENTIFIER")
+	if uniqueID == "" {
+		uniqueID = random.UniqueId()
+	}
+	category := "basic"
+	directory := "directnetworkdomain"
+	region := "us-west-1"
+	owner := "terraform-ci@suse.com"
+	terraformOptions, keyPair := setup(t, category, directory, region, owner, uniqueID)
+	defer teardown(t, category, directory, keyPair)
+	defer terraform.Destroy(t, terraformOptions)
+	delete(terraformOptions.Vars, "key")
+	delete(terraformOptions.Vars, "key_name")
+	terraformOptions.Vars["zone"] = zone
+	terraform.InitAndApply(t, terraformOptions)
+}
+
+func TestDirectSshEip(t *testing.T) {
+	t.Parallel()
+	zone := os.Getenv("ZONE")
+	acmeserver := os.Getenv("ACME_SERVER_URL")
+	if acmeserver == "" {
+		os.Setenv("ACME_SERVER_URL", "https://acme-staging-v02.api.letsencrypt.org/directory")
+	}
+	uniqueID := os.Getenv("IDENTIFIER")
+	if uniqueID == "" {
+		uniqueID = random.UniqueId()
+	}
+	category := "basic"
+	directory := "directssheip"
+	region := "us-west-1"
+	owner := "terraform-ci@suse.com"
+	terraformOptions, keyPair := setup(t, category, directory, region, owner, uniqueID)
+
+	sshAgent := ssh.SshAgentWithKeyPair(t, keyPair.KeyPair)
+	defer sshAgent.Stop()
+	terraformOptions.SshAgent = sshAgent
+
+	defer teardown(t, category, directory, keyPair)
+	defer terraform.Destroy(t, terraformOptions)
+	delete(terraformOptions.Vars, "key_name")
+	terraformOptions.Vars["zone"] = zone
+	terraform.InitAndPlan(t, terraformOptions)
 	terraform.InitAndApply(t, terraformOptions)
 }
