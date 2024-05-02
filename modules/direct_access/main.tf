@@ -1,5 +1,6 @@
 locals {
   use_strategy     = var.use_strategy
+  cloudinit_ignore = var.cloudinit_ignore
   server           = var.server
   image            = var.image
   image_workfolder = (local.image.workfolder == "~" ? "/home/${local.image.user}" : local.image.workfolder)
@@ -10,8 +11,8 @@ locals {
   add_eip          = var.add_eip
   domain_ips       = flatten(local.domain.ips)
   # tflint-ignore: terraform_unused_declarations
-  fail_domain_ips  = ((local.add_domain && length(local.domain_ips) == 0) ? one([local.domain_ips, "missing_domain_ips"]) : false)
-  all_ips          = compact(concat(local.domain_ips,[(local.add_eip ? aws_eip.created[0].public_ip : "")]))
+  fail_domain_ips = ((local.add_domain && length(local.domain_ips) == 0) ? one([local.domain_ips, "missing_domain_ips"]) : false)
+  all_ips         = compact(concat(local.domain_ips, [(local.add_eip ? aws_eip.created[0].public_ip : "")]))
 }
 
 resource "aws_security_group" "direct_access" {
@@ -62,7 +63,7 @@ resource "aws_eip_association" "created" {
 
 data "aws_route53_zone" "general_info" {
   count = (local.add_domain ? 1 : 0)
-  name = local.domain.zone
+  name  = local.domain.zone
 }
 
 resource "aws_route53_record" "created" {
@@ -111,7 +112,7 @@ resource "terraform_data" "setup" {
       set -x
       set -e
       sudo chmod +x ${local.image_workfolder}/initial.sh
-      sudo ${local.image_workfolder}/initial.sh ${local.image.user} ${local.ssh.user} ${local.server.name} ${local.image.admin_group} ${local.ssh.timeout}
+      sudo ${local.image_workfolder}/initial.sh ${local.image.user} ${local.ssh.user} ${local.server.name} ${local.image.admin_group} ${local.ssh.timeout} ${local.cloudinit_ignore}
     EOT
     ]
   }

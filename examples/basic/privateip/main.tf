@@ -12,11 +12,11 @@ locals {
   category     = "basic"
   example      = "basic"
   email        = "terraform-ci@suse.com"
-  project_name = "tf-${local.category}-${local.example}-${local.identifier}"
+  project_name = "tf-${substr(md5(join("-", [local.category, local.example])), 0, 5)}-${local.identifier}"
   image        = "sles-15"
-  vpc_cidr     = "10.0.255.0/24" # gives 256 usable addresses from .1 to .254, but AWS reserves .1 to .4 and .255, leaving .5 to .254
+  vpc_cidr     = "10.0.255.0/24"   # gives 256 usable addresses from .1 to .254, but AWS reserves .1 to .4 and .255, leaving .5 to .254
   subnet_cidr  = "10.0.255.224/28" # must be within the vpc cidr range, AWS reserves .225-.229 and .238
-  private_ip   = "10.0.255.230" # must be within the subnet cidr range
+  private_ip   = "10.0.255.230"    # must be within the subnet cidr range
 }
 
 resource "random_pet" "server" {

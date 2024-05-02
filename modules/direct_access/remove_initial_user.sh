@@ -7,26 +7,63 @@ if [ -z "${INITIAL_USER}" ]; then
   exit 1
 fi
 
-# wait for previous connection to close
-sleep 2
-killall -TERM -u "${INITIAL_USER}" 2> error.log || true
-ERR="$(cat error.log)"
-case $ERR in
-  "")
-    echo "No error found"
-    ;;
-  *"Cannot find user"*)
-    echo "User not found, ignoring error"
-    ;;
-  *)
-    cat error.log
-    exit 1
-    ;;
-esac
+kill_all() {
+  killall -TERM -u "${INITIAL_USER}" 2> error.log || true
+  ERR="$(cat error.log)"
+  case $ERR in
+    "")
+      echo "No error found"
+      ;;
+    *"Cannot find user"*)
+      echo "User not found, ignoring error"
+      ;;
+    *)
+      cat error.log
+      exit 1
+      ;;
+  esac
+}
+p_kill() {
+  pkill -u "${INITIAL_USER}" 2> error.log || true
+  ERR="$(cat error.log)"
+  case $ERR in
+    "")
+      echo "No error found"
+      ;;
+    *"Cannot find user"*)
+      echo "User not found, ignoring error"
+      ;;
+    *)
+      cat error.log
+      exit 1
+      ;;
+  esac
+}
+p_s() {
+  ps -u "${INITIAL_USER}" -o pid | xargs kill -9 2> error.log || true
+  ERR="$(cat error.log)"
+  case $ERR in
+    "")
+      echo "No error found"
+      ;;
+    *"Cannot find user"*)
+      echo "User not found, ignoring error"
+      ;;
+    *)
+      cat error.log
+      exit 1
+      ;;
+  esac
+}
 
-# wait for killall to finish
-sleep 2 
-userdel -r "${INITIAL_USER}" 2> error.log || true
+sleep 2 # wait for previous connection to close
+if [ -n "$(which killall)" ]; then kill_all;
+elif [ -n "$(which pkill)" ]; then p_kill;
+else p_s;
+fi
+
+sleep 2 # wait for killall to finish
+userdel -f -r "${INITIAL_USER}" 2> error.log || true
 ERR="$(cat error.log)"
 case $ERR in
   "")

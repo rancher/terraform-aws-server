@@ -12,11 +12,11 @@ locals {
   category     = "basic"
   example      = "directnetworkdomain"
   email        = "terraform-ci@suse.com"
-  project_name = "tf-${local.category}-${local.example}-${local.identifier}"
+  project_name = "tf-${substr(md5(join("-", [local.category, local.example])), 0, 5)}-${local.identifier}"
   image        = "sles-15"
   vpc_cidr     = "10.0.255.0/24" # gives 256 usable addresses from .1 to .254, but AWS reserves .1 to .4 and .255, leaving .5 to .254
   subnet_cidr  = "10.0.255.224/28"
-  port         = 443 # application port
+  port         = 443   # application port
   protocol     = "tcp" # application protocol
   ip           = chomp(data.http.myip.response_body)
   zone         = var.zone # the zone must already exist in route53 and be globally available
@@ -70,7 +70,7 @@ module "this" {
   add_domain                 = true
   domain_name                = "${local.project_name}.${local.zone}"
   domain_zone                = local.zone
-  server_access_addresses    = {
+  server_access_addresses = {
     "runner" = {
       port     = local.port
       protocol = local.protocol

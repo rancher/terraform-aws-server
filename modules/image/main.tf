@@ -5,13 +5,17 @@ locals {
   fail_type = ((local.use_strategy == "find" && local.type == "") ? one([local.type, "missing_find_type"]) : false)
   image     = var.image
   # tflint-ignore: terraform_unused_declarations
-  fail_image = ((local.use_strategy == "select" && local.image["id"] == "") ? one([local.image, "missing_select_image_id"]) : false)
+  fail_image = ((local.use_strategy == "select" && local.image == null) ? one([local.image, "missing_select_image"]) : false)
+  # tflint-ignore: terraform_unused_declarations
+  fail_image_id = ((local.use_strategy == "select" && local.image != null && local.image.id == "") ? one([local.image.id, "missing_select_image_id"]) : false)
 
   # path
   search = (local.use_strategy == "find" ? true : false)
   select = (local.use_strategy == "select" ? true : false)
 
   # find
+  custom_types = var.custom_types
+  types        = merge(local.standard_types, local.custom_types)
   type         = (local.search ? local.types[local.find_type] : null)
   owners       = (local.search ? local.type.owners : [])
   architecture = (local.search ? local.type.architecture : null)
@@ -48,6 +52,6 @@ data "aws_ami" "select" {
   count = (local.select ? 1 : 0)
   filter {
     name   = "image-id"
-    values = [local.image["id"]]
+    values = [local.image.id]
   }
 }

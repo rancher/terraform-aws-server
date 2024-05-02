@@ -5,7 +5,7 @@ variable "server_id" {
    EOT
 }
 variable "target_group_names" {
-  type = list(string)
+  type        = list(string)
   description = <<-EOT
     List of target group names to add the server to.
     The name must be a tag on the target group with the key "Name".

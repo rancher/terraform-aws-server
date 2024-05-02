@@ -66,6 +66,7 @@ variable "image_type" {
         "ubuntu-20",
         "ubuntu-22",
         "rocky-8",
+        "liberty-7",
         "rhel-8",
         "rhel-9"
   EOT
@@ -83,6 +84,7 @@ variable "image_type" {
         "ubuntu-20",
         "ubuntu-22",
         "rocky-8",
+        "liberty-7",
         "rhel-8",
         "rhel-9",
       ], var.image_type)
@@ -99,7 +101,8 @@ variable "image_type" {
         "ubuntu-20",
         "ubuntu-22",
         "rocky-8",
-        "rhel-8", or
+        "liberty-7",
+        "rhel-8",
         "rhel-9"
     EOT
   }
@@ -159,6 +162,22 @@ variable "server_type" {
     )
     error_message = "If specified, this must be one of 'small', 'medium', 'large', 'xl', or 'xxl'."
   }
+}
+variable "cloudinit_use_strategy" {
+  type        = string
+  description = <<-EOT
+    The strategy to use for cloudinit, must be one of "skip", "default", or "specify".
+    This can be "skip" to skip sending cloudinit, "create" to generate a cloudinit script with defaults, 
+    or "specify" to specify your own cloudinit content.
+    This is ignored when skipping or selecting a server or when direct_access_use_strategy isn't "ssh".
+  EOT  
+  validation {
+    condition = (
+      var.cloudinit_use_strategy == "" ? true : contains(["skip", "default", "specify"], var.cloudinit_use_strategy)
+    )
+    error_message = "If specified, this must be one of 'skip', 'default', or 'specify'."
+  }
+  default = "skip"
 }
 variable "cloudinit_content" {
   type        = string
@@ -241,7 +260,7 @@ variable "load_balancer_target_groups" {
     This is only used if indirect_access_use_strategy is set to "enable".
     The target_group must have a tag "Name" with this exact value.
   EOT
-  default     = [] 
+  default     = []
 }
 
 
@@ -299,16 +318,22 @@ variable "server_access_addresses" {
 }
 variable "server_user" {
   type = object({
-    user            = string
-    public_ssh_key  = string
-    user_workfolder = string
-    timeout         = number
+    user                     = string
+    aws_keypair_use_strategy = string
+    ssh_key_name             = string
+    public_ssh_key           = string
+    user_workfolder          = string
+    timeout                  = number
   })
   description = <<-EOT
     This is required if direct_access_use_strategy is "ssh".
     The user specified will be added to the server with passwordless sudo access.
     The public_ssh_key will be added to the /home/<user>/.ssh/authorized_keys file.
     The timeout value is the number of minutes to wait for setup to complete, defaults to 5.
+    Some images must have an ssh key passed to the cloud provider when generating the server (CIS STIG),
+    to enable this set the aws_keypair_use_strategy to either "select" or "create".
+    Select will select the ssh key with the name attribute equal to the "ssh_key_name" specified.
+    Create will create a new ssh key with the given name and public ssh key. (ssh keypair objects can't have tags).
   EOT
   default     = null
   validation {

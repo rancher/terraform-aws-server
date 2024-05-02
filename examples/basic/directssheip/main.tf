@@ -12,13 +12,12 @@ locals {
   category     = "basic"
   example      = "directssheip"
   email        = "terraform-ci@suse.com"
-  project_name = "tf-${local.category}-${local.example}-${local.identifier}"
+  project_name = "tf-${substr(md5(join("-", [local.category, local.example])), 0, 5)}-${local.identifier}"
   username     = "tf-${local.identifier}"
   image        = "sles-15"
   vpc_cidr     = "10.0.255.0/24" # gives 256 usable addresses from .1 to .254, but AWS reserves .1 to .4 and .255, leaving .5 to .254
   subnet_cidr  = "10.0.255.224/28"
   ip           = chomp(data.http.myip.response_body)
-  zone         = var.zone # the zone must already exist in route53 and be globally available
   ssh_key      = var.key
 }
 
@@ -66,9 +65,10 @@ module "this" {
   server_type                = "small"
   subnet_name                = module.access.subnets[keys(module.access.subnets)[0]].tags_all.Name
   security_group_name        = module.access.security_group.tags_all.Name
-  direct_access_use_strategy = "ssh" # either the subnet needs to be public or you must add an eip
-  add_eip                    = true # adding an eip to allow setup
-  server_access_addresses    = { # you must include ssh access here to enable setup
+  direct_access_use_strategy = "ssh"     # either the subnet needs to be public or you must add an eip
+  cloudinit_use_strategy     = "default" # use the default cloudinit config
+  add_eip                    = true      # adding an eip to allow setup
+  server_access_addresses = {            # you must include ssh access here to enable setup
     "runner" = {
       port     = 22
       protocol = "tcp"
@@ -76,9 +76,11 @@ module "this" {
     }
   }
   server_user = {
-    user            = local.username
-    public_ssh_key  =  local.ssh_key
-    user_workfolder = "/home/${local.username}"
-    timeout         = 5
+    user                     = local.username
+    aws_keypair_use_strategy = "skip"        # we will use cloud-init to add a keypair directly
+    ssh_key_name             = ""            # not creating or selecting a key, but this field is still required
+    public_ssh_key           = local.ssh_key # ssh key to add via cloud-init
+    user_workfolder          = "/home/${local.username}"
+    timeout                  = 5
   }
 }

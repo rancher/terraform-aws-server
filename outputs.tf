@@ -1,5 +1,5 @@
 output "public_ip" {
-  value = (local.add_eip ? module.direct_access[0].eip.public_ip : module.server[0].public_ip)
+  value = (local.add_eip ? module.direct_access[0].eip.public_ip : module.server[0].server.public_ip)
 }
 
 output "server" {

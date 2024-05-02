@@ -3,7 +3,8 @@
 provider "aws" {
   default_tags {
     tags = {
-      Id = local.identifier
+      Id    = local.identifier
+      Owner = "terraform-ci@suse.com"
     }
   }
 }
@@ -14,21 +15,23 @@ locals {
     "sles-15",
     "sles-15-byos",
     "sles-15-cis",
-    "sle-micro-55-llc",
+    #"sle-micro-55-llc", # disabled because our test account isn't EMEA and can't subscribe to this image
     "sle-micro-55-ltd",
     "sle-micro-55-byos",
     "rhel-8-cis",
     "ubuntu-20",
     "ubuntu-22",
     "rocky-8",
+    "liberty-7",
     "rhel-8",
     "rhel-9",
   ]
-  image_info = { for type in local.types : type => module.this[type].name }
+  image_info = { for type in local.types : type => module.this[type] }
 }
 
-# module "this" {
-#   for_each = toset(local.types)
-#   source   = "../../../modules/image"
-#   type     = each.key
-# }
+module "this" {
+  for_each     = toset(local.types)
+  source       = "../../../modules/image"
+  use_strategy = "find"
+  type         = each.key
+}

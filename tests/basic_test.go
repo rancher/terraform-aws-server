@@ -9,7 +9,7 @@ import (
 	"github.com/gruntwork-io/terratest/modules/random"
 )
 
-func TestBasic(t *testing.T) {
+func TestBasicBasic(t *testing.T) {
 	t.Parallel()
 	uniqueID := os.Getenv("IDENTIFIER")
 	if uniqueID == "" {
@@ -27,7 +27,7 @@ func TestBasic(t *testing.T) {
 	terraform.InitAndApply(t, terraformOptions)
 }
 
-func TestPrivateIp(t *testing.T) {
+func TestBasicPrivateIp(t *testing.T) {
 	t.Parallel()
 	uniqueID := os.Getenv("IDENTIFIER")
 	if uniqueID == "" {
@@ -44,7 +44,7 @@ func TestPrivateIp(t *testing.T) {
 	delete(terraformOptions.Vars, "key_name")
 	terraform.InitAndApply(t, terraformOptions)
 }
-func TestIndirectOnly(t *testing.T) {
+func TestBasicIndirectOnly(t *testing.T) {
 	t.Parallel()
 	uniqueID := os.Getenv("IDENTIFIER")
 	if uniqueID == "" {
@@ -61,7 +61,7 @@ func TestIndirectOnly(t *testing.T) {
 	delete(terraformOptions.Vars, "key_name")
 	terraform.InitAndApply(t, terraformOptions)
 }
-func TestIndirectDomain(t *testing.T) {
+func TestBasicIndirectDomain(t *testing.T) {
 	t.Parallel()
 	zone := os.Getenv("ZONE")
 	acmeserver := os.Getenv("ACME_SERVER_URL")
@@ -85,13 +85,8 @@ func TestIndirectDomain(t *testing.T) {
 	terraform.InitAndApply(t, terraformOptions)
 }
 
-func TestDirectNetworkOnly(t *testing.T) {
+func TestBasicDirectNetworkOnly(t *testing.T) {
 	t.Parallel()
-	zone := os.Getenv("ZONE")
-	acmeserver := os.Getenv("ACME_SERVER_URL")
-	if acmeserver == "" {
-		os.Setenv("ACME_SERVER_URL", "https://acme-staging-v02.api.letsencrypt.org/directory")
-	}
 	uniqueID := os.Getenv("IDENTIFIER")
 	if uniqueID == "" {
 		uniqueID = random.UniqueId()
@@ -105,11 +100,10 @@ func TestDirectNetworkOnly(t *testing.T) {
 	defer terraform.Destroy(t, terraformOptions)
 	delete(terraformOptions.Vars, "key")
 	delete(terraformOptions.Vars, "key_name")
-	terraformOptions.Vars["zone"] = zone
 	terraform.InitAndApply(t, terraformOptions)
 }
 
-func TestDirectNetworkDomain(t *testing.T) {
+func TestBasicDirectNetworkDomain(t *testing.T) {
 	t.Parallel()
 	zone := os.Getenv("ZONE")
 	acmeserver := os.Getenv("ACME_SERVER_URL")
@@ -133,13 +127,8 @@ func TestDirectNetworkDomain(t *testing.T) {
 	terraform.InitAndApply(t, terraformOptions)
 }
 
-func TestDirectSshEip(t *testing.T) {
+func TestBasicDirectSshEip(t *testing.T) {
 	t.Parallel()
-	zone := os.Getenv("ZONE")
-	acmeserver := os.Getenv("ACME_SERVER_URL")
-	if acmeserver == "" {
-		os.Setenv("ACME_SERVER_URL", "https://acme-staging-v02.api.letsencrypt.org/directory")
-	}
 	uniqueID := os.Getenv("IDENTIFIER")
 	if uniqueID == "" {
 		uniqueID = random.UniqueId()
@@ -157,7 +146,29 @@ func TestDirectSshEip(t *testing.T) {
 	defer teardown(t, category, directory, keyPair)
 	defer terraform.Destroy(t, terraformOptions)
 	delete(terraformOptions.Vars, "key_name")
-	terraformOptions.Vars["zone"] = zone
+	terraform.InitAndPlan(t, terraformOptions)
+	terraform.InitAndApply(t, terraformOptions)
+}
+
+func TestBasicDirectSshSubnet(t *testing.T) {
+	t.Parallel()
+	uniqueID := os.Getenv("IDENTIFIER")
+	if uniqueID == "" {
+		uniqueID = random.UniqueId()
+	}
+	category := "basic"
+	directory := "directsshsubnet"
+	region := "us-west-1"
+	owner := "terraform-ci@suse.com"
+	terraformOptions, keyPair := setup(t, category, directory, region, owner, uniqueID)
+
+	sshAgent := ssh.SshAgentWithKeyPair(t, keyPair.KeyPair)
+	defer sshAgent.Stop()
+	terraformOptions.SshAgent = sshAgent
+
+	defer teardown(t, category, directory, keyPair)
+	defer terraform.Destroy(t, terraformOptions)
+	delete(terraformOptions.Vars, "key_name")
 	terraform.InitAndPlan(t, terraformOptions)
 	terraform.InitAndApply(t, terraformOptions)
 }

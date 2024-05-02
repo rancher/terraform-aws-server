@@ -9,9 +9,8 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestImageTypesBasic(t *testing.T) {
+func TestImageTypeBasic(t *testing.T) {
 	t.Parallel()
-	// domain := os.Getenv("DOMAIN")
 	uniqueID := os.Getenv("IDENTIFIER")
 	if uniqueID == "" {
 		uniqueID = random.UniqueId()
@@ -33,13 +32,54 @@ func TestImageTypesBasic(t *testing.T) {
 	assert.Contains(t, info["sles-15"], "suse-sles-15-sp5", "SLES image name should contain 'suse-sles-15-sp5'")
 	assert.Contains(t, info["sles-15-byos"], "suse-sles-15-sp5-chost-byos", "SLES image name should contain 'suse-sles-15-sp5-chost-byos'")
 	assert.Contains(t, info["sles-15-cis"], "CIS SUSE Linux Enterprise 15 Benchmark", "SLES image name should contain 'CIS SUSE Linux Enterprise 15 Benchmark'")
-	assert.Contains(t, info["sle-micro-55-llc"], "suse-sle-micro-5-5", "SLE Micro image name should contain 'suse-sle-micro-5-5'")
+	//assert.Contains(t, info["sle-micro-55-llc"], "suse-sle-micro-5-5", "SLE Micro image name should contain 'suse-sle-micro-5-5'")
 	assert.Contains(t, info["sle-micro-55-ltd"], "suse-sle-micro-5-5", "SLE Micro image name should contain 'suse-sle-micro-5-5'")
 	assert.Contains(t, info["sle-micro-55-byos"], "suse-sle-micro-5-5-byos", "SLE Micro image name should contain 'suse-sle-micro-5-5-byos'")
 	assert.Contains(t, info["rhel-8-cis"], "CIS Red Hat", "RHEL image name should contain 'CIS Red Hat'")
 	assert.Contains(t, info["ubuntu-20"], "ubuntu", "Ubuntu image name should contain 'ubuntu'")
 	assert.Contains(t, info["ubuntu-22"], "ubuntu", "Ubuntu image name should contain 'ubuntu'")
 	assert.Contains(t, info["rocky-8"], "Rocky", "Rocky image name should contain 'Rocky'")
+	assert.Contains(t, info["liberty-7"], "liberty", "Liberty 7 image name should contain 'liberty'")
 	assert.Contains(t, info["rhel-8"], "RHEL", "RHEL image name should contain 'RHEL'")
 	assert.Contains(t, info["rhel-9"], "RHEL", "RHEL image name should contain 'RHEL'")
+}
+
+func TestImageTypeCustom(t *testing.T) {
+	t.Parallel()
+	uniqueID := os.Getenv("IDENTIFIER")
+	if uniqueID == "" {
+		uniqueID = random.UniqueId()
+	}
+	category 	:= "imagetype"
+	directory := "custom"
+	region 		:= "us-west-1"
+	owner 		:= "terraform-ci@suse.com"
+	terraformOptions, keypair := setup(t, category, directory, region, owner, uniqueID)
+
+	defer teardown(t, category, directory, keypair)
+	defer terraform.Destroy(t, terraformOptions)
+	// don't pass key or key_name to the module
+	delete(terraformOptions.Vars, "key")
+	delete(terraformOptions.Vars, "key_name")
+	terraform.InitAndApply(t, terraformOptions)
+}
+
+func TestImageTypeSelect(t *testing.T) {
+	t.Parallel()
+	uniqueID := os.Getenv("IDENTIFIER")
+	if uniqueID == "" {
+		uniqueID = random.UniqueId()
+	}
+	category 	:= "imagetype"
+	directory := "select"
+	region 		:= "us-west-1"
+	owner 		:= "terraform-ci@suse.com"
+	terraformOptions, keypair := setup(t, category, directory, region, owner, uniqueID)
+
+	defer teardown(t, category, directory, keypair)
+	defer terraform.Destroy(t, terraformOptions)
+	// don't pass key or key_name to the module
+	delete(terraformOptions.Vars, "key")
+	delete(terraformOptions.Vars, "key_name")
+	terraform.InitAndApply(t, terraformOptions)
 }

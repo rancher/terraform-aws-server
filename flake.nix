@@ -53,8 +53,10 @@
               dig
               git
               gitleaks
-              go
               gnupg
+              go
+              gotestfmt
+              gotestsum
               jq
               leftovers
               less

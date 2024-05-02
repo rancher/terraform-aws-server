@@ -12,14 +12,13 @@ locals {
   category     = "basic"
   example      = "directnetworkonly"
   email        = "terraform-ci@suse.com"
-  project_name = "tf-${local.category}-${local.example}-${local.identifier}"
+  project_name = "tf-${substr(md5(join("-", [local.category, local.example])), 0, 5)}-${local.identifier}"
   image        = "sles-15"
   vpc_cidr     = "10.0.255.0/24" # gives 256 usable addresses from .1 to .254, but AWS reserves .1 to .4 and .255, leaving .5 to .254
   subnet_cidr  = "10.0.255.224/28"
-  port         = 443 # application port
+  port         = 443   # application port
   protocol     = "tcp" # application protocol
   ip           = chomp(data.http.myip.response_body)
-  zone         = var.zone # the zone must already exist in route53 and be globally available
 }
 
 data "http" "myip" {
@@ -67,7 +66,7 @@ module "this" {
   subnet_name                = module.access.subnets[keys(module.access.subnets)[0]].tags_all.Name
   security_group_name        = module.access.security_group.tags_all.Name
   direct_access_use_strategy = "network"
-  server_access_addresses    = {
+  server_access_addresses = {
     "runner" = {
       port     = local.port
       protocol = local.protocol

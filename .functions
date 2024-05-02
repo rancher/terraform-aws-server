@@ -191,3 +191,41 @@ set_repo_name() {
     sed -i 's/matttrach-demo/generic-demo/g' "$file";
   done
 }
+
+run_tests() {
+  if [ -d "./tests" ]; then
+    cd tests
+  fi
+  cat <<'EOF'> /tmp/terraform-aws-server-test-processor
+echo "Passed: "
+cat /tmp/terraform-aws-server-test.log | jq -r '. | select(.Action == "pass") | select(.Test != null).Test'
+echo " "
+echo "Failed: "
+cat /tmp/terraform-aws-server-test.log | jq -r '. | select(.Action == "fail") | select(.Test != null).Test'
+echo " "
+EOF
+  chmod +x /tmp/terraform-aws-server-test-processor
+
+  gotestsum \
+    --format=standard-verbose \
+    --jsonfile /tmp/terraform-aws-server-test.log \
+    --post-run-command "bash /tmp/terraform-aws-server-test-processor" \
+    -- \
+    -parallel=10 \
+    -timeout=80m \
+    "${1}"
+
+  get_leftovers
+}
+
+get_leftovers() {
+  id=$1
+  for region in us-west-1 us-west-2 us-east-1 us-east-2; do
+    echo "leftovers in $region:"
+    if [ -n "$id" ]; then
+      leftovers -d --iaas=aws --aws-region="$region" --filter="$id";
+    else
+      leftovers -d --iaas=aws --aws-region="$region" --filter="Owner:terraform";
+    fi
+  done
+}

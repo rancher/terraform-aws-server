@@ -49,7 +49,7 @@ func TestSelectImage(t *testing.T) {
 	defer terraform.Destroy(t, terraformOptions)
 	terraform.InitAndApply(t, terraformOptions)
 }
-func TestSelectAll(t *testing.T) {
+func TestOverridesSelect(t *testing.T) {
 	// in this test we are going to select everything in the server module and create nothing
 	t.Parallel()
 	//domain := os.Getenv("DOMAIN")

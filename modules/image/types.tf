@@ -1,5 +1,5 @@
 locals {
-  types = {
+  standard_types = {
     sles-15 = {
       user         = "ec2-user",
       group        = "wheel",
@@ -30,7 +30,7 @@ locals {
       workfolder   = "~"
     },
     sle-micro-55-llc = { # llc refers to SUSE subsidiary incorporation type, in general the LLC images are used in the US and Asia-Pacific
-      user         = "ec2-user",
+      user         = "suse",
       group        = "wheel",
       name         = "suse-sle-micro-5-5-v*-hvm-ssd-x86_64-llc-*",
       name_regex   = "^suse-sle-micro-5-5-v[0-9]+-hvm-ssd-x86_64-llc-.*$",
@@ -38,8 +38,8 @@ locals {
       architecture = "x86_64",
       workfolder   = "~"
     }
-    sle-micro-55-ltd = { # ltd refers to SUSE subsidiary incorporation type, in general the LTD images are used in the EU, Africa, and the Middle East
-      user         = "ec2-user",
+    sle-micro-55-ltd = { # ltd refers to SUSE subsidiary incorporation type, in general the LTD images are used in the Europe, the Middle East, and Africa (EMEA)
+      user         = "suse",
       group        = "wheel",
       name         = "suse-sle-micro-5-5-v*-hvm-ssd-x86_64-ltd-*",
       name_regex   = "^suse-sle-micro-5-5-v[0-9]+-hvm-ssd-x86_64-ltd-.*$",
@@ -47,8 +47,8 @@ locals {
       architecture = "x86_64",
       workfolder   = "~"
     }
-    sle-micro-55-byos = { # BYOS = Bring Your Own Subscription, only use this if you have a subscription to SUSE
-      user         = "ec2-user",
+    sle-micro-55-byos = { # BYOS = Bring Your Own Subscription, only use this if you already have a subscription to SUSE
+      user         = "suse",
       group        = "wheel",
       name         = "suse-sle-micro-5-5-byos-v*-hvm-ssd-x86_64",
       name_regex   = "^suse-sle-micro-5-5-byos-v[0-9]+-hvm-ssd-x86_64$",
@@ -91,6 +91,15 @@ locals {
       name         = "Rocky-8-EC2-Base-*.x86_64-*",
       name_regex   = "^Rocky-8-EC2-Base-.*.x86_64-.*$",
       owners       = ["679593333241"],
+      architecture = "x86_64",
+      workfolder   = "~"
+    },
+    liberty-7 = {
+      user         = "ec2-user",
+      group        = "wheel",
+      name         = "suse-liberty-7-9-byos-v*-x86_64",
+      name_regex   = "^suse-liberty-7-9-byos-v[0-9]+-x86_64$",
+      owners       = ["013907871322"],
       architecture = "x86_64",
       workfolder   = "~"
     },

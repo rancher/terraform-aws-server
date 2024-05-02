@@ -13,6 +13,15 @@ variable "use_strategy" {
   }
 }
 
+variable "cloudinit_ignore" {
+  type        = bool
+  description = <<-EOT
+    If set to true, cloudinit will not be used to configure the user.
+    In some cases cloud-init is installed and can complete, but it can't write to the file system.
+    This will ignore the cloud-init and generate users and keys using other tools.
+  EOT
+}
+
 variable "server" {
   type = object({
     id                   = string

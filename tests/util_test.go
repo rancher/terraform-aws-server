@@ -63,6 +63,7 @@ func setup(t *testing.T, category string, directory string, region string, owner
 		// Variables to pass to our Terraform code using -var options
 		Vars: map[string]interface{}{
 			"key":        keyPair.KeyPair.PublicKey,
+			"key_name":  keyPairName,
 			"identifier": uniqueID,
 		},
 		// Environment variables to set when running Terraform
