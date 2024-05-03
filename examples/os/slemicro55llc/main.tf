@@ -12,7 +12,7 @@ locals {
   category     = "os"
   example      = "slemicro55llc"
   email        = "terraform-ci@suse.com"
-  project_name = "tf-${substr(md5(join("-", [local.category, local.example])), 0, 5)}-${local.identifier}"
+  project_name = "tf-${substr(md5(join("-", [local.category, local.example, random_pet.server.id])), 0, 5)}-${local.identifier}"
   username     = "tf-${local.identifier}"
   image        = "sle-micro-55-llc" # llc refers to SUSE subsidiary incorporation type, in general the LLC images are used in the US and Asia-Pacific
   vpc_cidr     = "10.0.255.0/24"    # gives 256 usable addresses from .1 to .254, but AWS reserves .1 to .4 and .255, leaving .5 to .254

@@ -8,6 +8,7 @@ on:
 env:
   AWS_REGION: us-west-1
   AWS_ROLE: arn:aws:iam::270074865685:role/terraform-module-ci-test
+  ZONE: ${{secrets.ZONE}}
 
 permissions: write-all
 
@@ -66,7 +67,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
           GITHUB_OWNER: rancher
-          IDENTIFIER: ${{github.job}}-${{github.run_id}}-${{github.run_number}}-${{github.run_attempt}}
+          IDENTIFIER: ${{github.run_id}}
+          ZONE: ${{env.ZONE}}
       - name: 'ImageCheck'
         run: ./validate-image.sh
         if: steps.release-please.outputs.pr
