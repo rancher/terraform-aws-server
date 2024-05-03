@@ -1,92 +1,87 @@
 locals {
-  select                                  = (var.id != "" ? true : false)
-  create                                  = (var.id == "" ? true : false)
-  id                                      = var.id
-  name                                    = var.name
-  owner                                   = var.owner
-  user                                    = var.user
-  subnet                                  = var.subnet # the name of the subnet to find
-  eip                                     = var.eip    # should we deploy a public elastic ip with the server?
-  default_ip                              = (length(data.aws_subnet.general_info) > 0 ? cidrhost(data.aws_subnet.general_info[0].cidr_block, -2) : "")
-  ip                                      = (var.ip == "" ? local.default_ip : var.ip) # specify the private ip to assign to the server (must be within the subnet)
-  ipv4                                    = (strcontains(local.ip, ":") ? "" : local.ip)
-  ipv6                                    = (strcontains(local.ip, ":") ? local.ip : "")
-  security_group                          = var.security_group
-  security_group_association_force_create = var.security_group_association_force_create
-  type                                    = (local.create ? local.types[var.type] : {})
-  image_id                                = var.image_id
-  initial_user                            = var.image_initial_user
-  initial_user_home                       = "/home/${local.initial_user}"
-  initial_workspace                       = replace(var.image_workfolder, "~", "") # WARNING! '~' can't go to the server! you will see "scp: permission denied" errors
-  workfolder                              = (local.initial_workspace == "" ? local.initial_user_home : local.initial_workspace)
-  admin_group                             = var.image_admin_group
-  default_cloudinit_script                = <<-EOT
-  #!/bin/sh
-  echo "default script..."
-  EOT
-  cloudinit_script                        = (var.cloudinit_script == "" ? local.default_cloudinit_script : var.cloudinit_script)
-  cloudinit_timeout                       = var.cloudinit_timeout
-  skip_key                                = var.skip_key                                                                 # skip the association of a keypair to the server
-  ssh_key                                 = (local.skip_key ? "" : var.ssh_key)                                          # empty key if not associating a key
-  ssh_key_name                            = (local.skip_key ? "" : var.ssh_key_name)                                     # empty key name if not associating a key
-  associate_key                           = (local.skip_key ? false : true)                                              # associate key is the opposite of skip_key
-  no_public_ip                            = (local.eip ? false : true)                                                   # opposite of add_public_ip
-  disable_scripts                         = (var.disable_scripts || local.skip_key || local.no_public_ip ? true : false) # disable scripts if not associating an ssh key or public ip
-  enable_scripts                          = (local.disable_scripts ? false : true)                                       # enable scripts is the opposite of disable scripts
+  use    = var.use   # the strategy to use for selecting or creating a server
+  image  = var.image # the image object from the image module to use for the ec2 instance
+  select = (local.use == "select" ? 1 : 0)
+  create = (local.use == "create" ? 1 : 0)
+  id     = var.id   # the id of a server to select
+  name   = var.name # the name to give the new server
+  type   = var.type # the designation from types.tf
+  # tflint-ignore: terraform_unused_declarations
+  fail_type      = (local.create == 1 && local.server_type == null ? one([local.type, "type_not_found"]) : false)
+  server_type    = lookup(local.types, local.type, null)
+  security_group = var.security_group # the name of the security group to find and assign to the server
+  subnet         = var.subnet         # the name of the subnet to find and assign to the server
+  cloudinit      = var.cloudinit      # the cloudinit content to associate with the server
+
+  aws_keypair_use_strategy = var.aws_keypair_use_strategy
+  ssh_key                  = var.ssh_key
+  ssh_key_name             = var.ssh_key_name
+
+  ip         = var.ip # private ip to assign to the server
+  default_ip = (length(data.aws_subnet.general_info_create) > 0 ? cidrhost(data.aws_subnet.general_info_create[0].cidr_block, -2) : "")
+  server_ip  = (local.ip != "" ? local.ip : local.default_ip)
+  ipv4       = (strcontains(local.server_ip, ":") ? "" : local.server_ip)
+  ipv6       = (strcontains(local.server_ip, ":") ? local.server_ip : "")
+  # tflint-ignore: terraform_unused_declarations
+  fail_ip = ((local.create == 1 && local.ipv4 == "" && local.ipv6 == "") ? one([local.server_ip, "ip_not_found"]) : false)
 }
-# WARNING! When selecting a server it is assumed that no additional resources are required (unless forcing security group creation)
+
+# select
+# WARNING! When selecting a server nothing else will be done
 data "aws_instance" "selected" {
-  count       = (local.select ? 1 : 0)
+  count       = local.select
   instance_id = local.id
 }
-
-data "aws_ec2_instance_type" "general_info" {
-  instance_type = (local.create ? local.type.id : data.aws_instance.selected[0].instance_type)
+data "aws_ec2_instance_type" "general_info_select" {
+  count         = local.select
+  instance_type = data.aws_instance.selected[0].instance_type
+}
+data "aws_subnet" "general_info_select" {
+  count = local.select
+  id    = data.aws_instance.selected[0].subnet_id
+}
+data "aws_vpc" "general_info_select" {
+  count = local.select
+  id    = data.aws_subnet.general_info_select[0].vpc_id
 }
 
-data "aws_security_group" "general_info" {
+data "aws_ec2_instance_type" "general_info_create" {
+  count         = local.create
+  instance_type = local.server_type.id
+}
+data "aws_security_group" "general_info_create" {
+  count = local.create
   filter {
     name   = "tag:Name"
     values = [local.security_group]
   }
 }
-
-data "aws_subnet" "general_info" {
-  count = (local.create ? 1 : 0)
+data "aws_subnet" "general_info_create" {
+  count = local.create
   filter {
     name   = "tag:Name"
     values = [local.subnet]
   }
 }
-
-data "aws_key_pair" "general_info" {
-  count = (local.create && local.associate_key ? 1 : 0)
-  filter {
-    name   = "tag:Name"
-    values = [local.ssh_key_name]
-  }
+data "aws_vpc" "general_info_create" {
+  count = local.create
+  id    = data.aws_security_group.general_info_create[0].vpc_id
 }
-
-
-resource "aws_eip" "created" {
-  count = (local.create && local.eip ? 1 : 0)
-  depends_on = [
-    data.aws_subnet.general_info,
-  ]
-  domain = "vpc"
+data "aws_key_pair" "ssh_key_selected" {
+  count    = (local.aws_keypair_use_strategy == "select" ? 1 : 0)
+  key_name = local.ssh_key_name
 }
 
 resource "aws_network_interface" "created" {
-  count = (local.create ? 1 : 0)
+  count = local.create
   depends_on = [
-    data.aws_subnet.general_info,
+    data.aws_subnet.general_info_create,
   ]
-  subnet_id      = data.aws_subnet.general_info[0].id
+  subnet_id      = data.aws_subnet.general_info_create[0].id
   private_ips    = (local.ipv4 != "" ? [local.ipv4] : [])
   ipv6_addresses = (local.ipv6 != "" ? [local.ipv6] : [])
   tags = {
-    Name  = local.name
-    Owner = local.owner
+    Name = local.name
   }
   lifecycle {
     ignore_changes = [
@@ -95,58 +90,23 @@ resource "aws_network_interface" "created" {
   }
 }
 
-resource "aws_eip_association" "created" {
-  count = (local.create && local.eip ? 1 : 0)
-  depends_on = [
-    data.aws_subnet.general_info,
-    aws_network_interface.created,
-  ]
-  allocation_id        = aws_eip.created[0].id
-  network_interface_id = aws_network_interface.created[0].id
-  allow_reassociation  = true # this should allow the server to be destroyed without the ip changing
+resource "aws_key_pair" "created" {
+  count      = (local.aws_keypair_use_strategy == "create" ? local.create : 0)
+  key_name   = local.ssh_key_name
+  public_key = local.ssh_key
 }
 
-data "cloudinit_config" "created" {
-  depends_on = [
-    aws_eip.created,
-    aws_network_interface.created,
-    data.aws_subnet.general_info,
-  ]
-  count         = (local.create ? 1 : 0)
-  gzip          = false
-  base64_encode = true
-  part {
-    filename     = "config.sh"
-    content_type = "text/x-shellscript"
-    content      = local.cloudinit_script
-  }
-  part {
-    filename     = "cloud-config.yaml"
-    content_type = "text/cloud-config"
-    content = templatefile("${path.module}/cloudinit.tpl", {
-      initial_user = local.initial_user
-      admin_group  = local.admin_group
-      user         = local.user
-      ssh_key      = local.ssh_key
-      name         = local.name
-      ami          = local.image_id
-      eip          = length(aws_eip.created) > 0 ? aws_eip.created[0].public_ip : local.ip
-      subnet       = data.aws_subnet.general_info[0].id
-      az           = data.aws_subnet.general_info[0].availability_zone
-    })
-  }
-}
 resource "aws_instance" "created" {
-  count = (local.create ? 1 : 0)
+  count = local.create
   depends_on = [
-    data.aws_security_group.general_info,
-    data.aws_subnet.general_info,
-    data.aws_key_pair.general_info,
+    data.aws_security_group.general_info_create,
+    data.aws_subnet.general_info_create,
     aws_network_interface.created,
-    data.cloudinit_config.created,
+    aws_key_pair.created,
   ]
-  ami           = local.image_id
-  instance_type = local.type.id
+  ami           = local.image.id
+  instance_type = data.aws_ec2_instance_type.general_info_create[0].id
+  key_name      = (local.aws_keypair_use_strategy != "skip" ? (local.aws_keypair_use_strategy == "create" ? aws_key_pair.created[0].key_name : data.aws_key_pair.ssh_key_selected[0].key_name) : "")
 
   # kubernetes expects the primary interface to keep its IP
   #   the server resource will generate a device 0 interface if one is not given
@@ -158,23 +118,18 @@ resource "aws_instance" "created" {
   }
 
   instance_initiated_shutdown_behavior = "stop" # termination can be handled by destroy or separately
-  user_data_base64                     = data.cloudinit_config.created[0].rendered
-  availability_zone                    = data.aws_subnet.general_info[0].availability_zone
-  key_name                             = (local.associate_key ? data.aws_key_pair.general_info[0].key_name : "")
+  user_data_base64                     = local.cloudinit
+  availability_zone                    = data.aws_subnet.general_info_create[0].availability_zone
 
   tags = {
-    Name  = local.name
-    User  = local.user
-    Owner = local.owner
+    Name = local.name
   }
 
   root_block_device {
     delete_on_termination = true
-    volume_size           = local.type.storage
+    volume_size           = local.server_type.storage
     tags = {
-      Name  = local.name
-      User  = local.user
-      Owner = local.owner
+      Name = local.name
     }
   }
   lifecycle {
@@ -191,88 +146,18 @@ resource "aws_instance" "created" {
   }
 }
 
-resource "aws_network_interface_sg_attachment" "sg_attachment" {
-  count = (local.create || local.security_group_association_force_create ? 1 : 0)
+resource "aws_network_interface_sg_attachment" "security_group_attachment" {
+  count = local.create
   depends_on = [
-    data.aws_security_group.general_info,
-    data.aws_subnet.general_info,
-    data.aws_key_pair.general_info,
-    data.aws_instance.selected,
+    data.aws_security_group.general_info_create,
     aws_instance.created,
     aws_network_interface.created,
   ]
-  security_group_id = data.aws_security_group.general_info.id
-  network_interface_id = (
-    local.create ? aws_network_interface.created[0].id : data.aws_instance.selected[0].network_interface_id
-  )
-}
-
-resource "terraform_data" "initial" {
-  count = ((local.create && local.enable_scripts) ? 1 : 0) # initialize server when creating unless scripts are disabled
-  depends_on = [
-    data.aws_security_group.general_info,
-    data.aws_subnet.general_info,
-    data.aws_key_pair.general_info,
-    aws_instance.created,
-    aws_network_interface_sg_attachment.sg_attachment,
-  ]
-  triggers_replace = [
-    aws_instance.created[0].id,
-  ]
-  connection {
-    type        = "ssh"
-    user        = local.initial_user
-    script_path = "${local.workfolder}/initial_script"
-    agent       = true
-    host        = aws_instance.created[0].public_ip
-  }
-  provisioner "file" {
-    source      = "${path.module}/initial.sh"
-    destination = "${local.workfolder}/initial.sh"
-  }
-  provisioner "remote-exec" {
-    inline = [<<-EOT
-      set -x
-      set -e
-      sudo chmod +x ${local.workfolder}/initial.sh
-      sudo ${local.workfolder}/initial.sh ${local.initial_user} ${local.user} ${local.name} ${local.admin_group} ${local.cloudinit_timeout}
-    EOT
-    ]
-  }
-}
-
-resource "terraform_data" "remove_initial_user" {
-  count = ((local.create && local.enable_scripts) ? 1 : 0) # remove initial user when creating unless scripts are disabled
-  depends_on = [
-    data.aws_security_group.general_info,
-    data.aws_subnet.general_info,
-    data.aws_key_pair.general_info,
-    aws_instance.created,
-    aws_network_interface_sg_attachment.sg_attachment,
-    terraform_data.initial,
-  ]
-  triggers_replace = [
-    aws_instance.created[0].id,
-  ]
-  connection {
-    type        = "ssh"
-    user        = local.user
-    script_path = "${(local.workfolder == "/home/${local.initial_user}" ? "/home/${local.user}" : local.workfolder)}/remove_initial_user_script"
-    agent       = true
-    host        = aws_instance.created[0].public_ip
-  }
-
-  provisioner "file" {
-    source      = "${path.module}/remove_initial_user.sh"
-    destination = "${(local.workfolder == "/home/${local.initial_user}" ? "/home/${local.user}" : local.workfolder)}/remove_initial_user.sh"
-  }
-  provisioner "remote-exec" {
-    inline = [<<-EOT
-      set -x
-      set -e
-      sudo chmod +x ${(local.workfolder == "/home/${local.initial_user}" ? "/home/${local.user}" : local.workfolder)}/remove_initial_user.sh
-      sudo ${(local.workfolder == "/home/${local.initial_user}" ? "/home/${local.user}" : local.workfolder)}/remove_initial_user.sh ${local.initial_user}
-    EOT
+  security_group_id    = data.aws_security_group.general_info_create[0].id
+  network_interface_id = aws_network_interface.created[0].id
+  lifecycle {
+    ignore_changes = [
+      security_group_id, # this is dependant on the aws security group lookup and if not ignored will cause the interface to always rebuild
     ]
   }
 }

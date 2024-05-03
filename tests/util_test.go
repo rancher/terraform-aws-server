@@ -9,7 +9,6 @@ import (
 	a "github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/ec2"
 	aws "github.com/gruntwork-io/terratest/modules/aws"
-	"github.com/gruntwork-io/terratest/modules/random"
 	"github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/stretchr/testify/require"
 )
@@ -31,8 +30,7 @@ func teardown(t *testing.T, category string, directory string, keyPair *aws.Ec2K
 	aws.DeleteEC2KeyPair(t, keyPair)
 }
 
-func setup(t *testing.T, category string, directory string, region string, owner string) (*terraform.Options, *aws.Ec2Keypair) {
-	uniqueID := random.UniqueId()
+func setup(t *testing.T, category string, directory string, region string, owner string, uniqueID string) (*terraform.Options, *aws.Ec2Keypair) {
 
 	// Create an EC2 KeyPair that we can use for SSH access
 	keyPairName := fmt.Sprintf("terraform-aws-server-%s-%s-%s", category, directory, uniqueID)
@@ -65,7 +63,7 @@ func setup(t *testing.T, category string, directory string, region string, owner
 		// Variables to pass to our Terraform code using -var options
 		Vars: map[string]interface{}{
 			"key":        keyPair.KeyPair.PublicKey,
-			"key_name":   keyPairName,
+			"key_name":  keyPairName,
 			"identifier": uniqueID,
 		},
 		// Environment variables to set when running Terraform

@@ -1,4 +1,6 @@
-output "user_data" {
-  value     = module.this.user_data
-  sensitive = true
+output "server" {
+  value = module.this.server
+}
+output "access" {
+  value = module.access
 }

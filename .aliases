@@ -8,7 +8,7 @@ alias tfp='terraform init || terraform providers && terraform validate && terraf
 alias tfr='terraform destroy --auto-approve;if [ -f ssh_key ]; then chmod 600 ssh_key && ssh-add ssh_key; fi; terraform init; terraform apply --auto-approve'
 alias tfl='terraform state list'
 alias k='kubectl'
-alias tt='cd tests; go test -v -parallel=10 -timeout=80m'
+alias tt='run_tests'
 # expects AGE_ variables to be set, see .variables and .rcs
 alias es='encrypt_secrets' # looks in the secret file list and converts the files into encrypted ones, see .functions
 alias ds='decrypt_secrets' # looks in the secret file list and converts all the encrtypted files in to unencrypted ones, see .functions

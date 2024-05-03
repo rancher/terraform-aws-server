@@ -1,49 +1,61 @@
 provider "aws" {
   default_tags {
     tags = {
-      Id = local.identifier
+      Id    = local.identifier
+      Owner = local.email
     }
   }
 }
 
 locals {
-  identifier     = var.identifier # this is a random unique string that can be used to identify resources in the cloud provider
-  category       = "size"
-  example        = "xl"
-  email          = "terraform-ci@suse.com"
-  name           = "tf-aws-server-${local.category}-${local.example}-${local.identifier}"
-  username       = "tf-ci-${local.identifier}"
-  image          = "sles-15"
-  size           = "xl"
-  public_ssh_key = var.key
-  key_name       = var.key_name
+  identifier   = var.identifier # this is a random unique string that can be used to identify resources in the cloud provider
+  category     = "size"
+  example      = "xl"
+  email        = "terraform-ci@suse.com"
+  project_name = "tf-${substr(md5(join("-", [local.category, local.example])), 0, 5)}-${local.identifier}"
+  image        = "sles-15"
+  vpc_cidr     = "10.0.255.0/24" # gives 256 usable addresses from .1 to .254, but AWS reserves .1 to .4 and .255, leaving .5 to .254
+  subnet_cidr  = "10.0.255.224/28"
+}
+
+resource "random_pet" "server" {
+  keepers = {
+    # regenerate the pet name when the identifier changes
+    identifier = local.identifier
+  }
+  length = 1
+}
+
+data "aws_availability_zones" "available" {
+  state = "available"
 }
 
 module "access" {
-  source              = "rancher/access/aws"
-  version             = "v1.1.1"
-  owner               = local.email
-  vpc_name            = local.name
-  vpc_cidr            = "10.0.255.0/24" # gives 256 usable addresses from .1 to .254, but AWS reserves .1 to .4 and .255, leaving .5 to .254
-  subnet_name         = local.name
-  subnet_cidr         = "10.0.255.224/28" # gives 14 usable addresses from .225 to .238, but AWS reserves .225 to .227 and .238, leaving .227 to .237
-  security_group_name = local.name
-  security_group_type = "specific"
-  skip_ssh            = true
+  source   = "rancher/access/aws"
+  version  = "v2.1.1"
+  vpc_name = "${local.project_name}-vpc"
+  vpc_cidr = local.vpc_cidr
+  subnets = {
+    "${local.project_name}-sn" = {
+      cidr              = local.subnet_cidr
+      availability_zone = data.aws_availability_zones.available.names[0]
+      public            = false
+    }
+  }
+  security_group_name        = "${local.project_name}-sg" # quirk, this name must be unique accross object types and can't start with 'sg-'
+  security_group_type        = "project"
+  load_balancer_use_strategy = "skip"
 }
-# aws_access returns a security group object from the aws api, but the name attribute isn't the same as the Name tag
-# this is an rare example of when the name attribute is different than the Name tag
+
 module "this" {
-  depends_on = [module.access]
-  source     = "../../../" # change this to "rancher/server/aws" per https://registry.terraform.io/modules/rancher/server/aws/latest
-  # version = "v0.0.15" # when using this example you will need to set the version
-  image               = local.image
-  owner               = local.email
-  name                = local.name
-  type                = local.size
-  user                = local.username
-  ssh_key             = local.public_ssh_key
-  ssh_key_name        = local.key_name
-  subnet_name         = local.name
-  security_group_name = local.name
+  depends_on = [
+    module.access,
+  ]
+  source = "../../../" # change this to "rancher/server/aws" per https://registry.terraform.io/modules/rancher/server/aws/latest
+  # version = "v1.1.1" # when using this example you will need to set the version
+  image_type          = local.image
+  server_name         = "${local.project_name}-${random_pet.server.id}"
+  server_type         = "xl"
+  subnet_name         = keys(module.access.subnets)[0]
+  security_group_name = module.access.security_group.tags_all.Name
 }

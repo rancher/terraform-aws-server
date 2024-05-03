@@ -1,51 +1,63 @@
 provider "aws" {
   default_tags {
     tags = {
-      Id = local.identifier
+      Id    = local.identifier
+      Owner = local.email
     }
   }
 }
 
 locals {
-  identifier  = var.identifier # this is a random unique string that can be used to identify resources in the cloud provider
-  category    = "basic"
-  example     = "privateip"
-  email       = "terraform-ci@suse.com"
-  name        = "tf-${local.category}-${local.example}-${local.identifier}"
-  username    = "tf-${local.identifier}"
-  subnet_cidr = "10.0.255.224/28" # gives 14 usable addresses from .225 to .238, but AWS reserves .225 to .227 and .238, leaving .228 to .237
+  identifier   = var.identifier # this is a random unique string that can be used to identify resources in the cloud provider
+  category     = "basic"
+  example      = "basic"
+  email        = "terraform-ci@suse.com"
+  project_name = "tf-${substr(md5(join("-", [local.category, local.example])), 0, 5)}-${local.identifier}"
+  image        = "sles-15"
+  vpc_cidr     = "10.0.255.0/24"   # gives 256 usable addresses from .1 to .254, but AWS reserves .1 to .4 and .255, leaving .5 to .254
+  subnet_cidr  = "10.0.255.224/28" # must be within the vpc cidr range, AWS reserves .225-.229 and .238
+  private_ip   = "10.0.255.230"    # must be within the subnet cidr range
+}
+
+resource "random_pet" "server" {
+  keepers = {
+    # regenerate the pet name when the identifier changes
+    identifier = local.identifier
+  }
+  length = 1
+}
+
+data "aws_availability_zones" "available" {
+  state = "available"
 }
 
 module "access" {
-  source              = "rancher/access/aws"
-  version             = "v1.1.1"
-  owner               = local.email
-  vpc_name            = local.name
-  vpc_cidr            = "10.0.255.0/24" # gives 256 usable addresses from .1 to .254, but AWS reserves .1 to .4 and .255, leaving .5 to .254
-  subnet_name         = local.name
-  subnet_cidr         = "10.0.255.224/28" # gives 14 usable addresses from .225 to .238, but AWS reserves .225 to .227 and .238, leaving .227 to .237
-  security_group_name = local.name
-  security_group_type = "internal"
-  skip_ssh            = true
+  source   = "rancher/access/aws"
+  version  = "v2.1.1"
+  vpc_name = "${local.project_name}-vpc"
+  vpc_cidr = local.vpc_cidr
+  subnets = {
+    "${local.project_name}-sn" = {
+      cidr              = local.subnet_cidr
+      availability_zone = data.aws_availability_zones.available.names[0]
+      public            = false
+    }
+  }
+  security_group_name        = "${local.project_name}-sg"
+  security_group_type        = "project"
+  load_balancer_use_strategy = "skip"
 }
 
-# we are expecting the server to not get a public ip, preventing outside access
 module "this" {
   depends_on = [
     module.access,
   ]
   source = "../../../" # change this to "rancher/server/aws" per https://registry.terraform.io/modules/rancher/server/aws/latest
-  # version = "v0.0.15" # when using this example you will need to set the version
-  image               = "sles-15"
-  owner               = local.email
-  name                = local.name
-  type                = "small"
-  user                = local.username
-  subnet_name         = local.name
-  security_group_name = local.name
-  private_ip          = cidrhost(local.subnet_cidr, -3) # get third to last ip from cidr, should be 10.0.255.236
-  cloudinit_timeout   = "6"
-  skip_key            = true # don't associate an ssh key to the server
-  # the config automatically disables scripts when not assigning an ssh key
-  #disable_scripts = true # disable running scripts on the server
+  # version = "v1.1.1" # when using this example you will need to set the version
+  image_type          = local.image
+  server_name         = "${local.project_name}-${random_pet.server.id}"
+  server_type         = "small"
+  subnet_name         = module.access.subnets[keys(module.access.subnets)[0]].tags_all.Name
+  private_ip          = local.private_ip
+  security_group_name = module.access.security_group.tags_all.Name
 }
