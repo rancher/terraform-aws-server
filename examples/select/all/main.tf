@@ -31,7 +31,7 @@ data "aws_availability_zones" "available" {
 
 module "access" {
   source   = "rancher/access/aws"
-  version  = "v2.1.1"
+  version  = "v2.1.2"
   vpc_name = "${local.project_name}-vpc"
   vpc_cidr = local.vpc_cidr
   subnets = {
