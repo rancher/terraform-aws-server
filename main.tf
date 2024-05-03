@@ -131,7 +131,7 @@ module "indirect_access" {
     module.server,
   ]
   source             = "./modules/indirect_access"
-  server_id          = module.server[0].server.id
+  server_id          = module.server[0].id
   target_group_names = local.load_balancer_target_groups
 }
 
@@ -143,10 +143,10 @@ module "direct_access" {
   ]
   source = "./modules/direct_access"
   server = {
-    id                   = module.server[0].server.id
-    name                 = module.server[0].server.tags_all.Name
-    network_interface_id = tolist(module.server[0].server.network_interface)[0].network_interface_id
-    public_ip            = module.server[0].server.public_ip
+    id                   = module.server[0].id
+    name                 = module.server[0].tags_all.Name
+    network_interface_id = module.server[0].network_interface.id
+    public_ip            = module.server[0].public_ip
     vpc_id               = module.server[0].vpc.id
   }
   image = {
@@ -165,6 +165,6 @@ module "direct_access" {
     name = local.domain_name,
     zone = local.domain_zone, # zone name
     type = "A"                # we will enable ipv6 in the future
-    ips  = [module.server[0].server.public_ip, module.server[0].server.private_ip]
+    ips  = [module.server[0].public_ip, module.server[0].private_ip]
   }
 }

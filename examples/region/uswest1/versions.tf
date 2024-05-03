@@ -9,11 +9,9 @@ terraform {
       source  = "hashicorp/aws"
       version = ">= 5.11"
     }
-    # NOTE: this is only required for the examples
-    # this is used by the aws_access module
-    http = {
-      source  = "hashicorp/http"
-      version = ">= 3.4"
+    random = {
+      source  = "hashicorp/random"
+      version = ">= 3.1"
     }
   }
 }

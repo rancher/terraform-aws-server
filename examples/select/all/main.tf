@@ -8,13 +8,26 @@ provider "aws" {
 }
 
 locals {
-  identifier = var.identifier # this is a random unique string that can be used to identify resources in the cloud provider
-  category   = "overrides"
-  example    = "select_all"
-  email      = "terraform-ci@suse.com"
-  name       = "tf-${local.category}-${local.example}-${local.identifier}"
-  image      = "ami-09b2a1e33ce552e68" # this must be an AMI in your region
-  server_id  = var.server
+  identifier   = var.identifier # this is a random unique string that can be used to identify resources in the cloud provider
+  category     = "select"
+  example      = "server"
+  email        = "terraform-ci@suse.com"
+  project_name = "tf-${substr(md5(join("-", [local.category, local.example])), 0, 5)}-${local.identifier}"
+  image        = "sles-15"
+  vpc_cidr     = "10.0.255.0/24" # gives 256 usable addresses from .1 to .254, but AWS reserves .1 to .4 and .255, leaving .5 to .254
+  subnet_cidr  = "10.0.255.224/28"
+}
+
+resource "random_pet" "server" {
+  keepers = {
+    # regenerate the pet name when the identifier changes
+    identifier = local.identifier
+  }
+  length = 1
+}
+
+data "aws_availability_zones" "available" {
+  state = "available"
 }
 
 module "access" {
@@ -34,15 +47,39 @@ module "access" {
   load_balancer_use_strategy = "skip"
 }
 
-module "this" {
+module "setup" {
   depends_on = [
     module.access,
   ]
   source = "../../../" # change this to "rancher/server/aws" per https://registry.terraform.io/modules/rancher/server/aws/latest
-  # version = "v1.1.1" # when using this example you will need to set the version
-  image_type          = local.image
-  server_use_strategy = "select"
+  # version = "v2.0.0" # when using this example you will need to set the version
+  image_use_strategy = "select"
+  image = {
+    id          = "ami-0e8ad69da124219b7" # must be a valid ami in your region
+    user        = "ec2-user"
+    admin_group = "wheel"
+    workfolder  = "~"
+  }
   server_name         = local.project_name
+  server_type         = "small"
   subnet_name         = keys(module.access.subnets)[0]
   security_group_name = module.access.security_group.tags_all.Name
+}
+
+module "this" {
+  depends_on = [
+    module.setup,
+    module.access,
+  ]
+  source = "../../../" # change this to "rancher/server/aws" per https://registry.terraform.io/modules/rancher/server/aws/latest
+  # version = "v2.0.0" # when using this example you will need to set the version
+  image_use_strategy = "select"
+  image = {
+    id          = "ami-0e8ad69da124219b7" # must be a valid ami in your region
+    user        = "ec2-user"
+    admin_group = "wheel"
+    workfolder  = "~"
+  }
+  server_use_strategy = "select"
+  server_id           = module.setup.server[0].id
 }

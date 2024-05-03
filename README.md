@@ -2,15 +2,30 @@
 
 This module deploys infrastructure in AWS.
 
+WARNING! We test in regions us-west-2, us-west-1, us-east-1, and us-east-2.
+Our selected image types may not exist in your region, in which case you can select an image manually.
+See the examples/select/image for an example of how to do this
+
 ## Recent Changes
 
-1. Servers will no longer deploy a public ip by default.
+1. WARNING! Refactor!
+    A new Major version and a few new tricks.
+    I don't like breaking the interface, but to enable new functionality it made the most sense to refactor.
+    - set the private ip for your sever
+    - new complex inputs
+      - this should improve validation and make code more concise
+    - new complex validations
+      - using locals I was able to validate complex relationships
+    - new "use" paradigm
+      - look out for attributes like "server_use_strategy" to enable or disable features
+    - indirect access!
+      - now you can assign aws lb target group associations when you generate your server
+2. New Images!
+    - Added SUSE Liberty 7.9
+    - Added SLE Micro 5.5 (all subscription types)
+      - WARNING! we can't test llc (US and China) images due to our account geolocation (Germany)
+3. Servers will no longer deploy a public ip by default.
      You can override this by setting up a subnet that automatically deploys public ips.
-     You can select to have a public IP added to your server with the 'add_public_ip' boolean variable.
-       - this IP will be an elastic ip so it will cost a little bit extra, but will persist between server rebuilds
-2. This module has a lean towards enabling the provisioning of kubernetes clusters, so it has some additional requirements
-   - the primary network interface's ip should not change even when the server is rebuilt
-     - this allows us to have a more stable config and easier data recovery options
 
 
 ## AWS Access
@@ -71,52 +86,107 @@ The choices are detailed [in the image module](./modules/image/types.tf) and bel
 
 ```
 locals {
-  types = {
+  standard_types = {
     sles-15 = {
       user         = "ec2-user",
       group        = "wheel",
-      name         = "suse-sles-15-sp5-v*-hvm-*",
-      owner        = "amazon",
+      name         = "suse-sles-15-sp5-v*-hvm-ssd-x86_64",
+      name_regex   = "^suse-sles-15-sp5-v[0-9]+-hvm-ssd-x86_64$",
+      owners       = ["013907871322", "679593333241"]
       architecture = "x86_64",
       workfolder   = "~"
     },
-    sles-15-cis = { # WARNING! this AMI requires subscription to a service, it is not free
+    sles-15-byos = { # BYOS = Bring Your Own Subscription, only use this if you have a subscription to SUSE
       user         = "ec2-user",
       group        = "wheel",
-      name         = "CIS SUSE Linux Enterprise 15*",
-      owner        = "aws-marketplace",
+      name         = "suse-sles-15-sp5-chost-byos-v*-hvm-ssd-x86_64",        #chost refers to an image that is optimized for running containers
+      name_regex   = "^suse-sles-15-sp5-chost-byos-v[0-9]+-hvm-ssd-x86_64$", # we are specifically trying to avoid the -ecs- images
+      owners       = ["013907871322", "679593333241"],
       architecture = "x86_64",
       workfolder   = "~"
     },
-    rhel-8-cis = { # WARNING! this AMI requires subscription to a service, it is not free https://aws.amazon.com/marketplace/server/procurement?productId=ca1fe94d-9237-41c7-8fc8-78b6b0658c9f
+    # WARNING! this AMI requires subscription to a service (not a SUSE subscription),
+    #  it is not free https://aws.amazon.com/marketplace/pp/prodview-g5eyen7n5tizm
+    sles-15-cis = {
       user         = "ec2-user",
       group        = "wheel",
-      name         = "CIS Red Hat Enterprise Linux 8 STIG Benchmark*",
-      owner        = "aws-marketplace",
+      name         = "CIS SUSE Linux Enterprise 15 Benchmark - Level 1*",
+      name_regex   = "^CIS SUSE Linux Enterprise 15 Benchmark - Level 1.*$",
+      owners       = ["679593333241"],
+      architecture = "x86_64",
+      workfolder   = "~"
+    },
+    sle-micro-55-llc = { # llc refers to SUSE subsidiary incorporation type, in general the LLC images are used in the US and Asia-Pacific
+      user         = "suse",
+      group        = "wheel",
+      name         = "suse-sle-micro-5-5-v*-hvm-ssd-x86_64-llc-*",
+      name_regex   = "^suse-sle-micro-5-5-v[0-9]+-hvm-ssd-x86_64-llc-.*$",
+      owners       = ["013907871322", "679593333241"],
+      architecture = "x86_64",
+      workfolder   = "~"
+    }
+    sle-micro-55-ltd = { # ltd refers to SUSE subsidiary incorporation type, in general the LTD images are used in the Europe, the Middle East, and Africa (EMEA)
+      user         = "suse",
+      group        = "wheel",
+      name         = "suse-sle-micro-5-5-v*-hvm-ssd-x86_64-ltd-*",
+      name_regex   = "^suse-sle-micro-5-5-v[0-9]+-hvm-ssd-x86_64-ltd-.*$",
+      owners       = ["013907871322", "679593333241"],
+      architecture = "x86_64",
+      workfolder   = "~"
+    }
+    sle-micro-55-byos = { # BYOS = Bring Your Own Subscription, only use this if you already have a subscription to SUSE
+      user         = "suse",
+      group        = "wheel",
+      name         = "suse-sle-micro-5-5-byos-v*-hvm-ssd-x86_64",
+      name_regex   = "^suse-sle-micro-5-5-byos-v[0-9]+-hvm-ssd-x86_64$",
+      owners       = ["013907871322", "679593333241"],
+      architecture = "x86_64",
+      workfolder   = "~"
+    }
+    # WARNING! this AMI requires subscription to a service (not a SUSE subscription),
+    #   it is not free https://aws.amazon.com/marketplace/server/procurement?productId=ca1fe94d-9237-41c7-8fc8-78b6b0658c9f
+    rhel-8-cis = {
+      user         = "ec2-user",
+      group        = "wheel",
+      name         = "CIS Red Hat Enterprise Linux 8 Benchmark - STIG*",
+      name_regex   = "^CIS Red Hat Enterprise Linux 8 Benchmark - STIG.*$",
+      owners       = ["679593333241"],
       architecture = "x86_64",
       workfolder   = "/var/tmp"
     },
     ubuntu-20 = { # WARNING! you must subscribe and accept the terms to use this image
       user         = "ubuntu",
       group        = "admin",
-      name         = "ubuntu/images/hvm-ssd/ubuntu-focal-20.04-*",
-      owner        = "aws-marketplace",
+      name         = "ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-2024*-*",
+      name_regex   = "^ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-2024.*-.*$",
+      owners       = ["679593333241", "099720109477", "513442679011", "837727238323"],
       architecture = "x86_64",
       workfolder   = "~"
     },
     ubuntu-22 = { # WARNING! you must subscribe and accept the terms to use this image
       user         = "ubuntu",
       group        = "admin",
-      name         = "ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-*",
-      owner        = "aws-marketplace",
+      name         = "ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-2024*-*",
+      name_regex   = "^ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-2024[0-9]+-.*$", # specifically avoiding .1 images eg. ubuntu-jammy-22.04-amd64-server-20240207.1-47489723-7305-4e22-8b22-b0d57054f216
+      owners       = ["679593333241", "099720109477", "513442679011", "837727238323"],
       architecture = "x86_64",
       workfolder   = "~"
     },
     rocky-8 = { # WARNING! you must subscribe and accept the terms to use this image
       user         = "ec2-user",
       group        = "wheel",
-      name         = "Rocky-8-EC2-Base-8*",
-      owner        = "aws-marketplace",
+      name         = "Rocky-8-EC2-Base-*.x86_64-*",
+      name_regex   = "^Rocky-8-EC2-Base-.*.x86_64-.*$",
+      owners       = ["679593333241"],
+      architecture = "x86_64",
+      workfolder   = "~"
+    },
+    liberty-7 = {
+      user         = "ec2-user",
+      group        = "wheel",
+      name         = "suse-liberty-7-9-byos-v*-x86_64",
+      name_regex   = "^suse-liberty-7-9-byos-v[0-9]+-x86_64$",
+      owners       = ["013907871322"],
       architecture = "x86_64",
       workfolder   = "~"
     },
@@ -128,8 +198,9 @@ locals {
     rhel-9 = {
       user         = "ec2-user",
       group        = "wheel",
-      name         = "RHEL-9.2.*_HVM-*-x86_64-*-Hourly2-GP3",
-      owner        = "amazon",
+      name         = "RHEL-9.3*_HVM-2024*-x86_64-*-Hourly2-GP3",
+      name_regex   = "^RHEL-9.3.*_HVM-2024.*-x86_64-.*-Hourly2-GP3$",
+      owners       = ["309956199498"],
       architecture = "x86_64",
       workfolder   = "~"
     },
@@ -138,8 +209,9 @@ locals {
     rhel-8 = {
       user         = "ec2-user",
       group        = "wheel",
-      name         = "RHEL-8.8.*_HVM-*-x86_64-*-Hourly2-GP3",
-      owner        = "amazon",
+      name         = "RHEL-8.9*_HVM-2024*-x86_64-*-Hourly2-GP3",
+      name_regex   = "^RHEL-8.9.*_HVM-2024.*-x86_64-.*-Hourly2-GP3$",
+      owners       = ["309956199498"],
       architecture = "x86_64",
       workfolder   = "~"
     },

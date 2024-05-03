@@ -7,7 +7,7 @@ locals {
   name   = var.name # the name to give the new server
   type   = var.type # the designation from types.tf
   # tflint-ignore: terraform_unused_declarations
-  fail_type      = (local.server_type == null ? one([local.type, "type_not_found"]) : false)
+  fail_type      = (local.create == 1 && local.server_type == null ? one([local.type, "type_not_found"]) : false)
   server_type    = lookup(local.types, local.type, null)
   security_group = var.security_group # the name of the security group to find and assign to the server
   subnet         = var.subnet         # the name of the subnet to find and assign to the server
@@ -23,7 +23,7 @@ locals {
   ipv4       = (strcontains(local.server_ip, ":") ? "" : local.server_ip)
   ipv6       = (strcontains(local.server_ip, ":") ? local.server_ip : "")
   # tflint-ignore: terraform_unused_declarations
-  fail_ip = ((local.ipv4 == "" && local.ipv6 == "") ? one([local.server_ip, "ip_not_found"]) : false)
+  fail_ip = ((local.create == 1 && local.ipv4 == "" && local.ipv6 == "") ? one([local.server_ip, "ip_not_found"]) : false)
 }
 
 # select
@@ -36,17 +36,13 @@ data "aws_ec2_instance_type" "general_info_select" {
   count         = local.select
   instance_type = data.aws_instance.selected[0].instance_type
 }
-data "aws_security_group" "general_info_select" {
-  count = local.select
-  id    = element(data.aws_instance.selected[0].security_groups, 0).id
-}
 data "aws_subnet" "general_info_select" {
   count = local.select
   id    = data.aws_instance.selected[0].subnet_id
 }
 data "aws_vpc" "general_info_select" {
   count = local.select
-  id    = data.aws_security_group.general_info_select[0].vpc_id
+  id    = data.aws_subnet.general_info_select[0].vpc_id
 }
 
 data "aws_ec2_instance_type" "general_info_create" {

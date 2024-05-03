@@ -5,5 +5,13 @@ terraform {
       source  = "hashicorp/local"
       version = ">= 2.4"
     }
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 5.11"
+    }
+    http = {
+      source  = "hashicorp/http"
+      version = ">= 3.4"
+    }
   }
 }
