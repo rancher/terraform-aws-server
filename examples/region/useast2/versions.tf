@@ -13,5 +13,16 @@ terraform {
       source  = "hashicorp/random"
       version = ">= 3.1"
     }
+    http = {
+      source  = "hashicorp/http"
+      version = ">= 3.4"
+    }
+    acme = { # used in the access module
+      source  = "vancluever/acme"
+      version = ">= 2.0"
+    }
   }
+}
+provider "acme" {
+  server_url = "https://acme-staging-v02.api.letsencrypt.org/directory"
 }
