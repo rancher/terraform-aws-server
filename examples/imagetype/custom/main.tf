@@ -12,6 +12,7 @@ provider "aws" {
 locals {
   identifier = var.identifier # this is a random unique string that can be used to identify resources in the cloud provider
   custom_types = {
+    # tflint-ignore: terraform_deprecated_interpolation
     "${local.identifier}" = {
       user         = "suse"
       group        = "wheel"

@@ -57,18 +57,21 @@ jobs:
         with:
           path: ${{ github.workspace }}/.terraform
           key: ${{ steps.cache-terraform-restore.outputs.cache-primary-key }}
-      - run: cd ./tests && go test -v -timeout=40m -parallel=10
-        name: 'Terratest'
+      - name: 'Terratest'
+        run: |
+          cd ./tests
+          export ACME_SERVER_URL="https://acme-v02.api.letsencrypt.org/directory"
+          go test -v -timeout=40m -parallel=10
         if: steps.release-please.outputs.pr
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
           GITHUB_OWNER: rancher
           IDENTIFIER: ${{github.job}}-${{github.run_id}}-${{github.run_number}}-${{github.run_attempt}}
-      - run: ./validate-image.sh
-        name: 'ImageCheck'
+      - name: 'ImageCheck'
+        run: ./validate-image.sh
         if: steps.release-please.outputs.pr
-      - uses: peter-evans/create-or-update-comment@v4
-        name: 'Report Success'
+      - name: 'Report Success'
+        uses: peter-evans/create-or-update-comment@v4
         if: steps.release-please.outputs.pr
         with:
           issue-number: ${{ fromJson(steps.release-please.outputs.pr).number }}
