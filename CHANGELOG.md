@@ -1,5 +1,25 @@
 # Changelog
 
+## [1.0.0](https://github.com/rancher/terraform-aws-server/compare/v0.4.1...v1.0.0) (2024-05-04)
+
+
+### ⚠ BREAKING CHANGES
+
+* adjust for new abilities ([#62](https://github.com/rancher/terraform-aws-server/issues/62))
+
+### Bug Fixes
+
+* add random name to project ([#65](https://github.com/rancher/terraform-aws-server/issues/65)) ([08163c2](https://github.com/rancher/terraform-aws-server/commit/08163c2fc4ad76b5bce0971c55e64af8a1fd32c0))
+* example versions ([#64](https://github.com/rancher/terraform-aws-server/issues/64)) ([560f073](https://github.com/rancher/terraform-aws-server/commit/560f073362ddd3bdaf2483fd1e560e9980ca6771))
+* Fix release ([#66](https://github.com/rancher/terraform-aws-server/issues/66)) ([262ff39](https://github.com/rancher/terraform-aws-server/commit/262ff3914dff52d1815a7c96de8d9af4a8cfb058))
+* make example network names static ([#67](https://github.com/rancher/terraform-aws-server/issues/67)) ([ee779ba](https://github.com/rancher/terraform-aws-server/commit/ee779ba41c85137af8178983a59f219d73c8b475))
+* make the tests a bit more random ([#68](https://github.com/rancher/terraform-aws-server/issues/68)) ([5561bb0](https://github.com/rancher/terraform-aws-server/commit/5561bb02b887f549242670b88090847d4310ea35))
+
+
+### Code Refactoring
+
+* adjust for new abilities ([#62](https://github.com/rancher/terraform-aws-server/issues/62)) ([5b24ad5](https://github.com/rancher/terraform-aws-server/commit/5b24ad5038f9c10a98a904cda53025f0446896d3))
+
 ## [0.4.1](https://github.com/rancher/terraform-aws-server/compare/v0.4.0...v0.4.1) (2024-03-14)
 
 
