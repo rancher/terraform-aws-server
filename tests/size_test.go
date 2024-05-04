@@ -10,10 +10,7 @@ import (
 
 func TestSizeSmall(t *testing.T) {
 	t.Parallel()
-	uniqueID := os.Getenv("IDENTIFIER")
-	if uniqueID == "" {
-		uniqueID = random.UniqueId()
-	}
+	uniqueID := os.Getenv("IDENTIFIER") + "-" + random.UniqueId()
 	category := "size"
 	directory := "small"
 	region := "us-west-2"
@@ -27,10 +24,7 @@ func TestSizeSmall(t *testing.T) {
 }
 func TestSizeMedium(t *testing.T) {
 	t.Parallel()
-	uniqueID := os.Getenv("IDENTIFIER")
-	if uniqueID == "" {
-		uniqueID = random.UniqueId()
-	}
+	uniqueID := os.Getenv("IDENTIFIER") + "-" + random.UniqueId()
 	category := "size"
 	directory := "medium"
 	region := "us-west-2"
@@ -44,10 +38,7 @@ func TestSizeMedium(t *testing.T) {
 }
 func TestSizeLarge(t *testing.T) {
 	t.Parallel()
-	uniqueID := os.Getenv("IDENTIFIER")
-	if uniqueID == "" {
-		uniqueID = random.UniqueId()
-	}
+	uniqueID := os.Getenv("IDENTIFIER") + "-" + random.UniqueId()
 	category := "size"
 	directory := "large"
 	region := "us-west-2"
@@ -61,10 +52,7 @@ func TestSizeLarge(t *testing.T) {
 }
 func TestSizeXL(t *testing.T) {
 	t.Parallel()
-	uniqueID := os.Getenv("IDENTIFIER")
-	if uniqueID == "" {
-		uniqueID = random.UniqueId()
-	}
+	uniqueID := os.Getenv("IDENTIFIER") + "-" + random.UniqueId()
 	category := "size"
 	directory := "xl"
 	region := "us-west-2"
@@ -78,10 +66,7 @@ func TestSizeXL(t *testing.T) {
 }
 func TestSizeXXL(t *testing.T) {
 	t.Parallel()
-	uniqueID := os.Getenv("IDENTIFIER")
-	if uniqueID == "" {
-		uniqueID = random.UniqueId()
-	}
+	uniqueID := os.Getenv("IDENTIFIER") + "-" + random.UniqueId()
 	category := "size"
 	directory := "xxl"
 	region := "us-west-2"

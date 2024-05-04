@@ -11,10 +11,7 @@ import (
 
 func TestSelectServer(t *testing.T) {
 	t.Parallel()
-	uniqueID := os.Getenv("IDENTIFIER")
-	if uniqueID == "" {
-		uniqueID = random.UniqueId()
-	}
+	uniqueID := os.Getenv("IDENTIFIER") + "-" + random.UniqueId()
 
 	category := "select"
 	directory := "server"
@@ -33,10 +30,7 @@ func TestSelectServer(t *testing.T) {
 }
 func TestSelectImage(t *testing.T) {
 	t.Parallel()
-	uniqueID := os.Getenv("IDENTIFIER")
-	if uniqueID == "" {
-		uniqueID = random.UniqueId()
-	}
+	uniqueID := os.Getenv("IDENTIFIER") + "-" + random.UniqueId()
 
 	category := "select"
 	directory := "image"
@@ -55,10 +49,7 @@ func TestSelectImage(t *testing.T) {
 }
 func TestSelectAll(t *testing.T) {
 	t.Parallel()
-	uniqueID := os.Getenv("IDENTIFIER")
-	if uniqueID == "" {
-		uniqueID = random.UniqueId()
-	}
+	uniqueID := os.Getenv("IDENTIFIER") + "-" + random.UniqueId()
 
 	category := "select"
 	directory := "all"

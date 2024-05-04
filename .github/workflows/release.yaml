@@ -60,9 +60,25 @@ jobs:
           key: ${{ steps.cache-terraform-restore.outputs.cache-primary-key }}
       - name: 'Terratest'
         run: |
-          cd ./tests
-          export ACME_SERVER_URL="https://acme-v02.api.letsencrypt.org/directory"
-          go test -v -timeout=40m -parallel=10
+          cd tests
+          cat <<'EOF'> test-processor
+          echo "Passed: "
+          cat test.log | jq -r '. | select(.Action == "pass") | select(.Test != null).Test'
+          echo " "
+          echo "Failed: "
+          cat test.log | jq -r '. | select(.Action == "fail") | select(.Test != null).Test'
+          echo " "
+          EOF
+          chmod +x test-processor
+
+          gotestsum \
+            --format=standard-verbose \
+            --jsonfile test.log \
+            --post-run-command "bash test-processor" \
+            -- \
+            -parallel=8 \
+            -timeout=80m
+
         if: steps.release-please.outputs.pr
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
