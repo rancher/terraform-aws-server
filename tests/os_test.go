@@ -11,10 +11,7 @@ import (
 
 func TestOsSles15(t *testing.T) {
 	t.Parallel()
-	uniqueID := os.Getenv("IDENTIFIER")
-	if uniqueID == "" {
-		uniqueID = random.UniqueId()
-	}
+	uniqueID := os.Getenv("IDENTIFIER") + "-" + random.UniqueId()
 	category := "os"
 	directory := "sles15"
 	region := "us-west-1"
@@ -33,10 +30,7 @@ func TestOsSles15(t *testing.T) {
 }
 func TestOsSles15Byos(t *testing.T) {
 	t.Parallel()
-	uniqueID := os.Getenv("IDENTIFIER")
-	if uniqueID == "" {
-		uniqueID = random.UniqueId()
-	}
+	uniqueID := os.Getenv("IDENTIFIER") + "-" + random.UniqueId()
 	category := "os"
 	directory := "sles15byos"
 	region := "us-west-1"
@@ -56,10 +50,7 @@ func TestOsSles15Byos(t *testing.T) {
 
 func TestOsSles15Cis(t *testing.T) {
 	t.Parallel()
-	uniqueID := os.Getenv("IDENTIFIER")
-	if uniqueID == "" {
-		uniqueID = random.UniqueId()
-	}
+	uniqueID := os.Getenv("IDENTIFIER") + "-" + random.UniqueId()
 	category := "os"
 	directory := "sles15cis"
 	region := "us-west-1"
@@ -98,10 +89,7 @@ func TestOsSles15Cis(t *testing.T) {
 // }
 func TestOsSleMicro55LTD(t *testing.T) {
 	t.Parallel()
-	uniqueID := os.Getenv("IDENTIFIER")
-	if uniqueID == "" {
-		uniqueID = random.UniqueId()
-	}
+	uniqueID := os.Getenv("IDENTIFIER") + "-" + random.UniqueId()
 	category := "os"
 	directory := "slemicro55ltd"
 	region := "us-west-1"
@@ -119,10 +107,7 @@ func TestOsSleMicro55LTD(t *testing.T) {
 }
 func TestOsSleMicro55Byos(t *testing.T) {
 	t.Parallel()
-	uniqueID := os.Getenv("IDENTIFIER")
-	if uniqueID == "" {
-		uniqueID = random.UniqueId()
-	}
+	uniqueID := os.Getenv("IDENTIFIER") + "-" + random.UniqueId()
 	category := "os"
 	directory := "slemicro55byos"
 	region := "us-west-1"
@@ -140,10 +125,7 @@ func TestOsSleMicro55Byos(t *testing.T) {
 }
 func TestOsRhel8Cis(t *testing.T) {
 	t.Parallel()
-	uniqueID := os.Getenv("IDENTIFIER")
-	if uniqueID == "" {
-		uniqueID = random.UniqueId()
-	}
+	uniqueID := os.Getenv("IDENTIFIER") + "-" + random.UniqueId()
 	category := "os"
 	directory := "rhel8cis"
 	region := "us-west-1"
@@ -161,10 +143,7 @@ func TestOsRhel8Cis(t *testing.T) {
 }
 func TestOsRhel8(t *testing.T) {
 	t.Parallel()
-	uniqueID := os.Getenv("IDENTIFIER")
-	if uniqueID == "" {
-		uniqueID = random.UniqueId()
-	}
+	uniqueID := os.Getenv("IDENTIFIER") + "-" + random.UniqueId()
 	category := "os"
 	directory := "rhel8"
 	region := "us-west-1"
@@ -183,10 +162,7 @@ func TestOsRhel8(t *testing.T) {
 }
 func TestOsRhel9(t *testing.T) {
 	t.Parallel()
-	uniqueID := os.Getenv("IDENTIFIER")
-	if uniqueID == "" {
-		uniqueID = random.UniqueId()
-	}
+	uniqueID := os.Getenv("IDENTIFIER") + "-" + random.UniqueId()
 	category := "os"
 	directory := "rhel9"
 	region := "us-west-1"
@@ -205,10 +181,7 @@ func TestOsRhel9(t *testing.T) {
 }
 func TestOsRocky8(t *testing.T) {
 	t.Parallel()
-	uniqueID := os.Getenv("IDENTIFIER")
-	if uniqueID == "" {
-		uniqueID = random.UniqueId()
-	}
+	uniqueID := os.Getenv("IDENTIFIER") + "-" + random.UniqueId()
 	category := "os"
 	directory := "rocky8"
 	region := "us-west-1"
@@ -227,10 +200,7 @@ func TestOsRocky8(t *testing.T) {
 }
 func TestOsLiberty7(t *testing.T) {
 	t.Parallel()
-	uniqueID := os.Getenv("IDENTIFIER")
-	if uniqueID == "" {
-		uniqueID = random.UniqueId()
-	}
+	uniqueID := os.Getenv("IDENTIFIER") + "-" + random.UniqueId()
 	category := "os"
 	directory := "liberty7"
 	region := "us-west-1"
@@ -249,10 +219,7 @@ func TestOsLiberty7(t *testing.T) {
 }
 func TestOsUbuntu20(t *testing.T) {
 	t.Parallel()
-	uniqueID := os.Getenv("IDENTIFIER")
-	if uniqueID == "" {
-		uniqueID = random.UniqueId()
-	}
+	uniqueID := os.Getenv("IDENTIFIER") + "-" + random.UniqueId()
 	category := "os"
 	directory := "ubuntu20"
 	region := "us-west-1"
@@ -271,10 +238,7 @@ func TestOsUbuntu20(t *testing.T) {
 }
 func TestOsUbuntu22(t *testing.T) {
 	t.Parallel()
-	uniqueID := os.Getenv("IDENTIFIER")
-	if uniqueID == "" {
-		uniqueID = random.UniqueId()
-	}
+	uniqueID := os.Getenv("IDENTIFIER") + "-" + random.UniqueId()
 	category := "os"
 	directory := "ubuntu22"
 	region := "us-west-1"

@@ -4,17 +4,14 @@ import (
 	"os"
 	"testing"
 
+	"github.com/gruntwork-io/terratest/modules/random"
 	"github.com/gruntwork-io/terratest/modules/ssh"
 	"github.com/gruntwork-io/terratest/modules/terraform"
-	"github.com/gruntwork-io/terratest/modules/random"
 )
 
 func TestBasicBasic(t *testing.T) {
 	t.Parallel()
-	uniqueID := os.Getenv("IDENTIFIER")
-	if uniqueID == "" {
-		uniqueID = random.UniqueId()
-	}
+	uniqueID := os.Getenv("IDENTIFIER") + "-" + random.UniqueId()
 	category := "basic"
 	directory := "basic"
 	region := "us-west-2"
@@ -29,10 +26,7 @@ func TestBasicBasic(t *testing.T) {
 
 func TestBasicPrivateIp(t *testing.T) {
 	t.Parallel()
-	uniqueID := os.Getenv("IDENTIFIER")
-	if uniqueID == "" {
-		uniqueID = random.UniqueId()
-	}
+	uniqueID := os.Getenv("IDENTIFIER") + "-" + random.UniqueId()
 	category := "basic"
 	directory := "privateip"
 	region := "us-west-1"
@@ -46,10 +40,7 @@ func TestBasicPrivateIp(t *testing.T) {
 }
 func TestBasicIndirectOnly(t *testing.T) {
 	t.Parallel()
-	uniqueID := os.Getenv("IDENTIFIER")
-	if uniqueID == "" {
-		uniqueID = random.UniqueId()
-	}
+	uniqueID := os.Getenv("IDENTIFIER") + "-" + random.UniqueId()
 	category := "basic"
 	directory := "indirectonly"
 	region := "us-west-1"
@@ -68,10 +59,7 @@ func TestBasicIndirectDomain(t *testing.T) {
 	if acmeserver == "" {
 		os.Setenv("ACME_SERVER_URL", "https://acme-staging-v02.api.letsencrypt.org/directory")
 	}
-	uniqueID := os.Getenv("IDENTIFIER")
-	if uniqueID == "" {
-		uniqueID = random.UniqueId()
-	}
+	uniqueID := os.Getenv("IDENTIFIER") + "-" + random.UniqueId()
 	category := "basic"
 	directory := "indirectdomain"
 	region := "us-west-1"
@@ -87,10 +75,7 @@ func TestBasicIndirectDomain(t *testing.T) {
 
 func TestBasicDirectNetworkOnly(t *testing.T) {
 	t.Parallel()
-	uniqueID := os.Getenv("IDENTIFIER")
-	if uniqueID == "" {
-		uniqueID = random.UniqueId()
-	}
+	uniqueID := os.Getenv("IDENTIFIER") + "-" + random.UniqueId()
 	category := "basic"
 	directory := "directnetworkonly"
 	region := "us-west-1"
@@ -110,10 +95,7 @@ func TestBasicDirectNetworkDomain(t *testing.T) {
 	if acmeserver == "" {
 		os.Setenv("ACME_SERVER_URL", "https://acme-staging-v02.api.letsencrypt.org/directory")
 	}
-	uniqueID := os.Getenv("IDENTIFIER")
-	if uniqueID == "" {
-		uniqueID = random.UniqueId()
-	}
+	uniqueID := os.Getenv("IDENTIFIER") + "-" + random.UniqueId()
 	category := "basic"
 	directory := "directnetworkdomain"
 	region := "us-west-1"
@@ -129,10 +111,7 @@ func TestBasicDirectNetworkDomain(t *testing.T) {
 
 func TestBasicDirectSshEip(t *testing.T) {
 	t.Parallel()
-	uniqueID := os.Getenv("IDENTIFIER")
-	if uniqueID == "" {
-		uniqueID = random.UniqueId()
-	}
+	uniqueID := os.Getenv("IDENTIFIER") + "-" + random.UniqueId()
 	category := "basic"
 	directory := "directssheip"
 	region := "us-west-1"
@@ -152,10 +131,7 @@ func TestBasicDirectSshEip(t *testing.T) {
 
 func TestBasicDirectSshSubnet(t *testing.T) {
 	t.Parallel()
-	uniqueID := os.Getenv("IDENTIFIER")
-	if uniqueID == "" {
-		uniqueID = random.UniqueId()
-	}
+	uniqueID := os.Getenv("IDENTIFIER") + "-" + random.UniqueId()
 	category := "basic"
 	directory := "directsshsubnet"
 	region := "us-west-1"

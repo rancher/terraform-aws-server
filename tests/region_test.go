@@ -10,10 +10,7 @@ import (
 
 func TestRegionUsEast1(t *testing.T) {
 	t.Parallel()
-	uniqueID := os.Getenv("IDENTIFIER")
-	if uniqueID == "" {
-		uniqueID = random.UniqueId()
-	}
+	uniqueID := os.Getenv("IDENTIFIER") + "-" + random.UniqueId()
 	category := "region"
 	directory := "useast1"
 	region := "us-east-1"
@@ -27,10 +24,7 @@ func TestRegionUsEast1(t *testing.T) {
 }
 func TestRegionUsEast2(t *testing.T) {
 	t.Parallel()
-	uniqueID := os.Getenv("IDENTIFIER")
-	if uniqueID == "" {
-		uniqueID = random.UniqueId()
-	}
+	uniqueID := os.Getenv("IDENTIFIER") + "-" + random.UniqueId()
 	category := "region"
 	directory := "useast2"
 	region := "us-east-2"
@@ -44,10 +38,7 @@ func TestRegionUsEast2(t *testing.T) {
 }
 func TestRegionUsWest1(t *testing.T) {
 	t.Parallel()
-	uniqueID := os.Getenv("IDENTIFIER")
-	if uniqueID == "" {
-		uniqueID = random.UniqueId()
-	}
+	uniqueID := os.Getenv("IDENTIFIER") + "-" + random.UniqueId()
 	category := "region"
 	directory := "uswest1"
 	region := "us-west-1"
@@ -61,10 +52,7 @@ func TestRegionUsWest1(t *testing.T) {
 }
 func TestRegionUsWest2(t *testing.T) {
 	t.Parallel()
-	uniqueID := os.Getenv("IDENTIFIER")
-	if uniqueID == "" {
-		uniqueID = random.UniqueId()
-	}
+	uniqueID := os.Getenv("IDENTIFIER") + "-" + random.UniqueId()
 	category := "region"
 	directory := "uswest2"
 	region := "us-west-2"

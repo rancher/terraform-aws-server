@@ -11,10 +11,7 @@ import (
 
 func TestImageTypeBasic(t *testing.T) {
 	t.Parallel()
-	uniqueID := os.Getenv("IDENTIFIER")
-	if uniqueID == "" {
-		uniqueID = random.UniqueId()
-	}
+	uniqueID := os.Getenv("IDENTIFIER") + "-" + random.UniqueId()
 	category 	:= "imagetype"
 	directory := "basic"
 	region 		:= "us-west-1"
@@ -46,10 +43,7 @@ func TestImageTypeBasic(t *testing.T) {
 
 func TestImageTypeCustom(t *testing.T) {
 	t.Parallel()
-	uniqueID := os.Getenv("IDENTIFIER")
-	if uniqueID == "" {
-		uniqueID = random.UniqueId()
-	}
+	uniqueID := os.Getenv("IDENTIFIER") + "-" + random.UniqueId()
 	category 	:= "imagetype"
 	directory := "custom"
 	region 		:= "us-west-1"
@@ -66,10 +60,7 @@ func TestImageTypeCustom(t *testing.T) {
 
 func TestImageTypeSelect(t *testing.T) {
 	t.Parallel()
-	uniqueID := os.Getenv("IDENTIFIER")
-	if uniqueID == "" {
-		uniqueID = random.UniqueId()
-	}
+	uniqueID := os.Getenv("IDENTIFIER") + "-" + random.UniqueId()
 	category 	:= "imagetype"
 	directory := "select"
 	region 		:= "us-west-1"
@@ -86,10 +77,7 @@ func TestImageTypeSelect(t *testing.T) {
 
 func TestImageTypeUsEast1(t *testing.T) {
 	t.Parallel()
-	uniqueID := os.Getenv("IDENTIFIER")
-	if uniqueID == "" {
-		uniqueID = random.UniqueId()
-	}
+	uniqueID := os.Getenv("IDENTIFIER") + "-" + random.UniqueId()
 	category 	:= "imagetype"
 	directory := "useast1"
 	region 		:= "us-east-1"
@@ -120,10 +108,7 @@ func TestImageTypeUsEast1(t *testing.T) {
 }
 func TestImageTypeUsEast2(t *testing.T) {
 	t.Parallel()
-	uniqueID := os.Getenv("IDENTIFIER")
-	if uniqueID == "" {
-		uniqueID = random.UniqueId()
-	}
+	uniqueID := os.Getenv("IDENTIFIER") + "-" + random.UniqueId()
 	category 	:= "imagetype"
 	directory := "useast2"
 	region 		:= "us-east-2"
@@ -155,10 +140,7 @@ func TestImageTypeUsEast2(t *testing.T) {
 
 func TestImageTypeUsWest1(t *testing.T) {
 	t.Parallel()
-	uniqueID := os.Getenv("IDENTIFIER")
-	if uniqueID == "" {
-		uniqueID = random.UniqueId()
-	}
+	uniqueID := os.Getenv("IDENTIFIER") + "-" + random.UniqueId()
 	category 	:= "imagetype"
 	directory := "uswest1"
 	region 		:= "us-west-1"
@@ -189,10 +171,7 @@ func TestImageTypeUsWest1(t *testing.T) {
 }
 func TestImageTypeUsWest2(t *testing.T) {
 	t.Parallel()
-	uniqueID := os.Getenv("IDENTIFIER")
-	if uniqueID == "" {
-		uniqueID = random.UniqueId()
-	}
+	uniqueID := os.Getenv("IDENTIFIER") + "-" + random.UniqueId()
 	category 	:= "imagetype"
 	directory := "uswest2"
 	region 		:= "us-west-2"

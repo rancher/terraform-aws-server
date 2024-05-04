@@ -59,9 +59,9 @@ module "setup" {
     admin_group = "wheel"
     workfolder  = "~"
   }
-  server_name         = local.project_name
+  server_name         = "${local.project_name}-${random_pet.server.id}"
   server_type         = "small"
-  subnet_name         = keys(module.access.subnets)[0]
+  subnet_name         = "${local.project_name}-sn"
   security_group_name = module.access.security_group.tags_all.Name
 }
 
