@@ -14,9 +14,9 @@ locals {
   email        = "terraform-ci@suse.com"
   project_name = "tf-${substr(md5(join("-", [local.category, local.example, md5(local.identifier)])), 0, 5)}-${local.identifier}"
   username     = "tf-${local.identifier}"
-  image        = "sles-15-byos"  # BYOS = Bring Your Own Subscription, only use this if you have a subscription with SUSE or plan to get one directly rather than going through AWS
-  vpc_cidr     = "10.0.255.0/24" # gives 256 usable addresses from .1 to .254, but AWS reserves .1 to .4 and .255, leaving .5 to .254
-  subnet_cidr  = "10.0.255.224/28"
+  image        = "sles-15-byos" # BYOS = Bring Your Own Subscription, only use this if you have a subscription with SUSE or plan to get one directly rather than going through AWS
+  vpc_cidr     = "10.0.0.0/16"
+  subnet_cidr  = "10.0.238.0/24"
   ip           = chomp(data.http.myip.response_body)
   ssh_key      = var.key
 }
