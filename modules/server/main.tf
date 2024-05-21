@@ -119,6 +119,7 @@ resource "aws_instance" "created" {
 
   instance_initiated_shutdown_behavior = "stop" # termination can be handled by destroy or separately
   user_data_base64                     = local.cloudinit
+  user_data_replace_on_change          = true # rebuild the server if the user data changes
   availability_zone                    = data.aws_subnet.general_info_create[0].availability_zone
 
   tags = {

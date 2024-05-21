@@ -145,9 +145,9 @@ module "direct_access" {
   server = {
     id                   = module.server[0].id
     name                 = module.server[0].tags_all.Name
-    network_interface_id = module.server[0].network_interface.id
+    network_interface_id = module.server[0].network_interface_id
     public_ip            = module.server[0].public_ip
-    vpc_id               = module.server[0].vpc.id
+    vpc_id               = module.server[0].vpc_id
   }
   image = {
     id          = module.image[0].id

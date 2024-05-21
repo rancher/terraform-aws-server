@@ -1,6 +1,9 @@
 output "server" {
-  value = module.this
+  value = module.this.server
 }
-output "setup" {
-  value = module.setup
+output "image" {
+  value = module.this.image
+}
+output "access" {
+  value = module.access
 }

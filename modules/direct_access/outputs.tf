@@ -1,31 +1,19 @@
 output "eip" {
-  value = (length(aws_eip.created) > 0 ? {
-    id            = aws_eip.created[0].id
-    public_ip     = aws_eip.created[0].public_ip
-    allocation_id = aws_eip.created[0].allocation_id
-    } : {
-    id            = ""
-    public_ip     = ""
-    allocation_id = ""
-    }
-  )
+  value = {
+    id            = try(aws_eip.created[0].id, "")
+    public_ip     = try(aws_eip.created[0].public_ip, "")
+    allocation_id = try(aws_eip.created[0].allocation_id, "")
+  }
 }
 
 output "domain" {
-  value = (length(aws_route53_record.created) > 0 ? {
-    id      = aws_route53_record.created[0].id
-    name    = aws_route53_record.created[0].name
-    fqdn    = aws_route53_record.created[0].fqdn
-    records = aws_route53_record.created[0].records
-    zone_id = aws_route53_record.created[0].zone_id
-    } : {
-    id      = ""
-    name    = ""
-    fqdn    = ""
-    records = toset([""])
-    zone_id = ""
-    }
-  )
+  value = {
+    id      = try(aws_route53_record.created[0].id, "")
+    name    = try(aws_route53_record.created[0].name, "")
+    fqdn    = try(aws_route53_record.created[0].fqdn, "")
+    records = try(aws_route53_record.created[0].records, toset([]))
+    zone_id = try(aws_route53_record.created[0].zone_id, "")
+  }
 }
 
 output "security_group" {

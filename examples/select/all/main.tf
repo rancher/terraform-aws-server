@@ -80,5 +80,5 @@ module "this" {
     workfolder  = "~"
   }
   server_use_strategy = "select"
-  server_id           = module.setup.server[0].id
+  server_id           = module.setup.server.id
 }
