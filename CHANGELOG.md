@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.1](https://github.com/rancher/terraform-aws-server/compare/v1.0.0...v1.0.1) (2024-05-21)
+
+
+### Bug Fixes
+
+* collision domains ([#71](https://github.com/rancher/terraform-aws-server/issues/71)) ([dbc3c4d](https://github.com/rancher/terraform-aws-server/commit/dbc3c4ded880f65f0872f60f6a748144f71254ca))
+* normalize and validate out put ([#69](https://github.com/rancher/terraform-aws-server/issues/69)) ([3b5ae2b](https://github.com/rancher/terraform-aws-server/commit/3b5ae2be5a87e80d7292e39662ca03792a674399))
+
 ## [1.0.0](https://github.com/rancher/terraform-aws-server/compare/v0.4.1...v1.0.0) (2024-05-04)
 
 
