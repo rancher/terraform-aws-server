@@ -69,5 +69,5 @@ module "this" {
   # version = "v2.0.0" # when using this example you will need to set the version
   image_type          = local.image
   server_use_strategy = "select"
-  server_id           = module.setup.server[0].id
+  server_id           = module.setup.server.id
 }

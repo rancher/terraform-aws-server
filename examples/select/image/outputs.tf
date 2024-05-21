@@ -1,3 +1,3 @@
-output "server" {
-  value = module.this
+output "image" {
+  value = module.this.image
 }
