@@ -45,6 +45,7 @@ variable "custom_types" {
     group        = string
     name         = string
     name_regex   = string
+    product_code = string
     owners       = list(string)
     architecture = string
     workfolder   = string
@@ -60,6 +61,7 @@ variable "custom_types" {
       group        = ""
       name         = ""
       name_regex   = ""
+      product_code = ""
       owners       = []
       architecture = ""
       workfolder   = ""

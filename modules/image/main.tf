@@ -18,12 +18,14 @@ locals {
   types        = merge(local.standard_types, local.custom_types)
   type         = (local.search ? local.types[local.find_type] : null)
   owners       = (local.search ? local.type.owners : [])
-  architecture = (local.search ? local.type.architecture : null)
-  name         = (local.search ? local.type.name : null)
-  name_regex   = (local.search ? local.type.name_regex : null)
+  architecture = (local.search ? local.type.architecture : "")
+  name         = (local.search ? local.type.name : "")
+  name_regex   = (local.search ? local.type.name_regex : "")
+  product_code = (local.search ? local.type.product_code : "")
   user         = (local.search ? local.type.user : local.image.user)
   admin_group  = (local.search ? local.type.group : local.image.admin_group)
   workfolder   = (local.search ? local.type.workfolder : local.image.workfolder)
+  filters      = { for k, v in { "name" = local.name, "product-code" = local.product_code, "architecture" = local.architecture } : k => v if v != "" }
 }
 
 data "aws_ami" "search" {
@@ -32,19 +34,12 @@ data "aws_ami" "search" {
   owners      = local.owners
   name_regex  = local.name_regex
 
-  filter {
-    name   = "virtualization-type"
-    values = ["hvm"]
-  }
-
-  filter {
-    name   = "architecture"
-    values = [local.architecture]
-  }
-
-  filter {
-    name   = "name"
-    values = [local.name]
+  dynamic "filter" {
+    for_each = local.filters
+    content {
+      name   = filter.key
+      values = [filter.value]
+    }
   }
 }
 
