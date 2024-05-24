@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.2](https://github.com/rancher/terraform-aws-server/compare/v1.0.1...v1.0.2) (2024-05-24)
+
+
+### Bug Fixes
+
+* more images found, add product codes ([#72](https://github.com/rancher/terraform-aws-server/issues/72)) ([1454a64](https://github.com/rancher/terraform-aws-server/commit/1454a64e6ddd4b801417348957ff2fe97a3694f3))
+
 ## [1.0.1](https://github.com/rancher/terraform-aws-server/compare/v1.0.0...v1.0.1) (2024-05-21)
 
 
