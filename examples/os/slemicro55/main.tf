@@ -10,13 +10,13 @@ provider "aws" {
 locals {
   identifier   = var.identifier # this is a random unique string that can be used to identify resources in the cloud provider
   category     = "os"
-  example      = "slemicro55ltd"
+  example      = "slemicro55"
   email        = "terraform-ci@suse.com"
   project_name = "tf-${substr(md5(join("-", [local.category, local.example, md5(local.identifier)])), 0, 5)}-${local.identifier}"
   username     = "tf-${local.identifier}"
-  image        = "sle-micro-55-ltd" # ltd refers to SUSE subsidiary incorporation type, in general the LTD images are used in the Europe, the Middle East, and Africa (EMEA)
+  image        = "sle-micro-55" # BYOS = Bring Your Own Subscription, only use this if you have a subscription with SUSE or plan to get one directly rather than going through AWS
   vpc_cidr     = "10.0.0.0/16"
-  subnet_cidr  = "10.0.240.0/24"
+  subnet_cidr  = "10.0.242.0/24"
   ip           = chomp(data.http.myip.response_body)
   ssh_key      = var.key
   ssh_key_name = var.key_name
@@ -67,7 +67,7 @@ module "this" {
   subnet_name                = module.access.subnets[keys(module.access.subnets)[0]].tags_all.Name
   security_group_name        = module.access.security_group.tags_all.Name
   direct_access_use_strategy = "ssh"  # either the subnet needs to be public or you must add an eip
-  cloudinit_use_strategy     = "skip" # slemicro 5 does not support cloud-init
+  cloudinit_use_strategy     = "skip" # this version of SLE Micro doesn't support cloud-init
   server_access_addresses = {         # you must include ssh access here to enable setup
     "runner" = {
       port     = 22

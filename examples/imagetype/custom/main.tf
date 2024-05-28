@@ -16,10 +16,10 @@ locals {
     "${local.identifier}" = {
       user         = "suse"
       group        = "wheel"
-      name         = "suse-sle-micro-5-4-byos-v*-hvm-ssd-x86_64"
+      name         = "suse-sle-micro-5-5-byos-v*-hvm-ssd-x86_64"
       name_regex   = ".*"
       product_code = ""
-      owners       = ["679593333241", "013907871322"]
+      owners       = ["013907871322"]
       architecture = "x86_64"
       workfolder   = "~"
     }

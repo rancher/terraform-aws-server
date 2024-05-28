@@ -14,10 +14,7 @@ locals {
   identifier = var.identifier # this is a random unique string that can be used to identify resources in the cloud provider
   types = [
     "sles-15",
-    "sles-15-byos",
-    "sles-15-cis",
-    "sle-micro-55-ltd",
-    "sle-micro-55-byos",
+    "sle-micro-55",
     "rhel-8-cis",
     "ubuntu-20",
     "ubuntu-22",
