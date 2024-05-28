@@ -57,11 +57,7 @@ variable "image_type" {
     Please be aware that some images require a subscription and will have additional cost over usage of the server.
     Current images are:
         "sles-15",
-        "sles-15-byos",
-        "sles-15-cis",
-        "sle-micro-55-llc",
-        "sle-micro-55-ltd",
-        "sle-micro-55-byos",
+        "sle-micro-55",
         "rhel-8-cis",
         "ubuntu-20",
         "ubuntu-22",
@@ -75,11 +71,7 @@ variable "image_type" {
     condition = (
       var.image_type == "" ? true : contains([
         "sles-15",
-        "sles-15-byos",
-        "sles-15-cis",
-        "sle-micro-55-llc",
-        "sle-micro-55-ltd",
-        "sle-micro-55-byos",
+        "sle-micro-55",
         "rhel-8-cis",
         "ubuntu-20",
         "ubuntu-22",
@@ -92,11 +84,7 @@ variable "image_type" {
     error_message = <<-EOT
       If specified, this must be one of 
         "sles-15",
-        "sles-15-byos",
-        "sles-15-cis",
-        "sle-micro-55-llc",
-        "sle-micro-55-ltd",
-        "sle-micro-55-byos",
+        "sle-micro-55",
         "rhel-8-cis",
         "ubuntu-20",
         "ubuntu-22",
