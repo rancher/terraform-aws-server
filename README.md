@@ -8,7 +8,11 @@ See the examples/select/image for an example of how to do this
 
 ## Recent Changes
 
-1. WARNING! Refactor!
+1. Rename images
+    - Removed SUSE images that weren't BYOS (bring your own subscription)
+      - Amazon subscriptions are harder to automate and don't provide direct service, it ends up being a hidden fee of using the image. Instead, users can use the BYOS image without a subscription until they need one, and then they can add a subscription separately bought from SUSE.
+    - Started using SUSE cloud info API to get the latest image names
+2. WARNING! Refactor!
     A new Major version and a few new tricks.
     I don't like breaking the interface, but to enable new functionality it made the most sense to refactor.
     - set the private ip for your sever
@@ -20,12 +24,10 @@ See the examples/select/image for an example of how to do this
       - look out for attributes like "server_use_strategy" to enable or disable features
     - indirect access!
       - now you can assign aws lb target group associations when you generate your server
-2. New Images!
+3. New Images!
     - Added SUSE Liberty 7.9
     - Added SLE Micro 5.5 (all subscription types)
       - WARNING! we can't test llc (US and China) images due to our account geolocation (Germany)
-3. Servers will no longer deploy a public ip by default.
-     You can override this by setting up a subnet that automatically deploys public ips.
 
 
 ## AWS Access
