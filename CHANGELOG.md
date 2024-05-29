@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.0.3](https://github.com/rancher/terraform-aws-server/compare/v1.0.2...v1.0.3) (2024-05-29)
+
+
+### Bug Fixes
+
+* consolidate image tests ([#77](https://github.com/rancher/terraform-aws-server/issues/77)) ([a5f63e3](https://github.com/rancher/terraform-aws-server/commit/a5f63e3803030734cbfea96a4abd049d50cf0953))
+* new selection process ([#74](https://github.com/rancher/terraform-aws-server/issues/74)) ([32d7021](https://github.com/rancher/terraform-aws-server/commit/32d7021d10e0ecd690022bedae8547bd1349b039))
+* remove unnecessary tests ([#80](https://github.com/rancher/terraform-aws-server/issues/80)) ([f0f8e5f](https://github.com/rancher/terraform-aws-server/commit/f0f8e5ffc36c96a8894c1af5f2dbfa878521f33f))
+* update docs with new change ([#79](https://github.com/rancher/terraform-aws-server/issues/79)) ([37c9345](https://github.com/rancher/terraform-aws-server/commit/37c9345061d4ca76e608f5fa36f0f938ba9de05e))
+* update image names ([#76](https://github.com/rancher/terraform-aws-server/issues/76)) ([6625eea](https://github.com/rancher/terraform-aws-server/commit/6625eeadbd8758b3b7b05ffd96313b9f773b6c58))
+* update tests ([#78](https://github.com/rancher/terraform-aws-server/issues/78)) ([8e63087](https://github.com/rancher/terraform-aws-server/commit/8e6308779ad7f5955f37c1aed0396e197edc0e5d))
+
 ## [1.0.2](https://github.com/rancher/terraform-aws-server/compare/v1.0.1...v1.0.2) (2024-05-24)
 
 
