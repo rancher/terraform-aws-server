@@ -13,7 +13,7 @@ locals {
   example      = "slemicro55"
   email        = "terraform-ci@suse.com"
   project_name = "tf-${substr(md5(join("-", [local.category, local.example, md5(local.identifier)])), 0, 5)}-${local.identifier}"
-  username     = "tf-${local.identifier}"
+  username     = lower(substr("tf-${local.identifier}", 0, 32))
   image        = "sle-micro-55" # BYOS = Bring Your Own Subscription, only use this if you have a subscription with SUSE or plan to get one directly rather than going through AWS
   vpc_cidr     = "10.0.0.0/16"
   subnet_cidr  = "10.0.242.0/24"

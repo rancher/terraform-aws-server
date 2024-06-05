@@ -13,7 +13,7 @@ locals {
   example      = "rhel8cis"
   email        = "terraform-ci@suse.com"
   project_name = "tf-${substr(md5(join("-", [local.category, local.example, md5(local.identifier)])), 0, 5)}-${local.identifier}"
-  username     = "tf-${local.identifier}"
+  username     = lower(substr("tf-${local.identifier}", 0, 32))
   image        = "rhel-8-cis"
   vpc_cidr     = "10.0.0.0/16"
   subnet_cidr  = "10.0.245.0/24"

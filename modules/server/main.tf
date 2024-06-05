@@ -18,7 +18,7 @@ locals {
   ssh_key_name             = var.ssh_key_name
 
   ip         = var.ip # private ip to assign to the server
-  default_ip = (length(data.aws_subnet.general_info_create) > 0 ? cidrhost(data.aws_subnet.general_info_create[0].cidr_block, -2) : "")
+  default_ip = (length(data.aws_subnet.general_info_create) > 0 ? cidrhost(data.aws_subnet.general_info_create[0].cidr_block, -3) : "")
   server_ip  = (local.ip != "" ? local.ip : local.default_ip)
   ipv4       = (strcontains(local.server_ip, ":") ? "" : local.server_ip)
   ipv6       = (strcontains(local.server_ip, ":") ? local.server_ip : "")

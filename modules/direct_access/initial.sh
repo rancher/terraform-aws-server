@@ -15,30 +15,32 @@ if [ -z "${NAME}" ]; then echo "NAME is not set"; exit 1; fi
 if [ -z "${ADMIN_GROUP}" ]; then echo "ADMIN_GROUP is not set"; exit 1; fi
 # default timeout to 5min
 if [ -z "${TIMEOUT}" ]; then TIMEOUT=5; fi
-if [ -z "${IGNORE_CLOUDINIT}" ]; then IGNORE_CLOUDINIT=false; fi
-if [ -z "$(which cloud-init)" ]; then IGNORE_CLOUDINIT=true; fi
+if [ -z "${IGNORE_CLOUDINIT}" ]; then IGNORE_CLOUDINIT=0; fi
+if [ -z "$(which cloud-init)" ]; then IGNORE_CLOUDINIT=1; fi
+if [ "${IGNORE_CLOUDINIT}" = "false" ]; then IGNORE_CLOUDINIT=0; fi
+if [ "${IGNORE_CLOUDINIT}" = "true" ]; then IGNORE_CLOUDINIT=1; fi
 
 EXIT=0
 max_attempts=$((TIMEOUT * 60 / 10))
 attempts=0
 interval=10
 
-if [ "${IGNORE_CLOUDINIT}" ]; then
+if [ "${IGNORE_CLOUDINIT}" -eq 1 ]; then
   echo "cloud-init not found or ignored, attempting other tools...";
   # check for user, if it doesn't exist generate it
   if [ "$(awk -F: '{ print $1 }' /etc/passwd | grep "${USER}")" = "" ]; then
     if [ "$(which addgroup)" != "" ]; then
         addgroup "${USER}" # generate a group for the user
-        adduser -g "${USER}" -s "/bin/sh" -G "${USER}" -D "${USER}"
-        addgroup "${USER}" "${ADMIN_GROUP}"
-      elif [ "$(which useradd)" != "" ]; then
+        adduser  --ingroup "${USER}" --shell "/bin/sh" --disabled-password --gecos "${USER}" "${USER}"
+        adduser  "${USER}" "${ADMIN_GROUP}"
+    elif [ "$(which useradd)" != "" ]; then
         useradd -U -s "/bin/sh" -m -G "${ADMIN_GROUP}" "${USER}"
         echo "${USER} ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
-      else {
+    else {
         echo "No supported user creation tool found";
         EXIT=1
         break
-      }
+    }
     fi
     install -d -m 0700 /home/"${USER}"/.ssh
     cp .ssh/authorized_keys /home/"${USER}"/.ssh

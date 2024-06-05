@@ -285,7 +285,6 @@ func TestOsUbuntu22(t *testing.T) {
 
   defer teardown(t, category, directory, keyPair)
   defer terraform.Destroy(t, terraformOptions)
-  delete(terraformOptions.Vars, "key_name")
   terraform.InitAndPlan(t, terraformOptions)
   terraform.InitAndApply(t, terraformOptions)
 
