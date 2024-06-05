@@ -325,10 +325,12 @@ variable "server_user" {
   EOT
   default     = null
   validation {
-    condition = (
-      var.server_user == null ? true : (length(var.server_user["user"]) <= 32 ? true : false)
-    )
+    condition     = (var.server_user == null ? true : (length(var.server_user["user"]) <= 32 ? true : false))
     error_message = "If specified, user must be 32 characters or less."
+  }
+  validation {
+    condition     = (var.server_user == null ? true : (var.server_user["user"] == lower(var.server_user["user"]) ? true : false))
+    error_message = "If specified, user must be all lower case."
   }
 }
 variable "add_domain" {
