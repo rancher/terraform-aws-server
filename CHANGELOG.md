@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.4](https://github.com/rancher/terraform-aws-server/compare/v1.0.3...v1.0.4) (2024-06-05)
+
+
+### Bug Fixes
+
+* resolve failing user setup ([#81](https://github.com/rancher/terraform-aws-server/issues/81)) ([f4d2167](https://github.com/rancher/terraform-aws-server/commit/f4d21679e64b954044f26461d800a98b3d0be7e1))
+
 ## [1.0.3](https://github.com/rancher/terraform-aws-server/compare/v1.0.2...v1.0.3) (2024-05-29)
 
 
