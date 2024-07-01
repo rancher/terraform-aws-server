@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/rancher/terraform-aws-server/compare/v1.0.4...v1.1.0) (2024-07-01)
+
+
+### Features
+
+* upgrade to new access module ([#83](https://github.com/rancher/terraform-aws-server/issues/83)) ([dd15b26](https://github.com/rancher/terraform-aws-server/commit/dd15b26b700729ec3629b82095bd22f0655ad84e))
+
 ## [1.0.4](https://github.com/rancher/terraform-aws-server/compare/v1.0.3...v1.0.4) (2024-06-05)
 
 
