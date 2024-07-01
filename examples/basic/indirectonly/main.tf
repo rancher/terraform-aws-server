@@ -12,10 +12,8 @@ locals {
   category     = "basic"
   example      = "indirect"
   email        = "terraform-ci@suse.com"
-  project_name = "tf-${substr(md5(join("-", [local.category, local.example, md5(local.identifier)])), 0, 5)}-${local.identifier}"
+  project_name = substr("tf-${substr(md5(join("-", [local.category, local.example, md5(local.identifier)])), 0, 5)}-${local.identifier}", 0, 25)
   image        = "sles-15"
-  vpc_cidr     = "10.0.0.0/16"
-  subnet_cidr  = "10.0.249.0/24"
   port         = 80
   ip           = chomp(data.http.myip.response_body)
 }
@@ -34,20 +32,16 @@ data "aws_availability_zones" "available" {
 
 data "http" "myip" {
   url = "https://ipinfo.io/ip"
+  retry {
+    attempts     = 2
+    min_delay_ms = 1000
+  }
 }
 
 module "access" {
-  source   = "rancher/access/aws"
-  version  = "v2.1.2"
-  vpc_name = "${local.project_name}-vpc"
-  vpc_cidr = local.vpc_cidr
-  subnets = {
-    "${local.project_name}-sn" = {
-      cidr              = local.subnet_cidr
-      availability_zone = data.aws_availability_zones.available.names[0]
-      public            = false
-    }
-  }
+  source                     = "rancher/access/aws"
+  version                    = "v3.0.1"
+  vpc_name                   = "${local.project_name}-vpc"
   security_group_name        = "${local.project_name}-sg"
   security_group_type        = "project"
   domain_use_strategy        = "skip"
@@ -55,9 +49,10 @@ module "access" {
   load_balancer_name         = "${local.project_name}-lb"
   load_balancer_access_cidrs = {
     ping = {
-      port     = local.port
-      protocol = "tcp"
-      cidrs    = ["${local.ip}/32"]
+      port        = local.port
+      protocol    = "tcp"
+      cidrs       = ["${local.ip}/32"]
+      target_name = substr("${local.project_name}-ping", 0, 32)
     }
   }
 }
@@ -71,8 +66,8 @@ module "this" {
   image_type                   = local.image
   server_name                  = "${local.project_name}-${random_pet.server.id}"
   server_type                  = "small"
-  subnet_name                  = module.access.subnets[keys(module.access.subnets)[0]].tags_all.Name
+  subnet_name                  = keys(module.access.subnets)[0]
   security_group_name          = module.access.security_group.tags_all.Name
   indirect_access_use_strategy = "enable"
-  load_balancer_target_groups  = module.access.load_balancer_target_groups[*].tags_all.Name
+  load_balancer_target_groups  = [substr("${local.project_name}-ping", 0, 32)]
 }

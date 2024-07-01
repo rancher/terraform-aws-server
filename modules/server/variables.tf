@@ -49,8 +49,7 @@ variable "image" {
 variable "subnet" {
   type        = string
   description = <<-EOT
-    The name of the subnet which already exists in AWS to 
-      attach to the server.
+    The name of the subnet which already exists in AWS to attach to the server.
     WARNING: Subnets are availability zone specific,
       so this is selecting an availability zone for the server.
   EOT
