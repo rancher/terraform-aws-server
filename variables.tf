@@ -251,7 +251,6 @@ variable "load_balancer_target_groups" {
   default     = []
 }
 
-
 #####
 # Feature: direct access
 #####
@@ -331,6 +330,10 @@ variable "server_user" {
   validation {
     condition     = (var.server_user == null ? true : (var.server_user["user"] == lower(var.server_user["user"]) ? true : false))
     error_message = "If specified, user must be all lower case."
+  }
+  validation {
+    condition     = (var.server_user == null ? true : ((var.server_user["aws_keypair_use_strategy"] == "select" && var.server_user["ssh_key_name"] == "") ? false : true))
+    error_message = "If specified, when selecting a keypair from AWS, the key_name is required."
   }
 }
 variable "add_domain" {

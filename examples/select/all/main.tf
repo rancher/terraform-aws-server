@@ -13,8 +13,6 @@ locals {
   example      = "server"
   email        = "terraform-ci@suse.com"
   project_name = "tf-${substr(md5(join("-", [local.category, local.example, md5(local.identifier)])), 0, 5)}-${local.identifier}"
-  vpc_cidr     = "10.0.0.0/16"
-  subnet_cidr  = "10.0.230.0/24"
 }
 
 resource "random_pet" "server" {
@@ -30,17 +28,9 @@ data "aws_availability_zones" "available" {
 }
 
 module "access" {
-  source   = "rancher/access/aws"
-  version  = "v2.1.2"
-  vpc_name = "${local.project_name}-vpc"
-  vpc_cidr = local.vpc_cidr
-  subnets = {
-    "${local.project_name}-sn" = {
-      cidr              = local.subnet_cidr
-      availability_zone = data.aws_availability_zones.available.names[0]
-      public            = false
-    }
-  }
+  source                     = "rancher/access/aws"
+  version                    = "v3.0.1"
+  vpc_name                   = "${local.project_name}-vpc"
   security_group_name        = "${local.project_name}-sg" # quirk, this name must be unique accross object types and can't start with 'sg-'
   security_group_type        = "project"
   load_balancer_use_strategy = "skip"
@@ -61,7 +51,7 @@ module "setup" {
   }
   server_name         = "${local.project_name}-${random_pet.server.id}"
   server_type         = "small"
-  subnet_name         = "${local.project_name}-sn"
+  subnet_name         = keys(module.access.subnets)[0]
   security_group_name = module.access.security_group.tags_all.Name
 }
 

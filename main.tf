@@ -57,8 +57,11 @@ locals {
   fail_domain_name = ((local.add_domain && local.domain_name == "") ? one([local.domain_name, "missing_domain_name"]) : false)
   domain_zone      = var.domain_zone
   # tflint-ignore: terraform_unused_declarations
-  fail_domain_zone = ((local.add_domain && local.domain_zone == "") ? one([local.domain_zone, "missing_domain_zone"]) : false)
-  add_eip          = var.add_eip
+  fail_domain_zone      = ((local.add_domain && local.domain_zone == "") ? one([local.domain_zone, "missing_domain_zone"]) : false)
+  add_eip               = var.add_eip
+  direct_access_host_ip = (length(module.server) > 0 ? module.server[0].public_ip : "")
+  # tflint-ignore: terraform_unused_declarations
+  fail_direct_access_host_ip = ((local.server_mod == 1 && local.direct_access_use_strategy != "skip" && local.direct_access_host_ip == "") ? one([local.direct_access_host_ip, "missing_direct_access_host_ip"]) : false)
 
   # config
   cloudinit_use_strategy = var.cloudinit_use_strategy
