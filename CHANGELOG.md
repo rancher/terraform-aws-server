@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/rancher/terraform-aws-server/compare/v1.1.0...v1.1.1) (2024-07-04)
+
+
+### Bug Fixes
+
+* do not force address select ([#85](https://github.com/rancher/terraform-aws-server/issues/85)) ([ff29bdc](https://github.com/rancher/terraform-aws-server/commit/ff29bdce6b8828f6344a1981fd3a479126147008))
+
 ## [1.1.0](https://github.com/rancher/terraform-aws-server/compare/v1.0.4...v1.1.0) (2024-07-01)
 
 
