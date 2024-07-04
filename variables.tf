@@ -213,11 +213,10 @@ variable "private_ip" {
   description = <<-EOT
     An available private ip to assign to the server.
     This must be within the subnet assigned to the server.
-    If one is not set we will use the next to last ip in the subnet.
+    If one is not set then AWS will assign an ip from the subnet.
   EOT
   default     = ""
 }
-
 
 
 #####
