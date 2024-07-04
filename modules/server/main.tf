@@ -17,13 +17,9 @@ locals {
   ssh_key                  = var.ssh_key
   ssh_key_name             = var.ssh_key_name
 
-  ip         = var.ip # private ip to assign to the server
-  default_ip = (length(data.aws_subnet.general_info_create) > 0 ? cidrhost(data.aws_subnet.general_info_create[0].cidr_block, -3) : "")
-  server_ip  = (local.ip != "" ? local.ip : local.default_ip)
-  ipv4       = (strcontains(local.server_ip, ":") ? "" : local.server_ip)
-  ipv6       = (strcontains(local.server_ip, ":") ? local.server_ip : "")
-  # tflint-ignore: terraform_unused_declarations
-  fail_ip = ((local.create == 1 && local.ipv4 == "" && local.ipv6 == "") ? one([local.server_ip, "ip_not_found"]) : false)
+  ip   = var.ip # private ip to assign to the server
+  ipv4 = (strcontains(local.ip, ":") ? "" : local.ip)
+  ipv6 = (strcontains(local.ip, ":") ? local.ip : "")
 }
 
 # select
@@ -78,8 +74,8 @@ resource "aws_network_interface" "created" {
     data.aws_subnet.general_info_create,
   ]
   subnet_id      = data.aws_subnet.general_info_create[0].id
-  private_ips    = (local.ipv4 != "" ? [local.ipv4] : [])
-  ipv6_addresses = (local.ipv6 != "" ? [local.ipv6] : [])
+  private_ips    = (local.ipv4 != "" ? [local.ipv4] : null)
+  ipv6_addresses = (local.ipv6 != "" ? [local.ipv6] : null)
   tags = {
     Name = local.name
   }

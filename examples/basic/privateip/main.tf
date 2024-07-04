@@ -31,7 +31,7 @@ data "aws_availability_zones" "available" {
 
 module "access" {
   source                     = "rancher/access/aws"
-  version                    = "v3.0.1"
+  version                    = "v3.0.2"
   vpc_name                   = "${local.project_name}-vpc"
   security_group_name        = "${local.project_name}-sg"
   security_group_type        = "project"

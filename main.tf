@@ -35,7 +35,7 @@ locals {
   server_security_group_name = var.security_group_name
   # tflint-ignore: terraform_unused_declarations
   fail_security_group_name = ((local.server_use_strategy == "create" && local.server_security_group_name == "") ? one([local.server_security_group_name, "missing_security_group_name"]) : false)
-  server_private_ip        = var.private_ip # if this is empty we will select one
+  server_private_ip        = var.private_ip # if this is empty AWS will assign one
 
   # balanced access
   indirect_access_use_strategy = var.indirect_access_use_strategy
