@@ -27,6 +27,7 @@ locals {
   server_type      = var.server_type
   # tflint-ignore: terraform_unused_declarations
   fail_server_type = ((local.server_use_strategy == "create" && local.server_type == "") ? one([local.server_type, "missing_server_type"]) : false)
+  server_ip_family = var.server_ip_family
 
   # internal access
   server_subnet_name = var.subnet_name
@@ -117,6 +118,7 @@ module "server" {
   id                       = local.server_id
   name                     = local.server_name
   type                     = local.server_type
+  ip_family                = local.server_ip_family
   image                    = module.image[0].image
   subnet                   = local.server_subnet_name
   security_group           = local.server_security_group_name

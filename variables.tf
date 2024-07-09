@@ -1,7 +1,7 @@
 # this server module must be aware of the system requirements of the application that will run on it
 # this is fundamental to generating servers, you need to know the size and how many servers you need
 # with that in mind we also need to know what ports to expose and how to route traffic
-# this module is generalized so that it can be used for any application
+# this module is generalized so that it can be used for any application, but tested with rke2 and Rancher in mind
 
 #####
 # Feature: image
@@ -149,6 +149,19 @@ variable "server_type" {
       var.server_type == "" ? true : contains(["small", "medium", "large", "xl", "xxl"], var.server_type)
     )
     error_message = "If specified, this must be one of 'small', 'medium', 'large', 'xl', or 'xxl'."
+  }
+}
+variable "server_ip_family" {
+  type        = string
+  description = <<-EOT
+    The ip family to use for the server, must be one of "ipv4" or "ipv6".
+    Use ipv4 for dualstack, ipv6 should only be used for ipv6 only deployments.
+    When adding an EIP, this should be 'ipv4'.
+  EOT
+  default     = "ipv4"
+  validation {
+    condition     = contains(["ipv4", "ipv6"], var.server_ip_family)
+    error_message = "This must be one of 'ipv4' or 'ipv6'."
   }
 }
 variable "cloudinit_use_strategy" {

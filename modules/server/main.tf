@@ -8,6 +8,7 @@ locals {
   type   = var.type # the designation from types.tf
   # tflint-ignore: terraform_unused_declarations
   fail_type      = (local.create == 1 && local.server_type == null ? one([local.type, "type_not_found"]) : false)
+  ip_family      = var.ip_family
   server_type    = lookup(local.types, local.type, null)
   security_group = var.security_group # the name of the security group to find and assign to the server
   subnet         = var.subnet         # the name of the subnet to find and assign to the server
@@ -18,8 +19,8 @@ locals {
   ssh_key_name             = var.ssh_key_name
 
   ip   = var.ip # private ip to assign to the server
-  ipv4 = (strcontains(local.ip, ":") ? "" : local.ip)
-  ipv6 = (strcontains(local.ip, ":") ? local.ip : "")
+  ipv4 = (local.ip_family == "ipv4" ? "" : local.ip)
+  ipv6 = (local.ip_family == "ipv6" ? local.ip : "")
 }
 
 # select
