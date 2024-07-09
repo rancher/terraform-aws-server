@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.2](https://github.com/rancher/terraform-aws-server/compare/v1.1.1...v1.1.2) (2024-07-09)
+
+
+### Bug Fixes
+
+* add address family and respond appropriately ([#87](https://github.com/rancher/terraform-aws-server/issues/87)) ([3c4f97a](https://github.com/rancher/terraform-aws-server/commit/3c4f97af0d0d4e9fe423b54326847db3ab991088))
+
 ## [1.1.1](https://github.com/rancher/terraform-aws-server/compare/v1.1.0...v1.1.1) (2024-07-04)
 
 
