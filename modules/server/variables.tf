@@ -71,6 +71,13 @@ variable "ip" {
   EOT
   default     = ""
 }
+variable "ip_family" {
+  type        = string
+  description = <<-EOT
+    The IP family to use for the server.
+    Must be either "ipv4" or "ipv6".
+  EOT
+}
 variable "cloudinit" {
   type        = string
   description = <<-EOT
