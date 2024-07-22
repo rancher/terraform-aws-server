@@ -51,28 +51,32 @@ variable "image" {
 
 variable "access_addresses" {
   type = map(object({
-    port     = number
-    cidrs    = list(string)
-    protocol = string
+    port      = number
+    cidrs     = list(string)
+    ip_family = string
+    protocol  = string
   }))
   description = <<-EOT
     A map of objects with external ingress information.
     Example:
     {
       security_team = {
-        port = 443,
-        cidrs = ["100.1.1.1/28"],
-        protocol = "tcp"
+        port      = 443,
+        cidrs     = ["100.1.1.1/28"],
+        ip_family = "ipv4",
+        protocol  = "tcp"
       }
       support_team = {
-        port = 443
-        cidrs = ["50.1.1.1/28"],
-        protocol = "tcp"
+        port      = 443
+        cidrs     = ["50.1.1.1/28"],
+        ip_family = "ipv4",
+        protocol  = "tcp"
       }
       users = {
-        port = 443
-        cidrs = ["1.1.1.1/24"]
-        protocol = "tcp"
+        port      = 443
+        cidrs     = ["1.1.1.1/24"]
+        ip_family = "ipv4",
+        protocol  = "tcp"
       }
     }
   EOT

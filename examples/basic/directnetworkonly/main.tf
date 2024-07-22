@@ -63,9 +63,10 @@ module "this" {
   direct_access_use_strategy = "network"
   server_access_addresses = {
     "runner" = {
-      port     = local.port
-      protocol = local.protocol
-      cidrs    = ["${local.ip}/32"]
+      port      = local.port
+      protocol  = local.protocol
+      ip_family = "ipv4"
+      cidrs     = ["${local.ip}/32"]
     }
   }
 }

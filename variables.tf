@@ -289,9 +289,10 @@ variable "direct_access_use_strategy" {
 }
 variable "server_access_addresses" {
   type = map(object({
-    port     = number
-    cidrs    = list(string)
-    protocol = string
+    port      = number
+    cidrs     = list(string)
+    ip_family = string
+    protocol  = string
   }))
   default     = null
   description = <<-EOT
@@ -303,14 +304,16 @@ variable "server_access_addresses" {
     Example: 
       {
         workstation = {
-          port = 443,
-          cidrs = ["100.1.1.1/32"],
-          protocol = "tcp"
+          port      = 443,
+          cidrs     = ["100.1.1.1/32"],
+          ip_family = "ipv4"
+          protocol  = "tcp"
         }
         ci = {
-          port = 443
-          cidrs = ["50.1.1.1/32"],
-          protocol = "tcp"
+          port      = 443
+          cidrs     = ["50.1.1.1/32"],
+          ip_family = "ipv4"
+          protocol  = "tcp"
         }
       }
   EOT

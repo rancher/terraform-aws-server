@@ -40,7 +40,7 @@ data "http" "myip" {
 
 module "access" {
   source                     = "rancher/access/aws"
-  version                    = "v3.0.2"
+  version                    = "v3.1.0"
   vpc_name                   = "${local.project_name}-vpc"
   security_group_name        = "${local.project_name}-sg"
   security_group_type        = "project"
@@ -51,6 +51,7 @@ module "access" {
     ping = {
       port        = local.port
       protocol    = "tcp"
+      ip_family   = "ipv4"
       cidrs       = ["${local.ip}/32"]
       target_name = substr("${local.project_name}-ping", 0, 32)
     }

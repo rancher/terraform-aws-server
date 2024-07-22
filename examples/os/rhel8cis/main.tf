@@ -66,9 +66,10 @@ module "this" {
   cloudinit_use_strategy     = "skip" # cloudinit is not allowed in CIS STIG AMIs
   server_access_addresses = {         # you must include ssh access here to enable setup
     "runner" = {
-      port     = 22
-      protocol = "tcp"
-      cidrs    = ["${local.ip}/32"]
+      port      = 22
+      protocol  = "tcp"
+      ip_family = "ipv4"
+      cidrs     = ["${local.ip}/32"]
     }
   }
   server_user = {
