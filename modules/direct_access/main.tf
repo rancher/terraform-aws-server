@@ -34,7 +34,8 @@ resource "aws_security_group_rule" "server_ingress" {
   from_port         = each.value.port
   to_port           = each.value.port
   protocol          = each.value.protocol
-  cidr_blocks       = each.value.cidrs
+  cidr_blocks       = (each.value.ip_family != "ipv6" ? each.value.cidrs : null)
+  ipv6_cidr_blocks  = (each.value.ip_family == "ipv6" ? each.value.cidrs : null)
 }
 
 resource "aws_network_interface_sg_attachment" "server_security_group_attachment" {

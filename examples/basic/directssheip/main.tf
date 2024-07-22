@@ -60,9 +60,10 @@ module "this" {
   add_eip                    = true      # adding an eip to allow setup
   server_access_addresses = {            # you must include ssh access here to enable setup
     "runner" = {
-      port     = 22
-      protocol = "tcp"
-      cidrs    = ["${local.ip}/32"]
+      port      = 22
+      protocol  = "tcp"
+      ip_family = "ipv4"
+      cidrs     = ["${local.ip}/32"]
     }
   }
   server_user = {
