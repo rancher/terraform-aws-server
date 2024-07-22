@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/rancher/terraform-aws-server/compare/v1.1.2...v1.2.0) (2024-07-22)
+
+
+### Features
+
+* enable version 6 address direct access ([#89](https://github.com/rancher/terraform-aws-server/issues/89)) ([05925a6](https://github.com/rancher/terraform-aws-server/commit/05925a64e4017594d5de43a0fd015f4717dfcf45))
+
 ## [1.1.2](https://github.com/rancher/terraform-aws-server/compare/v1.1.1...v1.1.2) (2024-07-09)
 
 
