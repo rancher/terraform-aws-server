@@ -154,24 +154,24 @@ variable "server_type" {
 variable "server_ip_family" {
   type        = string
   description = <<-EOT
-    The ip family to use for the server, must be one of "ipv4" or "ipv6".
-    Use ipv4 for dualstack, ipv6 should only be used for ipv6 only deployments.
-    When adding an EIP, this should be 'ipv4'.
+    The ip family to use for the server, must be one of "ipv4", "dualstack", or "ipv6".
+    This is mainly determined by the VPC and subnet that you are deploying to,
+     attempting to deploy a dualstack or ipv6 server to a non-dualstack/ipv6 VPC/subnet will result in failed connections.
   EOT
   default     = "ipv4"
   validation {
-    condition     = contains(["ipv4", "ipv6"], var.server_ip_family)
-    error_message = "This must be one of 'ipv4' or 'ipv6'."
+    condition     = contains(["ipv4", "ipv6", "dualstack"], var.server_ip_family)
+    error_message = "This must be one of 'ipv4', 'dualstack', or 'ipv6'."
   }
 }
 variable "cloudinit_use_strategy" {
   type        = string
   description = <<-EOT
     The strategy to use for cloudinit, must be one of "skip", "default", or "specify".
-    This can be "skip" to skip sending cloudinit, "create" to generate a cloudinit script with defaults, 
+    This can be "skip" to skip sending cloudinit, "create" to generate a cloudinit script with defaults,
     or "specify" to specify your own cloudinit content.
     This is ignored when skipping or selecting a server or when direct_access_use_strategy isn't "ssh".
-  EOT  
+  EOT
   validation {
     condition = (
       var.cloudinit_use_strategy == "" ? true : contains(["skip", "default", "specify"], var.cloudinit_use_strategy)
@@ -227,6 +227,7 @@ variable "private_ip" {
     An available private ip to assign to the server.
     This must be within the subnet assigned to the server.
     If one is not set then AWS will assign an ip from the subnet.
+    This is ignored for ipv6 only servers.
   EOT
   default     = ""
 }
@@ -301,6 +302,7 @@ variable "server_access_addresses" {
     The port is the tcp port number to expose. eg. 80
     The cidrs is a list of cidrs to allow to that port. eg ["1.1.1.1/32","2.2.2.2/24"]
     The protocol is the tranfer protocol to allow, usually "tcp" or "udp".
+    Ipv4 addresses will not be able to access ipv6 only servers.
     Example: 
       {
         workstation = {

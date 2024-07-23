@@ -19,7 +19,7 @@ locals {
   ssh_key_name             = var.ssh_key_name
 
   ip   = var.ip # private ip to assign to the server
-  ipv4 = (local.ip_family == "ipv4" ? "" : local.ip)
+  ipv4 = ((local.ip_family == "ipv4" || local.ip_family == "dualstack") ? "" : local.ip)
   ipv6 = (local.ip_family == "ipv6" ? local.ip : "")
 }
 
