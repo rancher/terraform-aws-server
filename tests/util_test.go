@@ -50,12 +50,13 @@ func setup(t *testing.T, category string, directory string, region string, owner
 
 	retryableTerraformErrors := map[string]string{
 		// The reason is unknown, but eventually these succeed after a few retries.
-		".*unable to verify signature.*":             "Failed due to transient network error.",
-		".*unable to verify checksum.*":              "Failed due to transient network error.",
-		".*no provider exists with the given name.*": "Failed due to transient network error.",
-		".*registry service is unreachable.*":        "Failed due to transient network error.",
-		".*connection reset by peer.*":               "Failed due to transient network error.",
-		".*TLS handshake timeout.*":                  "Failed due to transient network error.",
+		".*unable to verify signature.*":               "Failed due to transient network error.",
+		".*unable to verify checksum.*":                "Failed due to transient network error.",
+		".*no provider exists with the given name.*":   "Failed due to transient network error.",
+		".*registry service is unreachable.*":          "Failed due to transient network error.",
+		".*connection reset by peer.*":                 "Failed due to transient network error.",
+		".*TLS handshake timeout.*":                    "Failed due to transient network error.",
+		".*operation error EC2: DisassociateAddress.*": "Failed due to transient AWS error.",
 	}
 
 	terraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{

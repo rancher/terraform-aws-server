@@ -170,6 +170,6 @@ module "direct_access" {
     name = local.domain_name,
     zone = local.domain_zone, # zone name
     type = "A"                # we will enable ipv6 in the future
-    ips  = [module.server[0].public_ip, module.server[0].private_ip]
+    ips  = distinct([module.server[0].public_ip, module.server[0].private_ip])
   }
 }
