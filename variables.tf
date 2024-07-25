@@ -157,6 +157,8 @@ variable "server_ip_family" {
     The ip family to use for the server, must be one of "ipv4", "dualstack", or "ipv6".
     This is mainly determined by the VPC and subnet that you are deploying to,
      attempting to deploy a dualstack or ipv6 server to a non-dualstack/ipv6 VPC/subnet will result in failed connections.
+    WARNING! When this is set to "ipv6" the server running Terraform must have the AWS CLI installed.
+    This is due to a missing feature in the AWS provider that allows ipv6 instances to be attached to load balancer target groups.
   EOT
   default     = "ipv4"
   validation {

@@ -13,8 +13,8 @@ locals {
   example      = "sles15"
   email        = "terraform-ci@suse.com"
   project_name = "tf-${substr(md5(join("-", [local.category, local.example, md5(local.identifier)])), 0, 5)}-${local.identifier}"
-  username     = lower(substr("tf-${local.identifier}", 0, 32))
   image        = "sles-15"
+  username     = lower(substr("tf-${local.identifier}", 0, 32))
   ip           = chomp(data.http.myip.response_body)
   ssh_key      = var.key
 }

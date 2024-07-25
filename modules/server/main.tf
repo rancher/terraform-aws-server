@@ -60,6 +60,11 @@ data "aws_subnet" "general_info_create" {
     values = [local.subnet]
   }
 }
+data "aws_availability_zone" "general_info_create" {
+  count = local.create
+  name  = data.aws_subnet.general_info_create[0].availability_zone
+}
+
 data "aws_vpc" "general_info_create" {
   count = local.create
   id    = data.aws_security_group.general_info_create[0].vpc_id
@@ -121,5 +126,37 @@ resource "aws_instance" "created" {
       ipv6_addresses,                # this is dependant on the aws subnet lookup and if not ignored will cause the server to always rebuild
       security_groups,               # this is dependant on the aws security group lookup and if not ignored will cause the server to always rebuild
     ]
+  }
+}
+
+# WARNING! This forces a dependency on the AWS CLI, but only for "ipv6 only" servers.
+# This is a workaround for the fact that the terraform AWS provider doesn't support the primary ipv6 flag yet.
+# When the provider supports it, this can be removed and the attribute added to the instance resource.
+resource "terraform_data" "set_primary_ipv6" {
+  count = (local.ip_family == "ipv6" ? local.create : 0)
+  depends_on = [
+    data.aws_security_group.general_info_create,
+    data.aws_subnet.general_info_create,
+    aws_key_pair.created,
+    aws_instance.created,
+  ]
+  triggers_replace = {
+    "aws_instance" = "${aws_instance.created[0].id}"
+  }
+  provisioner "local-exec" {
+    command = <<-EOT
+      if ! aws ec2 describe-network-interfaces \
+        --network-interface-ids ${aws_instance.created[0].primary_network_interface_id} \
+        --region ${data.aws_availability_zone.general_info_create[0].region} \
+        --query 'NetworkInterfaces[0].Ipv6Addresses[?IsPrimaryIpv6==`true`]' \
+        --output text | grep -q .; then
+        aws ec2 modify-network-interface-attribute \
+          --network-interface-id ${aws_instance.created[0].primary_network_interface_id} \
+          --enable-primary-ipv6 \
+          --region ${data.aws_availability_zone.general_info_create[0].region}
+      else
+        echo "Primary IPv6 is already enabled for this network interface"
+      fi
+    EOT
   }
 }
