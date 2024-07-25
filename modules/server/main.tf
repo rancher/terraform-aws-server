@@ -18,7 +18,7 @@ locals {
   ssh_key                  = var.ssh_key
   ssh_key_name             = var.ssh_key_name
 
-  ip   = var.ip # private ip to assign to the server
+  ip   = var.ip # ip to assign to the server
   ipv4 = ((local.ip_family == "ipv4" || local.ip_family == "dualstack") ? local.ip : "")
   ipv6 = (local.ip_family == "ipv6" ? local.ip : "")
 }
@@ -69,24 +69,6 @@ data "aws_key_pair" "ssh_key_selected" {
   key_name = local.ssh_key_name
 }
 
-resource "aws_network_interface" "created" {
-  count = local.create
-  depends_on = [
-    data.aws_subnet.general_info_create,
-  ]
-  subnet_id      = data.aws_subnet.general_info_create[0].id
-  private_ips    = (local.ipv4 != "" ? [local.ipv4] : null)
-  ipv6_addresses = (local.ipv6 != "" ? [local.ipv6] : null)
-  tags = {
-    Name = local.name
-  }
-  lifecycle {
-    ignore_changes = [
-      subnet_id, # this is dependant on the aws subnet lookup and if not ignored will cause the interface to always rebuild
-    ]
-  }
-}
-
 resource "aws_key_pair" "created" {
   count      = (local.aws_keypair_use_strategy == "create" ? local.create : 0)
   key_name   = local.ssh_key_name
@@ -105,20 +87,15 @@ resource "aws_instance" "created" {
   instance_type = data.aws_ec2_instance_type.general_info_create[0].id
   key_name      = (local.aws_keypair_use_strategy != "skip" ? (local.aws_keypair_use_strategy == "create" ? aws_key_pair.created[0].key_name : data.aws_key_pair.ssh_key_selected[0].key_name) : "")
 
-  # kubernetes expects the primary interface to keep its IP
-  #   the server resource will generate a device 0 interface if one is not given
-  #   so the only way to control the primary interface is to provide it like this
-  # this necessitates the network interface being created before the server
-  network_interface {
-    network_interface_id = aws_network_interface.created[0].id
-    device_index         = 0
-  }
+  subnet_id      = data.aws_subnet.general_info_create[0].id
+  private_ips    = (local.ipv4 != "" ? [local.ipv4] : [""])
+  ipv6_addresses = (local.ipv6 != "" ? [local.ipv6] : [""])
 
   instance_initiated_shutdown_behavior = "stop" # termination can be handled by destroy or separately
   user_data_base64                     = local.cloudinit
   user_data_replace_on_change          = true # rebuild the server if the user data changes
   availability_zone                    = data.aws_subnet.general_info_create[0].availability_zone
-
+  security_groups                      = [data.aws_security_group.general_info_create[0].id]
   tags = {
     Name = local.name
   }
@@ -140,22 +117,10 @@ resource "aws_instance" "created" {
       availability_zone,             # this is dependant on the aws subnet lookup and if not ignored will cause the server to always rebuild
       network_interface,             # this is dependant on the aws subnet lookup and if not ignored will cause the server to always rebuild
       ami,                           # this is dependant on the aws ami lookup and if not ignored will cause the server to always rebuild
-    ]
-  }
-}
-
-resource "aws_network_interface_sg_attachment" "security_group_attachment" {
-  count = local.create
-  depends_on = [
-    data.aws_security_group.general_info_create,
-    aws_instance.created,
-    aws_network_interface.created,
-  ]
-  security_group_id    = data.aws_security_group.general_info_create[0].id
-  network_interface_id = aws_network_interface.created[0].id
-  lifecycle {
-    ignore_changes = [
-      security_group_id, # this is dependant on the aws security group lookup and if not ignored will cause the interface to always rebuild
+      subnet_id,                     # this is dependant on the aws subnet lookup and if not ignored will cause the server to always rebuild
+      private_ips,                   # this is dependant on the aws subnet lookup and if not ignored will cause the server to always rebuild
+      ipv6_addresses,                # this is dependant on the aws subnet lookup and if not ignored will cause the server to always rebuild
+      security_groups,               # this is dependant on the aws security group lookup and if not ignored will cause the server to always rebuild
     ]
   }
 }
