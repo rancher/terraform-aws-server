@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.2](https://github.com/rancher/terraform-aws-server/compare/v1.2.1...v1.2.2) (2024-07-25)
+
+
+### Bug Fixes
+
+* version 4 address should be empty ([#93](https://github.com/rancher/terraform-aws-server/issues/93)) ([89791d4](https://github.com/rancher/terraform-aws-server/commit/89791d4cfa4ad51ca049f17086fc6d0950d4f3fa))
+
 ## [1.2.1](https://github.com/rancher/terraform-aws-server/compare/v1.2.0...v1.2.1) (2024-07-23)
 
 
