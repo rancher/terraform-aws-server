@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.4](https://github.com/rancher/terraform-aws-server/compare/v1.2.3...v1.2.4) (2024-07-25)
+
+
+### Bug Fixes
+
+* add primary version 6 flag ([#99](https://github.com/rancher/terraform-aws-server/issues/99)) ([b02cdf7](https://github.com/rancher/terraform-aws-server/commit/b02cdf7f754c9996964d328a241af028f74f5afd))
+
 ## [1.2.3](https://github.com/rancher/terraform-aws-server/compare/v1.2.2...v1.2.3) (2024-07-25)
 
 
