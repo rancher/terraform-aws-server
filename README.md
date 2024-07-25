@@ -8,11 +8,18 @@ See the examples/select/image for an example of how to do this
 
 ## Recent Changes
 
-1. Rename images
+1. IPv6 Only Support
+    To support load balanced IPv6 only instances, the primary interface needs to have the 'primary ipv6 enabled' flag set.
+    This flag is not currently available in the Terraform provider, but a PR exists: https://github.com/hashicorp/terraform-provider-aws/pull/36425
+    Until the provider supports this flag we are using a workaround.
+    The workaround requires the AWS CLI to be installed on the server running Terraform.
+    The AWS CLI will use the same authentication mechanisms as Terraform, so there is no need to configure additional credentials.
+    WARNING! If deploying with `ip_family = "ipv6"` the server running Terraform must have the AWS CLI installed.
+2. Rename images
     - Removed SUSE images that weren't BYOS (bring your own subscription)
       - Amazon subscriptions are harder to automate and don't provide direct service, it ends up being a hidden fee of using the image. Instead, users can use the BYOS image without a subscription until they need one, and then they can add a subscription separately bought from SUSE.
     - Started using SUSE cloud info API to get the latest image names
-2. WARNING! Refactor!
+3. WARNING! Refactor!
     A new Major version and a few new tricks.
     I don't like breaking the interface, but to enable new functionality it made the most sense to refactor.
     - set the private ip for your sever
@@ -24,11 +31,6 @@ See the examples/select/image for an example of how to do this
       - look out for attributes like "server_use_strategy" to enable or disable features
     - indirect access!
       - now you can assign aws lb target group associations when you generate your server
-3. New Images!
-    - Added SUSE Liberty 7.9
-    - Added SLE Micro 5.5 (all subscription types)
-      - WARNING! we can't test llc (US and China) images due to our account geolocation (Germany)
-
 
 ## AWS Access
 

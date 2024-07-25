@@ -34,12 +34,12 @@ output "key_name" {
 output "private_ip" {
   value = (
     local.create == 1 ? (
-      local.ip_family == "ipv4" ? aws_instance.created[0].private_ip :
+      (local.ip_family == "ipv4" || local.ip_family == "dualstack") ? aws_instance.created[0].private_ip :
       local.ip_family == "ipv6" ? tolist(aws_instance.created[0].ipv6_addresses)[0] : # no private ips for ipv6
       null
     ) :
     local.select == 1 ? (
-      local.ip_family == "ipv4" ? data.aws_instance.selected[0].private_ip :
+      (local.ip_family == "ipv4" || local.ip_family == "dualstack") ? data.aws_instance.selected[0].private_ip :
       local.ip_family == "ipv6" ? tolist(data.aws_instance.selected[0].ipv6_addresses)[0] : # no private ips for ipv6
       null
     ) :
@@ -50,12 +50,12 @@ output "private_ip" {
 output "public_ip" {
   value = (
     local.create == 1 ? (
-      local.ip_family == "ipv4" ? aws_instance.created[0].public_ip :
+      (local.ip_family == "ipv4" || local.ip_family == "dualstack") ? aws_instance.created[0].public_ip :
       local.ip_family == "ipv6" ? tolist(aws_instance.created[0].ipv6_addresses)[0] :
       null
     ) :
     local.select == 1 ? (
-      local.ip_family == "ipv4" ? data.aws_instance.selected[0].public_ip :
+      (local.ip_family == "ipv4" || local.ip_family == "dualstack") ? data.aws_instance.selected[0].public_ip :
       local.ip_family == "ipv6" ? tolist(data.aws_instance.selected[0].ipv6_addresses)[0] :
       null
     ) :

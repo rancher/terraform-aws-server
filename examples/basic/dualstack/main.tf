@@ -9,8 +9,8 @@ provider "aws" {
 
 locals {
   identifier   = var.identifier # this is a random unique string that can be used to identify resources in the cloud provider
-  category     = "os"
-  example      = "sles15"
+  category     = "basic"
+  example      = "dualstack"
   email        = "terraform-ci@suse.com"
   project_name = "tf-${substr(md5(join("-", [local.category, local.example, md5(local.identifier)])), 0, 5)}-${local.identifier}"
   image        = "sles-15"
@@ -27,6 +27,9 @@ data "http" "myip" {
   }
 }
 
+data "aws_availability_zones" "available" {
+  state = "available"
+}
 
 resource "random_pet" "server" {
   keepers = {
@@ -36,19 +39,18 @@ resource "random_pet" "server" {
   length = 1
 }
 
-data "aws_availability_zones" "available" {
-  state = "available"
+module "access" {
+  source              = "rancher/access/aws"
+  version             = "v3.1.2"
+  vpc_name            = "${local.project_name}-vpc"
+  vpc_type            = "dualstack"
+  security_group_name = "${local.project_name}-sg"
+  security_group_type = "project"
+  load_balancer_name  = "${local.project_name}-lb"
+  domain_use_strategy = "skip"
+  vpc_public          = true
 }
 
-module "access" {
-  source                     = "rancher/access/aws"
-  version                    = "v3.0.1"
-  vpc_name                   = "${local.project_name}-vpc"
-  vpc_public                 = true
-  security_group_name        = "${local.project_name}-sg"
-  security_group_type        = "project"
-  load_balancer_use_strategy = "skip"
-}
 
 module "this" {
   depends_on = [
@@ -60,6 +62,7 @@ module "this" {
   server_name                = "${local.project_name}-${random_pet.server.id}"
   server_type                = "small"
   subnet_name                = keys(module.access.subnets)[0]
+  server_ip_family           = "dualstack"
   security_group_name        = module.access.security_group.tags_all.Name
   direct_access_use_strategy = "ssh"     # either the subnet needs to be public or you must add an eip
   cloudinit_use_strategy     = "default" # use the default cloudinit config

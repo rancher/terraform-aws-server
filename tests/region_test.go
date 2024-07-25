@@ -18,8 +18,7 @@ func TestRegionUsEast1(t *testing.T) {
 	terraformOptions, keyPair := setup(t, category, directory, region, owner, uniqueID)
 	delete(terraformOptions.Vars, "key")
 	delete(terraformOptions.Vars, "key_name")
-	defer teardown(t, category, directory, keyPair)
-	defer terraform.Destroy(t, terraformOptions)
+	defer teardown(t, category, directory, keyPair, terraformOptions)
 	terraform.InitAndApply(t, terraformOptions)
 }
 func TestRegionUsEast2(t *testing.T) {
@@ -32,8 +31,7 @@ func TestRegionUsEast2(t *testing.T) {
 	terraformOptions, keyPair := setup(t, category, directory, region, owner, uniqueID)
 	delete(terraformOptions.Vars, "key")
 	delete(terraformOptions.Vars, "key_name")
-	defer teardown(t, category, directory, keyPair)
-	defer terraform.Destroy(t, terraformOptions)
+	defer teardown(t, category, directory, keyPair, terraformOptions)
 	terraform.InitAndApply(t, terraformOptions)
 }
 func TestRegionUsWest1(t *testing.T) {
@@ -46,8 +44,7 @@ func TestRegionUsWest1(t *testing.T) {
 	terraformOptions, keyPair := setup(t, category, directory, region, owner, uniqueID)
 	delete(terraformOptions.Vars, "key")
 	delete(terraformOptions.Vars, "key_name")
-	defer teardown(t, category, directory, keyPair)
-	defer terraform.Destroy(t, terraformOptions)
+	defer teardown(t, category, directory, keyPair, terraformOptions)
 	terraform.InitAndApply(t, terraformOptions)
 }
 func TestRegionUsWest2(t *testing.T) {
@@ -60,7 +57,6 @@ func TestRegionUsWest2(t *testing.T) {
 	terraformOptions, keyPair := setup(t, category, directory, region, owner, uniqueID)
 	delete(terraformOptions.Vars, "key")
 	delete(terraformOptions.Vars, "key_name")
-	defer teardown(t, category, directory, keyPair)
-	defer terraform.Destroy(t, terraformOptions)
+	defer teardown(t, category, directory, keyPair, terraformOptions)
 	terraform.InitAndApply(t, terraformOptions)
 }

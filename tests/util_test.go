@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	a "github.com/aws/aws-sdk-go/aws"
@@ -13,7 +14,16 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func teardown(t *testing.T, category string, directory string, keyPair *aws.Ec2Keypair) {
+func teardown(t *testing.T, category string, directory string, keyPair *aws.Ec2Keypair, terraformOptions *terraform.Options) {
+
+	_, err := terraform.DestroyE(t, terraformOptions)
+	if err != nil {
+		if strings.Contains(err.Error(), "operation error EC2: DisassociateAddress") {
+			t.Logf("Ignored error while destroying cluster: %s", err)
+		}
+		t.Fatalf("Error creating cluster: %s", err)
+	}
+
 	files, err := filepath.Glob(fmt.Sprintf("../examples/%s/%s/.terraform*", category, directory))
 	require.NoError(t, err)
 	for _, f := range files {

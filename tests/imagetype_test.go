@@ -12,14 +12,13 @@ import (
 func TestImageTypeBasic(t *testing.T) {
 	t.Parallel()
 	uniqueID := os.Getenv("IDENTIFIER") + "-" + random.UniqueId()
-	category 	:= "imagetype"
+	category := "imagetype"
 	directory := "basic"
-	region 		:= "us-west-1"
-	owner 		:= "terraform-ci@suse.com"
+	region := "us-west-1"
+	owner := "terraform-ci@suse.com"
 	terraformOptions, keypair := setup(t, category, directory, region, owner, uniqueID)
 
-	defer teardown(t, category, directory, keypair)
-	defer terraform.Destroy(t, terraformOptions)
+	defer teardown(t, category, directory, keypair, terraformOptions)
 	// don't pass key or key_name to the module
 	delete(terraformOptions.Vars, "key")
 	delete(terraformOptions.Vars, "key_name")
@@ -40,14 +39,13 @@ func TestImageTypeBasic(t *testing.T) {
 func TestImageTypeCustom(t *testing.T) {
 	t.Parallel()
 	uniqueID := os.Getenv("IDENTIFIER") + "-" + random.UniqueId()
-	category 	:= "imagetype"
+	category := "imagetype"
 	directory := "custom"
-	region 		:= "us-west-1"
-	owner 		:= "terraform-ci@suse.com"
+	region := "us-west-1"
+	owner := "terraform-ci@suse.com"
 	terraformOptions, keypair := setup(t, category, directory, region, owner, uniqueID)
 
-	defer teardown(t, category, directory, keypair)
-	defer terraform.Destroy(t, terraformOptions)
+	defer teardown(t, category, directory, keypair, terraformOptions)
 	// don't pass key or key_name to the module
 	delete(terraformOptions.Vars, "key")
 	delete(terraformOptions.Vars, "key_name")
@@ -57,14 +55,13 @@ func TestImageTypeCustom(t *testing.T) {
 func TestImageTypeSelect(t *testing.T) {
 	t.Parallel()
 	uniqueID := os.Getenv("IDENTIFIER") + "-" + random.UniqueId()
-	category 	:= "imagetype"
+	category := "imagetype"
 	directory := "select"
-	region 		:= "us-west-1"
-	owner 		:= "terraform-ci@suse.com"
+	region := "us-west-1"
+	owner := "terraform-ci@suse.com"
 	terraformOptions, keypair := setup(t, category, directory, region, owner, uniqueID)
 
-	defer teardown(t, category, directory, keypair)
-	defer terraform.Destroy(t, terraformOptions)
+	defer teardown(t, category, directory, keypair, terraformOptions)
 	// don't pass key or key_name to the module
 	delete(terraformOptions.Vars, "key")
 	delete(terraformOptions.Vars, "key_name")
@@ -74,14 +71,13 @@ func TestImageTypeSelect(t *testing.T) {
 func TestImageTypeUsEast1(t *testing.T) {
 	t.Parallel()
 	uniqueID := os.Getenv("IDENTIFIER") + "-" + random.UniqueId()
-	category 	:= "imagetype"
+	category := "imagetype"
 	directory := "useast1"
-	region 		:= "us-east-1"
-	owner 		:= "terraform-ci@suse.com"
+	region := "us-east-1"
+	owner := "terraform-ci@suse.com"
 	terraformOptions, keypair := setup(t, category, directory, region, owner, uniqueID)
 
-	defer teardown(t, category, directory, keypair)
-	defer terraform.Destroy(t, terraformOptions)
+	defer teardown(t, category, directory, keypair, terraformOptions)
 	// don't pass key or key_name to the module
 	delete(terraformOptions.Vars, "key")
 	delete(terraformOptions.Vars, "key_name")
@@ -101,14 +97,13 @@ func TestImageTypeUsEast1(t *testing.T) {
 func TestImageTypeUsEast2(t *testing.T) {
 	t.Parallel()
 	uniqueID := os.Getenv("IDENTIFIER") + "-" + random.UniqueId()
-	category 	:= "imagetype"
+	category := "imagetype"
 	directory := "useast2"
-	region 		:= "us-east-2"
-	owner 		:= "terraform-ci@suse.com"
+	region := "us-east-2"
+	owner := "terraform-ci@suse.com"
 	terraformOptions, keypair := setup(t, category, directory, region, owner, uniqueID)
 
-	defer teardown(t, category, directory, keypair)
-	defer terraform.Destroy(t, terraformOptions)
+	defer teardown(t, category, directory, keypair, terraformOptions)
 	// don't pass key or key_name to the module
 	delete(terraformOptions.Vars, "key")
 	delete(terraformOptions.Vars, "key_name")
@@ -129,14 +124,13 @@ func TestImageTypeUsEast2(t *testing.T) {
 func TestImageTypeUsWest1(t *testing.T) {
 	t.Parallel()
 	uniqueID := os.Getenv("IDENTIFIER") + "-" + random.UniqueId()
-	category 	:= "imagetype"
+	category := "imagetype"
 	directory := "uswest1"
-	region 		:= "us-west-1"
-	owner 		:= "terraform-ci@suse.com"
+	region := "us-west-1"
+	owner := "terraform-ci@suse.com"
 	terraformOptions, keypair := setup(t, category, directory, region, owner, uniqueID)
 
-	defer teardown(t, category, directory, keypair)
-	defer terraform.Destroy(t, terraformOptions)
+	defer teardown(t, category, directory, keypair, terraformOptions)
 	// don't pass key or key_name to the module
 	delete(terraformOptions.Vars, "key")
 	delete(terraformOptions.Vars, "key_name")
@@ -156,14 +150,13 @@ func TestImageTypeUsWest1(t *testing.T) {
 func TestImageTypeUsWest2(t *testing.T) {
 	t.Parallel()
 	uniqueID := os.Getenv("IDENTIFIER") + "-" + random.UniqueId()
-	category 	:= "imagetype"
+	category := "imagetype"
 	directory := "uswest2"
-	region 		:= "us-west-2"
-	owner 		:= "terraform-ci@suse.com"
+	region := "us-west-2"
+	owner := "terraform-ci@suse.com"
 	terraformOptions, keypair := setup(t, category, directory, region, owner, uniqueID)
 
-	defer teardown(t, category, directory, keypair)
-	defer terraform.Destroy(t, terraformOptions)
+	defer teardown(t, category, directory, keypair, terraformOptions)
 	// don't pass key or key_name to the module
 	delete(terraformOptions.Vars, "key")
 	delete(terraformOptions.Vars, "key_name")
