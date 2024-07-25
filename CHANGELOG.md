@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.2.3](https://github.com/rancher/terraform-aws-server/compare/v1.2.2...v1.2.3) (2024-07-25)
+
+
+### Bug Fixes
+
+* private address is not plural ([#97](https://github.com/rancher/terraform-aws-server/issues/97)) ([cd85d69](https://github.com/rancher/terraform-aws-server/commit/cd85d6960647665b1cb7c5a7bbae1781f60b91f0))
+* remove old interface references ([#98](https://github.com/rancher/terraform-aws-server/issues/98)) ([572fcbb](https://github.com/rancher/terraform-aws-server/commit/572fcbb8e6a0a1f15d3fda92022e31444233c277))
+* use server built in interface ([#95](https://github.com/rancher/terraform-aws-server/issues/95)) ([9802b3d](https://github.com/rancher/terraform-aws-server/commit/9802b3d1baa5e240aba12f0334d50249f8b91956))
+
 ## [1.2.2](https://github.com/rancher/terraform-aws-server/compare/v1.2.1...v1.2.2) (2024-07-25)
 
 
