@@ -80,7 +80,6 @@ resource "aws_instance" "created" {
   depends_on = [
     data.aws_security_group.general_info_create,
     data.aws_subnet.general_info_create,
-    aws_network_interface.created,
     aws_key_pair.created,
   ]
   ami           = local.image.id
@@ -88,8 +87,8 @@ resource "aws_instance" "created" {
   key_name      = (local.aws_keypair_use_strategy != "skip" ? (local.aws_keypair_use_strategy == "create" ? aws_key_pair.created[0].key_name : data.aws_key_pair.ssh_key_selected[0].key_name) : "")
 
   subnet_id      = data.aws_subnet.general_info_create[0].id
-  private_ip     = (local.ipv4 != "" ? local.ipv4 : "")
-  ipv6_addresses = (local.ipv6 != "" ? [local.ipv6] : [""])
+  private_ip     = (local.ipv4 != "" ? local.ipv4 : null)
+  ipv6_addresses = (local.ipv6 != "" ? [local.ipv6] : null)
 
   instance_initiated_shutdown_behavior = "stop" # termination can be handled by destroy or separately
   user_data_base64                     = local.cloudinit
@@ -118,7 +117,7 @@ resource "aws_instance" "created" {
       network_interface,             # this is dependant on the aws subnet lookup and if not ignored will cause the server to always rebuild
       ami,                           # this is dependant on the aws ami lookup and if not ignored will cause the server to always rebuild
       subnet_id,                     # this is dependant on the aws subnet lookup and if not ignored will cause the server to always rebuild
-      private_ips,                   # this is dependant on the aws subnet lookup and if not ignored will cause the server to always rebuild
+      private_ip,                    # this is dependant on the aws subnet lookup and if not ignored will cause the server to always rebuild
       ipv6_addresses,                # this is dependant on the aws subnet lookup and if not ignored will cause the server to always rebuild
       security_groups,               # this is dependant on the aws security group lookup and if not ignored will cause the server to always rebuild
     ]
