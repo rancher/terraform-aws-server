@@ -72,7 +72,7 @@ output "ipv6_addresses" {
   description = "The IPv6 addresses for the instance"
 }
 output "network_interface_id" {
-  value       = try(data.aws_instance.selected[0].network_interface_id, aws_network_interface.created[0].id, "")
+  value       = try(data.aws_instance.selected[0].network_interface_id, aws_instance.created[0].primary_network_interface_id, "")
   description = "The ID of the primary network interface"
 }
 output "root_block_device" {
