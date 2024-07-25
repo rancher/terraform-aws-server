@@ -88,7 +88,7 @@ resource "aws_instance" "created" {
   key_name      = (local.aws_keypair_use_strategy != "skip" ? (local.aws_keypair_use_strategy == "create" ? aws_key_pair.created[0].key_name : data.aws_key_pair.ssh_key_selected[0].key_name) : "")
 
   subnet_id      = data.aws_subnet.general_info_create[0].id
-  private_ips    = (local.ipv4 != "" ? [local.ipv4] : [""])
+  private_ip     = (local.ipv4 != "" ? local.ipv4 : "")
   ipv6_addresses = (local.ipv6 != "" ? [local.ipv6] : [""])
 
   instance_initiated_shutdown_behavior = "stop" # termination can be handled by destroy or separately
