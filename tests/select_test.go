@@ -22,8 +22,7 @@ func TestSelectServer(t *testing.T) {
 	sshAgent := ssh.SshAgentWithKeyPair(t, keyPair.KeyPair)
 	defer sshAgent.Stop()
 	terraformOptions.SshAgent = sshAgent
-	defer teardown(t, category, directory, keyPair)
-	defer terraform.Destroy(t, terraformOptions)
+	defer teardown(t, category, directory, keyPair, terraformOptions)
 	delete(terraformOptions.Vars, "key_name")
 	delete(terraformOptions.Vars, "key")
 	terraform.InitAndApply(t, terraformOptions)
@@ -41,8 +40,7 @@ func TestSelectImage(t *testing.T) {
 	sshAgent := ssh.SshAgentWithKeyPair(t, keyPair.KeyPair)
 	defer sshAgent.Stop()
 	terraformOptions.SshAgent = sshAgent
-	defer teardown(t, category, directory, keyPair)
-	defer terraform.Destroy(t, terraformOptions)
+	defer teardown(t, category, directory, keyPair, terraformOptions)
 	delete(terraformOptions.Vars, "key_name")
 	delete(terraformOptions.Vars, "key")
 	terraform.InitAndApply(t, terraformOptions)
@@ -60,12 +58,12 @@ func TestSelectAll(t *testing.T) {
 	sshAgent := ssh.SshAgentWithKeyPair(t, keyPair.KeyPair)
 	defer sshAgent.Stop()
 	terraformOptions.SshAgent = sshAgent
-	defer teardown(t, category, directory, keyPair)
-	defer terraform.Destroy(t, terraformOptions)
+	defer teardown(t, category, directory, keyPair, terraformOptions)
 	delete(terraformOptions.Vars, "key_name")
 	delete(terraformOptions.Vars, "key")
 	terraform.InitAndApply(t, terraformOptions)
 }
+
 // leaving this as an example of a multi-phase test
 // func TestAssociation(t *testing.T) {
 // 	// in this test we are going to select everything in the server module, but force the association of a new security group onto the selected server

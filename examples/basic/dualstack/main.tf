@@ -48,6 +48,7 @@ module "access" {
   security_group_type = "project"
   load_balancer_name  = "${local.project_name}-lb"
   domain_use_strategy = "skip"
+  vpc_public          = true
 }
 
 
@@ -57,29 +58,28 @@ module "this" {
   ]
   source = "../../../" # change this to "rancher/server/aws" per https://registry.terraform.io/modules/rancher/server/aws/latest
   # version = "v1.1.1" # when using this example you will need to set the version
-  image_type          = local.image
-  server_name         = "${local.project_name}-${random_pet.server.id}"
-  server_type         = "small"
-  subnet_name         = keys(module.access.subnets)[0]
-  server_ip_family    = "dualstack"
-  security_group_name = module.access.security_group.tags_all.Name
-
-  # direct_access_use_strategy = "ssh"     # either the subnet needs to be public or you must add an eip
-  # cloudinit_use_strategy     = "default" # use the default cloudinit config
-  # server_access_addresses = {            # you must include ssh access here to enable setup
-  #   "runner" = {
-  #     port      = 22
-  #     protocol  = "tcp"
-  #     ip_family = "ipv4"
-  #     cidrs     = ["${local.ip}/32"]
-  #   }
-  # }
-  # server_user = {
-  #   user                     = local.username
-  #   aws_keypair_use_strategy = "skip"        # we will use cloud-init to add a keypair directly
-  #   ssh_key_name             = ""            # not creating or selecting a key, but this field is still required
-  #   public_ssh_key           = local.ssh_key # ssh key to add via cloud-init
-  #   user_workfolder          = "/home/${local.username}"
-  #   timeout                  = 5
-  # }
+  image_type                 = local.image
+  server_name                = "${local.project_name}-${random_pet.server.id}"
+  server_type                = "small"
+  subnet_name                = keys(module.access.subnets)[0]
+  server_ip_family           = "dualstack"
+  security_group_name        = module.access.security_group.tags_all.Name
+  direct_access_use_strategy = "ssh"     # either the subnet needs to be public or you must add an eip
+  cloudinit_use_strategy     = "default" # use the default cloudinit config
+  server_access_addresses = {            # you must include ssh access here to enable setup
+    "runner" = {
+      port      = 22
+      protocol  = "tcp"
+      ip_family = "ipv4"
+      cidrs     = ["${local.ip}/32"]
+    }
+  }
+  server_user = {
+    user                     = local.username
+    aws_keypair_use_strategy = "skip"        # we will use cloud-init to add a keypair directly
+    ssh_key_name             = ""            # not creating or selecting a key, but this field is still required
+    public_ssh_key           = local.ssh_key # ssh key to add via cloud-init
+    user_workfolder          = "/home/${local.username}"
+    timeout                  = 5
+  }
 }

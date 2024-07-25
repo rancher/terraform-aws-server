@@ -18,8 +18,7 @@ func TestSizeSmall(t *testing.T) {
 	terraformOptions, keyPair := setup(t, category, directory, region, owner, uniqueID)
 	delete(terraformOptions.Vars, "key")
 	delete(terraformOptions.Vars, "key_name")
-	defer teardown(t, category, directory, keyPair)
-	defer terraform.Destroy(t, terraformOptions)
+	defer teardown(t, category, directory, keyPair, terraformOptions)
 	terraform.InitAndApply(t, terraformOptions)
 }
 func TestSizeMedium(t *testing.T) {
@@ -32,8 +31,7 @@ func TestSizeMedium(t *testing.T) {
 	terraformOptions, keyPair := setup(t, category, directory, region, owner, uniqueID)
 	delete(terraformOptions.Vars, "key")
 	delete(terraformOptions.Vars, "key_name")
-	defer teardown(t, category, directory, keyPair)
-	defer terraform.Destroy(t, terraformOptions)
+	defer teardown(t, category, directory, keyPair, terraformOptions)
 	terraform.InitAndApply(t, terraformOptions)
 }
 func TestSizeLarge(t *testing.T) {
@@ -46,8 +44,7 @@ func TestSizeLarge(t *testing.T) {
 	terraformOptions, keyPair := setup(t, category, directory, region, owner, uniqueID)
 	delete(terraformOptions.Vars, "key")
 	delete(terraformOptions.Vars, "key_name")
-	defer teardown(t, category, directory, keyPair)
-	defer terraform.Destroy(t, terraformOptions)
+	defer teardown(t, category, directory, keyPair, terraformOptions)
 	terraform.InitAndApply(t, terraformOptions)
 }
 func TestSizeXL(t *testing.T) {
@@ -60,8 +57,7 @@ func TestSizeXL(t *testing.T) {
 	terraformOptions, keyPair := setup(t, category, directory, region, owner, uniqueID)
 	delete(terraformOptions.Vars, "key")
 	delete(terraformOptions.Vars, "key_name")
-	defer teardown(t, category, directory, keyPair)
-	defer terraform.Destroy(t, terraformOptions)
+	defer teardown(t, category, directory, keyPair, terraformOptions)
 	terraform.InitAndApply(t, terraformOptions)
 }
 func TestSizeXXL(t *testing.T) {
@@ -74,7 +70,6 @@ func TestSizeXXL(t *testing.T) {
 	terraformOptions, keyPair := setup(t, category, directory, region, owner, uniqueID)
 	delete(terraformOptions.Vars, "key")
 	delete(terraformOptions.Vars, "key_name")
-	defer teardown(t, category, directory, keyPair)
-	defer terraform.Destroy(t, terraformOptions)
+	defer teardown(t, category, directory, keyPair, terraformOptions)
 	terraform.InitAndApply(t, terraformOptions)
 }
