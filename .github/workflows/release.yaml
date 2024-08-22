@@ -45,7 +45,7 @@ jobs:
       - name: 'Terratest'
         run: |
           R="$(git rev-parse --show-toplevel)"
-          $R/run_tests.sh
+          "$R/run_tests.sh"
         if: steps.release-please.outputs.pr
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
