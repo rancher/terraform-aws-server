@@ -20,9 +20,8 @@ func TestSelectServer(t *testing.T) {
 	terraformOptions, keyPair := setup(t, category, directory, region, owner, uniqueID)
 
 	sshAgent := ssh.SshAgentWithKeyPair(t, keyPair.KeyPair)
-	defer sshAgent.Stop()
 	terraformOptions.SshAgent = sshAgent
-	defer teardown(t, category, directory, keyPair, terraformOptions)
+	defer teardown(t, category, directory, keyPair, sshAgent, uniqueID, terraformOptions)
 	delete(terraformOptions.Vars, "key_name")
 	delete(terraformOptions.Vars, "key")
 	terraform.InitAndApply(t, terraformOptions)
@@ -38,9 +37,8 @@ func TestSelectImage(t *testing.T) {
 	terraformOptions, keyPair := setup(t, category, directory, region, owner, uniqueID)
 
 	sshAgent := ssh.SshAgentWithKeyPair(t, keyPair.KeyPair)
-	defer sshAgent.Stop()
 	terraformOptions.SshAgent = sshAgent
-	defer teardown(t, category, directory, keyPair, terraformOptions)
+	defer teardown(t, category, directory, keyPair, sshAgent, uniqueID, terraformOptions)
 	delete(terraformOptions.Vars, "key_name")
 	delete(terraformOptions.Vars, "key")
 	terraform.InitAndApply(t, terraformOptions)
@@ -51,14 +49,15 @@ func TestSelectAll(t *testing.T) {
 
 	category := "select"
 	directory := "all"
-	region := "us-west-1"
+	region := os.Getenv("AWS_REGION")
+	if region == "" {
+		region = "us-west-1"
+	}
 	owner := "terraform-ci@suse.com"
 	terraformOptions, keyPair := setup(t, category, directory, region, owner, uniqueID)
-
 	sshAgent := ssh.SshAgentWithKeyPair(t, keyPair.KeyPair)
-	defer sshAgent.Stop()
 	terraformOptions.SshAgent = sshAgent
-	defer teardown(t, category, directory, keyPair, terraformOptions)
+	defer teardown(t, category, directory, keyPair, sshAgent, uniqueID, terraformOptions)
 	delete(terraformOptions.Vars, "key_name")
 	delete(terraformOptions.Vars, "key")
 	terraform.InitAndApply(t, terraformOptions)

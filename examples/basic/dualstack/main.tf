@@ -12,9 +12,9 @@ locals {
   category     = "basic"
   example      = "dualstack"
   email        = "terraform-ci@suse.com"
-  project_name = "tf-${substr(md5(join("-", [local.category, local.example, md5(local.identifier)])), 0, 5)}-${local.identifier}"
+  project_name = trimsuffix(substr("tf-${local.identifier}-${substr(md5(join("-", [local.category, local.example, md5(local.identifier)])), 0, 5)}", 0, 25), "-")
   image        = "sles-15"
-  username     = lower(substr("tf-${local.identifier}", 0, 32))
+  username     = lower(substr("tf-${local.identifier}", 0, 25))
   ip           = chomp(data.http.myip.response_body)
   ssh_key      = var.key
 }
@@ -41,12 +41,12 @@ resource "random_pet" "server" {
 
 module "access" {
   source              = "rancher/access/aws"
-  version             = "v3.1.2"
-  vpc_name            = "${local.project_name}-vpc"
+  version             = "v3.1.4"
+  vpc_name            = substr("vpc-${local.project_name}", 0, 32)
   vpc_type            = "dualstack"
-  security_group_name = "${local.project_name}-sg"
+  security_group_name = substr("secg-${local.project_name}", 0, 32)
   security_group_type = "project"
-  load_balancer_name  = "${local.project_name}-lb"
+  load_balancer_name  = substr("lb-${local.project_name}", 0, 32)
   domain_use_strategy = "skip"
   vpc_public          = true
 }
@@ -59,7 +59,7 @@ module "this" {
   source = "../../../" # change this to "rancher/server/aws" per https://registry.terraform.io/modules/rancher/server/aws/latest
   # version = "v1.1.1" # when using this example you will need to set the version
   image_type                 = local.image
-  server_name                = "${local.project_name}-${random_pet.server.id}"
+  server_name                = substr("${local.project_name}-${random_pet.server.id}", 0, 32)
   server_type                = "small"
   subnet_name                = keys(module.access.subnets)[0]
   server_ip_family           = "dualstack"

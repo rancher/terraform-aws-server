@@ -1,0 +1,1021 @@
+{
+  "version": 4,
+  "terraform_version": "1.5.7",
+  "serial": 1,
+  "lineage": "0e6111d9-3cdd-f448-0f95-88308000c129",
+  "outputs": {
+    "image_names": {
+      "value": {
+        "cis-rhel-8": "CIS Red Hat Enterprise Linux 8 Benchmark - STIG - v08 -ca1fe94d-9237-41c7-8fc8-78b6b0658c9f",
+        "liberty-8": "suse-liberty-linux-8-9-byos-v20240603-x86_64",
+        "rhel-9": "RHEL-9.3.0_HVM-20240229-x86_64-27-Hourly2-GP3",
+        "rocky-8": "Rocky-8-EC2-Base-8.9-20231119.0.x86_64-d6577ceb-8ea8-4e0e-84c6-f098fc302e82",
+        "rocky-9": "Rocky-9-EC2-LVM-9.4-20240523.0.x86_64-prod-hyj6jp3bki4bm",
+        "sle-micro-55": "suse-sle-micro-5-5-byos-v20240808-hvm-ssd-x86_64",
+        "sle-micro-60": "suse-sle-micro-6-0-byos-v20240612-hvm-ssd-x86_64",
+        "sles-15": "suse-sles-15-sp6-chost-byos-v20240807-hvm-ssd-x86_64",
+        "ubuntu-22": "ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-20240821-47489723-7305-4e22-8b22-b0d57054f216",
+        "ubuntu-24": "ubuntu/images/hvm-ssd-gp3/ubuntu-noble-24.04-amd64-server-20240821-prod-ib2w5aw4ynhey"
+      },
+      "type": [
+        "object",
+        {
+          "cis-rhel-8": "string",
+          "liberty-8": "string",
+          "rhel-9": "string",
+          "rocky-8": "string",
+          "rocky-9": "string",
+          "sle-micro-55": "string",
+          "sle-micro-60": "string",
+          "sles-15": "string",
+          "ubuntu-22": "string",
+          "ubuntu-24": "string"
+        }
+      ]
+    }
+  },
+  "resources": [
+    {
+      "module": "module.this[\"cis-rhel-8\"]",
+      "mode": "data",
+      "type": "aws_ami",
+      "name": "search",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "index_key": 0,
+          "schema_version": 0,
+          "attributes": {
+            "architecture": "x86_64",
+            "arn": "arn:aws:ec2:us-west-2::image/ami-0fbd905f1bb25ae89",
+            "block_device_mappings": [
+              {
+                "device_name": "/dev/sda1",
+                "ebs": {
+                  "delete_on_termination": "true",
+                  "encrypted": "false",
+                  "iops": "0",
+                  "snapshot_id": "snap-0602fc342b387ac7a",
+                  "throughput": "0",
+                  "volume_size": "15",
+                  "volume_type": "gp2"
+                },
+                "no_device": "",
+                "virtual_name": ""
+              },
+              {
+                "device_name": "/dev/sdf",
+                "ebs": {
+                  "delete_on_termination": "true",
+                  "encrypted": "false",
+                  "iops": "0",
+                  "snapshot_id": "snap-0e2f975b53726d4b5",
+                  "throughput": "0",
+                  "volume_size": "40",
+                  "volume_type": "gp2"
+                },
+                "no_device": "",
+                "virtual_name": ""
+              }
+            ],
+            "boot_mode": "uefi-preferred",
+            "creation_date": "2024-08-20T18:04:09.000Z",
+            "deprecation_time": "2026-08-20T18:04:09.000Z",
+            "description": "",
+            "ena_support": true,
+            "executable_users": null,
+            "filter": [
+              {
+                "name": "architecture",
+                "values": [
+                  "x86_64"
+                ]
+              },
+              {
+                "name": "name",
+                "values": [
+                  "CIS Red Hat Enterprise Linux 8 Benchmark - STIG - v08 -*"
+                ]
+              },
+              {
+                "name": "product-code",
+                "values": [
+                  "bysa8cc41lo4owixsmqw6v44f"
+                ]
+              }
+            ],
+            "hypervisor": "xen",
+            "id": "ami-0fbd905f1bb25ae89",
+            "image_id": "ami-0fbd905f1bb25ae89",
+            "image_location": "aws-marketplace/CIS Red Hat Enterprise Linux 8 Benchmark - STIG - v08 -ca1fe94d-9237-41c7-8fc8-78b6b0658c9f",
+            "image_owner_alias": "aws-marketplace",
+            "image_type": "machine",
+            "imds_support": "",
+            "include_deprecated": false,
+            "kernel_id": "",
+            "most_recent": true,
+            "name": "CIS Red Hat Enterprise Linux 8 Benchmark - STIG - v08 -ca1fe94d-9237-41c7-8fc8-78b6b0658c9f",
+            "name_regex": ".*",
+            "owner_id": "679593333241",
+            "owners": [
+              "679593333241"
+            ],
+            "platform": "",
+            "platform_details": "Red Hat Enterprise Linux",
+            "product_codes": [
+              {
+                "product_code_id": "bysa8cc41lo4owixsmqw6v44f",
+                "product_code_type": "marketplace"
+              }
+            ],
+            "public": true,
+            "ramdisk_id": "",
+            "root_device_name": "/dev/sda1",
+            "root_device_type": "ebs",
+            "root_snapshot_id": "snap-0602fc342b387ac7a",
+            "sriov_net_support": "simple",
+            "state": "available",
+            "state_reason": {
+              "code": "UNSET",
+              "message": "UNSET"
+            },
+            "tags": {},
+            "timeouts": null,
+            "tpm_support": "",
+            "usage_operation": "RunInstances:0010",
+            "virtualization_type": "hvm"
+          },
+          "sensitive_attributes": []
+        }
+      ]
+    },
+    {
+      "module": "module.this[\"liberty-8\"]",
+      "mode": "data",
+      "type": "aws_ami",
+      "name": "search",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "index_key": 0,
+          "schema_version": 0,
+          "attributes": {
+            "architecture": "x86_64",
+            "arn": "arn:aws:ec2:us-west-2::image/ami-0a7efe51a877c5c9a",
+            "block_device_mappings": [
+              {
+                "device_name": "/dev/sda1",
+                "ebs": {
+                  "delete_on_termination": "true",
+                  "encrypted": "false",
+                  "iops": "0",
+                  "snapshot_id": "snap-0b2e3b0a1bd9e52d6",
+                  "throughput": "0",
+                  "volume_size": "10",
+                  "volume_type": "gp3"
+                },
+                "no_device": "",
+                "virtual_name": ""
+              }
+            ],
+            "boot_mode": "uefi",
+            "creation_date": "2024-06-11T17:35:02.000Z",
+            "deprecation_time": "2026-06-11T17:35:02.000Z",
+            "description": "SUSE Liberty Linux 8.9",
+            "ena_support": true,
+            "executable_users": null,
+            "filter": [
+              {
+                "name": "architecture",
+                "values": [
+                  "x86_64"
+                ]
+              },
+              {
+                "name": "name",
+                "values": [
+                  "suse-liberty-linux-8-*-byos-*-x86_64"
+                ]
+              }
+            ],
+            "hypervisor": "xen",
+            "id": "ami-0a7efe51a877c5c9a",
+            "image_id": "ami-0a7efe51a877c5c9a",
+            "image_location": "amazon/suse-liberty-linux-8-9-byos-v20240603-x86_64",
+            "image_owner_alias": "amazon",
+            "image_type": "machine",
+            "imds_support": "",
+            "include_deprecated": false,
+            "kernel_id": "",
+            "most_recent": true,
+            "name": "suse-liberty-linux-8-9-byos-v20240603-x86_64",
+            "name_regex": "^suse-liberty-linux-8-[0-9]+-byos-v[0-9]+-x86_64$",
+            "owner_id": "013907871322",
+            "owners": null,
+            "platform": "",
+            "platform_details": "Linux/UNIX",
+            "product_codes": [],
+            "public": true,
+            "ramdisk_id": "",
+            "root_device_name": "/dev/sda1",
+            "root_device_type": "ebs",
+            "root_snapshot_id": "snap-0b2e3b0a1bd9e52d6",
+            "sriov_net_support": "simple",
+            "state": "available",
+            "state_reason": {
+              "code": "UNSET",
+              "message": "UNSET"
+            },
+            "tags": {},
+            "timeouts": null,
+            "tpm_support": "",
+            "usage_operation": "RunInstances",
+            "virtualization_type": "hvm"
+          },
+          "sensitive_attributes": []
+        }
+      ]
+    },
+    {
+      "module": "module.this[\"rhel-9\"]",
+      "mode": "data",
+      "type": "aws_ami",
+      "name": "search",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "index_key": 0,
+          "schema_version": 0,
+          "attributes": {
+            "architecture": "x86_64",
+            "arn": "arn:aws:ec2:us-west-2::image/ami-0c2f1f1137a85327e",
+            "block_device_mappings": [
+              {
+                "device_name": "/dev/sda1",
+                "ebs": {
+                  "delete_on_termination": "true",
+                  "encrypted": "false",
+                  "iops": "0",
+                  "snapshot_id": "snap-0132742784eced050",
+                  "throughput": "0",
+                  "volume_size": "10",
+                  "volume_type": "gp3"
+                },
+                "no_device": "",
+                "virtual_name": ""
+              }
+            ],
+            "boot_mode": "uefi-preferred",
+            "creation_date": "2024-03-04T20:56:12.000Z",
+            "deprecation_time": "2026-03-04T20:56:12.000Z",
+            "description": "Provided by Red Hat, Inc.",
+            "ena_support": true,
+            "executable_users": null,
+            "filter": [
+              {
+                "name": "architecture",
+                "values": [
+                  "x86_64"
+                ]
+              },
+              {
+                "name": "name",
+                "values": [
+                  "RHEL-9.3*_HVM-2024*-x86_64-*-Hourly2-GP3"
+                ]
+              }
+            ],
+            "hypervisor": "xen",
+            "id": "ami-0c2f1f1137a85327e",
+            "image_id": "ami-0c2f1f1137a85327e",
+            "image_location": "amazon/RHEL-9.3.0_HVM-20240229-x86_64-27-Hourly2-GP3",
+            "image_owner_alias": "amazon",
+            "image_type": "machine",
+            "imds_support": "",
+            "include_deprecated": false,
+            "kernel_id": "",
+            "most_recent": true,
+            "name": "RHEL-9.3.0_HVM-20240229-x86_64-27-Hourly2-GP3",
+            "name_regex": "^RHEL-9.3.*_HVM-2024.*-x86_64-.*-Hourly2-GP3$",
+            "owner_id": "309956199498",
+            "owners": [
+              "309956199498"
+            ],
+            "platform": "",
+            "platform_details": "Red Hat Enterprise Linux",
+            "product_codes": [],
+            "public": true,
+            "ramdisk_id": "",
+            "root_device_name": "/dev/sda1",
+            "root_device_type": "ebs",
+            "root_snapshot_id": "snap-0132742784eced050",
+            "sriov_net_support": "simple",
+            "state": "available",
+            "state_reason": {
+              "code": "UNSET",
+              "message": "UNSET"
+            },
+            "tags": {},
+            "timeouts": null,
+            "tpm_support": "",
+            "usage_operation": "RunInstances:0010",
+            "virtualization_type": "hvm"
+          },
+          "sensitive_attributes": []
+        }
+      ]
+    },
+    {
+      "module": "module.this[\"rocky-8\"]",
+      "mode": "data",
+      "type": "aws_ami",
+      "name": "search",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "index_key": 0,
+          "schema_version": 0,
+          "attributes": {
+            "architecture": "x86_64",
+            "arn": "arn:aws:ec2:us-west-2::image/ami-0f74cc83310468775",
+            "block_device_mappings": [
+              {
+                "device_name": "/dev/sda1",
+                "ebs": {
+                  "delete_on_termination": "true",
+                  "encrypted": "false",
+                  "iops": "0",
+                  "snapshot_id": "snap-025b18912e4a69d10",
+                  "throughput": "0",
+                  "volume_size": "10",
+                  "volume_type": "gp2"
+                },
+                "no_device": "",
+                "virtual_name": ""
+              }
+            ],
+            "boot_mode": "uefi-preferred",
+            "creation_date": "2023-11-28T21:49:33.000Z",
+            "deprecation_time": "2025-11-28T21:49:33.000Z",
+            "description": "Rocky-8-EC2-Base-8.9-20231119.0.x86_64",
+            "ena_support": true,
+            "executable_users": null,
+            "filter": [
+              {
+                "name": "architecture",
+                "values": [
+                  "x86_64"
+                ]
+              },
+              {
+                "name": "name",
+                "values": [
+                  "Rocky-8-EC2-Base-8.*-*.*.x86_64-*"
+                ]
+              },
+              {
+                "name": "product-code",
+                "values": [
+                  "cotnnspjrsi38lfn8qo4ibnnm"
+                ]
+              }
+            ],
+            "hypervisor": "xen",
+            "id": "ami-0f74cc83310468775",
+            "image_id": "ami-0f74cc83310468775",
+            "image_location": "aws-marketplace/Rocky-8-EC2-Base-8.9-20231119.0.x86_64-d6577ceb-8ea8-4e0e-84c6-f098fc302e82",
+            "image_owner_alias": "aws-marketplace",
+            "image_type": "machine",
+            "imds_support": "",
+            "include_deprecated": false,
+            "kernel_id": "",
+            "most_recent": true,
+            "name": "Rocky-8-EC2-Base-8.9-20231119.0.x86_64-d6577ceb-8ea8-4e0e-84c6-f098fc302e82",
+            "name_regex": "^Rocky-8-EC2-Base-8.[0-9]+-[0-9]+.[0-9].x86_64-.*$",
+            "owner_id": "679593333241",
+            "owners": [
+              "679593333241"
+            ],
+            "platform": "",
+            "platform_details": "Linux/UNIX",
+            "product_codes": [
+              {
+                "product_code_id": "cotnnspjrsi38lfn8qo4ibnnm",
+                "product_code_type": "marketplace"
+              }
+            ],
+            "public": true,
+            "ramdisk_id": "",
+            "root_device_name": "/dev/sda1",
+            "root_device_type": "ebs",
+            "root_snapshot_id": "snap-025b18912e4a69d10",
+            "sriov_net_support": "",
+            "state": "available",
+            "state_reason": {
+              "code": "UNSET",
+              "message": "UNSET"
+            },
+            "tags": {},
+            "timeouts": null,
+            "tpm_support": "",
+            "usage_operation": "RunInstances",
+            "virtualization_type": "hvm"
+          },
+          "sensitive_attributes": []
+        }
+      ]
+    },
+    {
+      "module": "module.this[\"rocky-9\"]",
+      "mode": "data",
+      "type": "aws_ami",
+      "name": "search",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "index_key": 0,
+          "schema_version": 0,
+          "attributes": {
+            "architecture": "x86_64",
+            "arn": "arn:aws:ec2:us-west-2::image/ami-0faa73a0256c330e9",
+            "block_device_mappings": [
+              {
+                "device_name": "/dev/sda1",
+                "ebs": {
+                  "delete_on_termination": "true",
+                  "encrypted": "false",
+                  "iops": "0",
+                  "snapshot_id": "snap-0acaca8ce5f8194e4",
+                  "throughput": "0",
+                  "volume_size": "11",
+                  "volume_type": "gp2"
+                },
+                "no_device": "",
+                "virtual_name": ""
+              }
+            ],
+            "boot_mode": "uefi-preferred",
+            "creation_date": "2024-06-03T21:36:01.000Z",
+            "deprecation_time": "2026-06-03T21:36:01.000Z",
+            "description": "Rocky-9-EC2-LVM-9.4-20240523.0.x86_64",
+            "ena_support": true,
+            "executable_users": null,
+            "filter": [
+              {
+                "name": "architecture",
+                "values": [
+                  "x86_64"
+                ]
+              },
+              {
+                "name": "name",
+                "values": [
+                  "Rocky-9-EC2-LVM-9.*-*.*.x86_64-*"
+                ]
+              },
+              {
+                "name": "product-code",
+                "values": [
+                  "c0tjzp9xnxvr0ah4f0yletr6b"
+                ]
+              }
+            ],
+            "hypervisor": "xen",
+            "id": "ami-0faa73a0256c330e9",
+            "image_id": "ami-0faa73a0256c330e9",
+            "image_location": "aws-marketplace/Rocky-9-EC2-LVM-9.4-20240523.0.x86_64-prod-hyj6jp3bki4bm",
+            "image_owner_alias": "aws-marketplace",
+            "image_type": "machine",
+            "imds_support": "",
+            "include_deprecated": false,
+            "kernel_id": "",
+            "most_recent": true,
+            "name": "Rocky-9-EC2-LVM-9.4-20240523.0.x86_64-prod-hyj6jp3bki4bm",
+            "name_regex": "^Rocky-9-EC2-LVM-9.[0-9]+-[0-9]+.[0-9].x86_64-prod-[0-9a-z]+$",
+            "owner_id": "679593333241",
+            "owners": [
+              "679593333241"
+            ],
+            "platform": "",
+            "platform_details": "Linux/UNIX",
+            "product_codes": [
+              {
+                "product_code_id": "c0tjzp9xnxvr0ah4f0yletr6b",
+                "product_code_type": "marketplace"
+              }
+            ],
+            "public": true,
+            "ramdisk_id": "",
+            "root_device_name": "/dev/sda1",
+            "root_device_type": "ebs",
+            "root_snapshot_id": "snap-0acaca8ce5f8194e4",
+            "sriov_net_support": "",
+            "state": "available",
+            "state_reason": {
+              "code": "UNSET",
+              "message": "UNSET"
+            },
+            "tags": {},
+            "timeouts": null,
+            "tpm_support": "",
+            "usage_operation": "RunInstances",
+            "virtualization_type": "hvm"
+          },
+          "sensitive_attributes": []
+        }
+      ]
+    },
+    {
+      "module": "module.this[\"sle-micro-55\"]",
+      "mode": "data",
+      "type": "aws_ami",
+      "name": "search",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "index_key": 0,
+          "schema_version": 0,
+          "attributes": {
+            "architecture": "x86_64",
+            "arn": "arn:aws:ec2:us-west-2::image/ami-0af49aa53aae9b8b4",
+            "block_device_mappings": [
+              {
+                "device_name": "/dev/sda1",
+                "ebs": {
+                  "delete_on_termination": "true",
+                  "encrypted": "false",
+                  "iops": "0",
+                  "snapshot_id": "snap-049d16d208b30f002",
+                  "throughput": "0",
+                  "volume_size": "10",
+                  "volume_type": "gp3"
+                },
+                "no_device": "",
+                "virtual_name": ""
+              }
+            ],
+            "boot_mode": "uefi-preferred",
+            "creation_date": "2024-08-08T11:38:40.000Z",
+            "deprecation_time": "2026-08-08T11:38:40.000Z",
+            "description": "SUSE Linux Enterprise Micro 5.5 - BYOS (HVM, 64-bit, SSD-Backed)",
+            "ena_support": true,
+            "executable_users": null,
+            "filter": [
+              {
+                "name": "architecture",
+                "values": [
+                  "x86_64"
+                ]
+              },
+              {
+                "name": "name",
+                "values": [
+                  "suse-sle-micro-5-5-byos-v*-hvm-ssd-x86_64"
+                ]
+              }
+            ],
+            "hypervisor": "xen",
+            "id": "ami-0af49aa53aae9b8b4",
+            "image_id": "ami-0af49aa53aae9b8b4",
+            "image_location": "amazon/suse-sle-micro-5-5-byos-v20240808-hvm-ssd-x86_64",
+            "image_owner_alias": "amazon",
+            "image_type": "machine",
+            "imds_support": "",
+            "include_deprecated": false,
+            "kernel_id": "",
+            "most_recent": true,
+            "name": "suse-sle-micro-5-5-byos-v20240808-hvm-ssd-x86_64",
+            "name_regex": "^suse-sle-micro-5-5-byos-v[0-9]+-hvm-ssd-x86_64$",
+            "owner_id": "013907871322",
+            "owners": [
+              "013907871322"
+            ],
+            "platform": "",
+            "platform_details": "Linux/UNIX",
+            "product_codes": [],
+            "public": true,
+            "ramdisk_id": "",
+            "root_device_name": "/dev/sda1",
+            "root_device_type": "ebs",
+            "root_snapshot_id": "snap-049d16d208b30f002",
+            "sriov_net_support": "simple",
+            "state": "available",
+            "state_reason": {
+              "code": "UNSET",
+              "message": "UNSET"
+            },
+            "tags": {},
+            "timeouts": null,
+            "tpm_support": "",
+            "usage_operation": "RunInstances",
+            "virtualization_type": "hvm"
+          },
+          "sensitive_attributes": []
+        }
+      ]
+    },
+    {
+      "module": "module.this[\"sle-micro-60\"]",
+      "mode": "data",
+      "type": "aws_ami",
+      "name": "search",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "index_key": 0,
+          "schema_version": 0,
+          "attributes": {
+            "architecture": "x86_64",
+            "arn": "arn:aws:ec2:us-west-2::image/ami-052906d8965d2f883",
+            "block_device_mappings": [
+              {
+                "device_name": "/dev/sda1",
+                "ebs": {
+                  "delete_on_termination": "true",
+                  "encrypted": "false",
+                  "iops": "0",
+                  "snapshot_id": "snap-08cbc077b79b6eeb3",
+                  "throughput": "0",
+                  "volume_size": "10",
+                  "volume_type": "gp3"
+                },
+                "no_device": "",
+                "virtual_name": ""
+              }
+            ],
+            "boot_mode": "uefi-preferred",
+            "creation_date": "2024-06-12T10:32:45.000Z",
+            "deprecation_time": "2026-06-12T10:32:45.000Z",
+            "description": "SUSE Linux Enterprise Micro 6.0 - BYOS (HVM, 64-bit, SSD-Backed)",
+            "ena_support": true,
+            "executable_users": null,
+            "filter": [
+              {
+                "name": "architecture",
+                "values": [
+                  "x86_64"
+                ]
+              },
+              {
+                "name": "name",
+                "values": [
+                  "suse-sle-micro-6-0-byos-v*-hvm-ssd-x86_64"
+                ]
+              }
+            ],
+            "hypervisor": "xen",
+            "id": "ami-052906d8965d2f883",
+            "image_id": "ami-052906d8965d2f883",
+            "image_location": "amazon/suse-sle-micro-6-0-byos-v20240612-hvm-ssd-x86_64",
+            "image_owner_alias": "amazon",
+            "image_type": "machine",
+            "imds_support": "",
+            "include_deprecated": false,
+            "kernel_id": "",
+            "most_recent": true,
+            "name": "suse-sle-micro-6-0-byos-v20240612-hvm-ssd-x86_64",
+            "name_regex": "^suse-sle-micro-6-0-byos-v[0-9]+-hvm-ssd-x86_64$",
+            "owner_id": "013907871322",
+            "owners": [
+              "013907871322"
+            ],
+            "platform": "",
+            "platform_details": "Linux/UNIX",
+            "product_codes": [],
+            "public": true,
+            "ramdisk_id": "",
+            "root_device_name": "/dev/sda1",
+            "root_device_type": "ebs",
+            "root_snapshot_id": "snap-08cbc077b79b6eeb3",
+            "sriov_net_support": "simple",
+            "state": "available",
+            "state_reason": {
+              "code": "UNSET",
+              "message": "UNSET"
+            },
+            "tags": {},
+            "timeouts": null,
+            "tpm_support": "",
+            "usage_operation": "RunInstances",
+            "virtualization_type": "hvm"
+          },
+          "sensitive_attributes": []
+        }
+      ]
+    },
+    {
+      "module": "module.this[\"sles-15\"]",
+      "mode": "data",
+      "type": "aws_ami",
+      "name": "search",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "index_key": 0,
+          "schema_version": 0,
+          "attributes": {
+            "architecture": "x86_64",
+            "arn": "arn:aws:ec2:us-west-2::image/ami-004cba86bd858e756",
+            "block_device_mappings": [
+              {
+                "device_name": "/dev/sda1",
+                "ebs": {
+                  "delete_on_termination": "true",
+                  "encrypted": "false",
+                  "iops": "0",
+                  "snapshot_id": "snap-00388118d1d9ee8f9",
+                  "throughput": "0",
+                  "volume_size": "10",
+                  "volume_type": "gp3"
+                },
+                "no_device": "",
+                "virtual_name": ""
+              }
+            ],
+            "boot_mode": "uefi-preferred",
+            "creation_date": "2024-08-07T19:00:58.000Z",
+            "deprecation_time": "2026-08-07T19:00:58.000Z",
+            "description": "SUSE Linux Enterprise Server 15 SP6 Optimized as K8s Host (HVM, 64-bit, SSD-Backed)",
+            "ena_support": true,
+            "executable_users": null,
+            "filter": [
+              {
+                "name": "architecture",
+                "values": [
+                  "x86_64"
+                ]
+              },
+              {
+                "name": "name",
+                "values": [
+                  "suse-sles-15-sp6-chost-byos-v*-hvm-ssd-x86_64"
+                ]
+              }
+            ],
+            "hypervisor": "xen",
+            "id": "ami-004cba86bd858e756",
+            "image_id": "ami-004cba86bd858e756",
+            "image_location": "amazon/suse-sles-15-sp6-chost-byos-v20240807-hvm-ssd-x86_64",
+            "image_owner_alias": "amazon",
+            "image_type": "machine",
+            "imds_support": "v2.0",
+            "include_deprecated": false,
+            "kernel_id": "",
+            "most_recent": true,
+            "name": "suse-sles-15-sp6-chost-byos-v20240807-hvm-ssd-x86_64",
+            "name_regex": "^suse-sles-15-sp6-chost-byos-v[0-9]+-hvm-ssd-x86_64$",
+            "owner_id": "013907871322",
+            "owners": [
+              "013907871322"
+            ],
+            "platform": "",
+            "platform_details": "Linux/UNIX",
+            "product_codes": [],
+            "public": true,
+            "ramdisk_id": "",
+            "root_device_name": "/dev/sda1",
+            "root_device_type": "ebs",
+            "root_snapshot_id": "snap-00388118d1d9ee8f9",
+            "sriov_net_support": "simple",
+            "state": "available",
+            "state_reason": {
+              "code": "UNSET",
+              "message": "UNSET"
+            },
+            "tags": {},
+            "timeouts": null,
+            "tpm_support": "",
+            "usage_operation": "RunInstances",
+            "virtualization_type": "hvm"
+          },
+          "sensitive_attributes": []
+        }
+      ]
+    },
+    {
+      "module": "module.this[\"ubuntu-22\"]",
+      "mode": "data",
+      "type": "aws_ami",
+      "name": "search",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "index_key": 0,
+          "schema_version": 0,
+          "attributes": {
+            "architecture": "x86_64",
+            "arn": "arn:aws:ec2:us-west-2::image/ami-0131a2b84202a34e1",
+            "block_device_mappings": [
+              {
+                "device_name": "/dev/sda1",
+                "ebs": {
+                  "delete_on_termination": "true",
+                  "encrypted": "false",
+                  "iops": "0",
+                  "snapshot_id": "snap-0400900916913c3ba",
+                  "throughput": "0",
+                  "volume_size": "8",
+                  "volume_type": "gp2"
+                },
+                "no_device": "",
+                "virtual_name": ""
+              },
+              {
+                "device_name": "/dev/sdb",
+                "ebs": {},
+                "no_device": "",
+                "virtual_name": "ephemeral0"
+              },
+              {
+                "device_name": "/dev/sdc",
+                "ebs": {},
+                "no_device": "",
+                "virtual_name": "ephemeral1"
+              }
+            ],
+            "boot_mode": "uefi-preferred",
+            "creation_date": "2024-08-21T04:46:58.000Z",
+            "deprecation_time": "2026-08-21T04:46:58.000Z",
+            "description": "Canonical, Ubuntu, 22.04 LTS, amd64 jammy image build on 2024-08-21",
+            "ena_support": true,
+            "executable_users": null,
+            "filter": [
+              {
+                "name": "architecture",
+                "values": [
+                  "x86_64"
+                ]
+              },
+              {
+                "name": "name",
+                "values": [
+                  "ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*"
+                ]
+              },
+              {
+                "name": "product-code",
+                "values": [
+                  "47xbqns9xujfkkjt189a13aqe"
+                ]
+              }
+            ],
+            "hypervisor": "xen",
+            "id": "ami-0131a2b84202a34e1",
+            "image_id": "ami-0131a2b84202a34e1",
+            "image_location": "aws-marketplace/ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-20240821-47489723-7305-4e22-8b22-b0d57054f216",
+            "image_owner_alias": "aws-marketplace",
+            "image_type": "machine",
+            "imds_support": "",
+            "include_deprecated": false,
+            "kernel_id": "",
+            "most_recent": true,
+            "name": "ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-20240821-47489723-7305-4e22-8b22-b0d57054f216",
+            "name_regex": "^ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-[0-9a-f-]+$",
+            "owner_id": "679593333241",
+            "owners": [
+              "679593333241"
+            ],
+            "platform": "",
+            "platform_details": "Linux/UNIX",
+            "product_codes": [
+              {
+                "product_code_id": "47xbqns9xujfkkjt189a13aqe",
+                "product_code_type": "marketplace"
+              }
+            ],
+            "public": true,
+            "ramdisk_id": "",
+            "root_device_name": "/dev/sda1",
+            "root_device_type": "ebs",
+            "root_snapshot_id": "snap-0400900916913c3ba",
+            "sriov_net_support": "simple",
+            "state": "available",
+            "state_reason": {
+              "code": "UNSET",
+              "message": "UNSET"
+            },
+            "tags": {},
+            "timeouts": null,
+            "tpm_support": "",
+            "usage_operation": "RunInstances",
+            "virtualization_type": "hvm"
+          },
+          "sensitive_attributes": []
+        }
+      ]
+    },
+    {
+      "module": "module.this[\"ubuntu-24\"]",
+      "mode": "data",
+      "type": "aws_ami",
+      "name": "search",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "index_key": 0,
+          "schema_version": 0,
+          "attributes": {
+            "architecture": "x86_64",
+            "arn": "arn:aws:ec2:us-west-2::image/ami-0c0f498c6b8846a14",
+            "block_device_mappings": [
+              {
+                "device_name": "/dev/sda1",
+                "ebs": {
+                  "delete_on_termination": "true",
+                  "encrypted": "false",
+                  "iops": "0",
+                  "snapshot_id": "snap-0b914796ed7527a70",
+                  "throughput": "0",
+                  "volume_size": "8",
+                  "volume_type": "gp3"
+                },
+                "no_device": "",
+                "virtual_name": ""
+              },
+              {
+                "device_name": "/dev/sdb",
+                "ebs": {},
+                "no_device": "",
+                "virtual_name": "ephemeral0"
+              },
+              {
+                "device_name": "/dev/sdc",
+                "ebs": {},
+                "no_device": "",
+                "virtual_name": "ephemeral1"
+              }
+            ],
+            "boot_mode": "uefi-preferred",
+            "creation_date": "2024-08-21T11:02:02.000Z",
+            "deprecation_time": "2026-08-21T11:02:02.000Z",
+            "description": "Canonical, Ubuntu, 24.04, amd64 noble image",
+            "ena_support": true,
+            "executable_users": null,
+            "filter": [
+              {
+                "name": "architecture",
+                "values": [
+                  "x86_64"
+                ]
+              },
+              {
+                "name": "name",
+                "values": [
+                  "ubuntu/images/hvm-ssd-gp3/ubuntu-noble-24.04-amd64-server-*"
+                ]
+              },
+              {
+                "name": "product-code",
+                "values": [
+                  "dv93d44qq5nae4el2oecv6xwa"
+                ]
+              }
+            ],
+            "hypervisor": "xen",
+            "id": "ami-0c0f498c6b8846a14",
+            "image_id": "ami-0c0f498c6b8846a14",
+            "image_location": "aws-marketplace/ubuntu/images/hvm-ssd-gp3/ubuntu-noble-24.04-amd64-server-20240821-prod-ib2w5aw4ynhey",
+            "image_owner_alias": "aws-marketplace",
+            "image_type": "machine",
+            "imds_support": "v2.0",
+            "include_deprecated": false,
+            "kernel_id": "",
+            "most_recent": true,
+            "name": "ubuntu/images/hvm-ssd-gp3/ubuntu-noble-24.04-amd64-server-20240821-prod-ib2w5aw4ynhey",
+            "name_regex": "^ubuntu/images/hvm-ssd-gp3/ubuntu-noble-24.04-amd64-server-[0-9]+-prod-.*$",
+            "owner_id": "679593333241",
+            "owners": [
+              "679593333241"
+            ],
+            "platform": "",
+            "platform_details": "Linux/UNIX",
+            "product_codes": [
+              {
+                "product_code_id": "dv93d44qq5nae4el2oecv6xwa",
+                "product_code_type": "marketplace"
+              }
+            ],
+            "public": true,
+            "ramdisk_id": "",
+            "root_device_name": "/dev/sda1",
+            "root_device_type": "ebs",
+            "root_snapshot_id": "snap-0b914796ed7527a70",
+            "sriov_net_support": "simple",
+            "state": "available",
+            "state_reason": {
+              "code": "UNSET",
+              "message": "UNSET"
+            },
+            "tags": {},
+            "timeouts": null,
+            "tpm_support": "",
+            "usage_operation": "RunInstances",
+            "virtualization_type": "hvm"
+          },
+          "sensitive_attributes": []
+        }
+      ]
+    }
+  ],
+  "check_results": null
+}

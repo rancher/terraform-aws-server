@@ -58,13 +58,14 @@ variable "image_type" {
     Current images are:
         "sles-15",
         "sle-micro-55",
-        "rhel-8-cis",
-        "ubuntu-20",
+        "sle-micro-60",
+        "cis-rhel-8",
         "ubuntu-22",
+        "ubuntu-24",
         "rocky-8",
-        "liberty-7",
-        "rhel-8",
-        "rhel-9"
+        "rocky-9",
+        "rhel-9",
+        "liberty-8"
   EOT
   default     = ""
   validation {
@@ -72,26 +73,28 @@ variable "image_type" {
       var.image_type == "" ? true : contains([
         "sles-15",
         "sle-micro-55",
-        "rhel-8-cis",
-        "ubuntu-20",
+        "sle-micro-60",
+        "cis-rhel-8",
         "ubuntu-22",
+        "ubuntu-24",
         "rocky-8",
-        "liberty-7",
-        "rhel-8",
+        "rocky-9",
         "rhel-9",
+        "liberty-8"
       ], var.image_type)
     )
     error_message = <<-EOT
       If specified, this must be one of 
         "sles-15",
         "sle-micro-55",
-        "rhel-8-cis",
-        "ubuntu-20",
+        "sle-micro-60",
+        "cis-rhel-8",
         "ubuntu-22",
+        "ubuntu-24",
         "rocky-8",
-        "liberty-7",
-        "rhel-8",
-        "rhel-9"
+        "rocky-9",
+        "rhel-9",
+        "liberty-8"
     EOT
   }
 }
@@ -336,7 +339,7 @@ variable "server_user" {
     The user specified will be added to the server with passwordless sudo access.
     The public_ssh_key will be added to the /home/<user>/.ssh/authorized_keys file.
     The timeout value is the number of minutes to wait for setup to complete, defaults to 5.
-    Some images must have an ssh key passed to the cloud provider when generating the server (CIS STIG),
+    Some images must have an ssh key passed to the cloud provider when generating the server,
     to enable this set the aws_keypair_use_strategy to either "select" or "create".
     Select will select the ssh key with the name attribute equal to the "ssh_key_name" specified.
     Create will create a new ssh key with the given name and public ssh key. (ssh keypair objects can't have tags).

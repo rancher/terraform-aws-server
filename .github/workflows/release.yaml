@@ -42,52 +42,16 @@ jobs:
           role-to-assume: ${{env.AWS_ROLE}}
           role-session-name: ${{github.job}}-${{github.run_id}}-${{github.run_number}}-${{github.run_attempt}}
           aws-region: ${{env.AWS_REGION}}
-      - name: 'Restore Terraform Cache'
-        if: steps.release-please.outputs.pr
-        id: cache-terraform-restore
-        uses: actions/cache/restore@v4
-        with:
-          path: ${{ github.workspace }}/.terraform
-          key: terraform
-      - run: terraform init -upgrade
-        if: steps.release-please.outputs.pr
-      - name: 'Cache Terraform'
-        if: steps.release-please.outputs.pr
-        id: cache-terraform-save
-        uses: actions/cache/save@v4
-        with:
-          path: ${{ github.workspace }}/.terraform
-          key: ${{ steps.cache-terraform-restore.outputs.cache-primary-key }}
       - name: 'Terratest'
         run: |
-          cd tests
-          cat <<'EOF'> test-processor
-          echo "Passed: "
-          cat test.log | jq -r '. | select(.Action == "pass") | select(.Test != null).Test'
-          echo " "
-          echo "Failed: "
-          cat test.log | jq -r '. | select(.Action == "fail") | select(.Test != null).Test'
-          echo " "
-          EOF
-          chmod +x test-processor
-
-          gotestsum \
-            --format=standard-verbose \
-            --jsonfile test.log \
-            --post-run-command "bash test-processor" \
-            -- \
-            -parallel=8 \
-            -timeout=80m
-
+          R="$(git rev-parse --show-toplevel)"
+          "$R/run_tests.sh"
         if: steps.release-please.outputs.pr
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
           GITHUB_OWNER: rancher
           IDENTIFIER: ${{github.run_id}}
           ZONE: ${{env.ZONE}}
-      - name: 'ImageCheck'
-        run: ./validate-image.sh
-        if: steps.release-please.outputs.pr
       - name: 'Report Success'
         uses: peter-evans/create-or-update-comment@v4
         if: steps.release-please.outputs.pr
