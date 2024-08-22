@@ -4,10 +4,11 @@ variable "use_strategy" {
     Whether to find or select an image.
     If set to `find`, type is required and must be in the list of types.
     If set to `select`, type is ignored and image is required.
+    If set to `skip`, nothing will be done, helpful to get the list of available images.
   EOT
   validation {
-    condition     = contains(["find", "select"], var.use_strategy)
-    error_message = "The use_strategy value must be either `find` or `select`."
+    condition     = contains(["find", "select", "skip"], var.use_strategy)
+    error_message = "The use_strategy value must be `find`, `select`,  or `skip`."
   }
 }
 variable "type" {
@@ -19,6 +20,7 @@ variable "type" {
   EOT
   default     = ""
 }
+
 variable "image" {
   type = object({
     id          = string
@@ -38,17 +40,16 @@ variable "image" {
     workfolder  = ""
   }
 }
-
 variable "custom_types" {
   type = map(object({
     user         = string
     group        = string
+    workfolder   = string
     name         = string
     name_regex   = string
     product_code = string
     owners       = list(string)
     architecture = string
-    workfolder   = string
   }))
   description = <<-EOT
     A custom type to inject into the types.tf file.
@@ -56,15 +57,15 @@ variable "custom_types" {
     This simply adds the new type to the types, you must use the "find" use strategy and the new type's key as the type.
   EOT
   default = {
-    dummy = {
+    default = {
       user         = ""
       group        = ""
+      workfolder   = ""
       name         = ""
       name_regex   = ""
       product_code = ""
       owners       = []
       architecture = ""
-      workfolder   = ""
     }
   }
 }

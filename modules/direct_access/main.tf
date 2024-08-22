@@ -16,11 +16,11 @@ locals {
 }
 
 resource "aws_security_group" "direct_access" {
-  name        = local.server.name
+  name        = "${local.server.name}-direct"
   description = "Security group for server ${local.server.name}"
   vpc_id      = local.server.vpc_id
   tags = {
-    Name = local.server.name
+    Name = "${local.server.name}-direct"
   }
 }
 

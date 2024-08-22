@@ -79,7 +79,8 @@ fi
 # add our user to the list of allowed users and restart sshd
 if [ "${INITIAL_USER}" != "${USER}" ]; then
   sed -i 's/^AllowUsers.*/& '"${USER}"'/' /etc/ssh/sshd_config
-  systemctl restart sshd
+  systemctl restart sshd || true
+  systemctl restart ssh || true # ubuntu 24.04...>:(
 fi
 
 exit $EXIT

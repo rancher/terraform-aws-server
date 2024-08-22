@@ -18,6 +18,10 @@ get_repo_owner() {
   printf "%s" "$OWNER"
 }
 
+get_repo_root() {
+  git rev-parse --show-toplevel
+}
+
 # get current status of git repo
 parse_git_dirty() {
     status="$(git status 2>&1 | tee)"
@@ -193,29 +197,8 @@ set_repo_name() {
 }
 
 run_tests() {
-  if [ -d "./tests" ]; then
-    cd tests
-  fi
-  cat <<'EOF'> /tmp/terraform-aws-server-test-processor
-echo "Passed: "
-cat /tmp/terraform-aws-server-test.log | jq -r '. | select(.Action == "pass") | select(.Test != null).Test'
-echo " "
-echo "Failed: "
-cat /tmp/terraform-aws-server-test.log | jq -r '. | select(.Action == "fail") | select(.Test != null).Test'
-echo " "
-EOF
-  chmod +x /tmp/terraform-aws-server-test-processor
-
-  gotestsum \
-    --format=standard-verbose \
-    --jsonfile /tmp/terraform-aws-server-test.log \
-    --post-run-command "bash /tmp/terraform-aws-server-test-processor" \
-    -- \
-    -parallel=10 \
-    -timeout=80m \
-    "${1}"
-
-  get_leftovers
+  R="$(get_repo_root)"
+  $R/run_tests.sh "$@"
 }
 
 get_leftovers() {

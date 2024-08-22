@@ -10,40 +10,38 @@ import (
 	a "github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/ec2"
 	aws "github.com/gruntwork-io/terratest/modules/aws"
+	"github.com/gruntwork-io/terratest/modules/git"
+	"github.com/gruntwork-io/terratest/modules/ssh"
 	"github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/stretchr/testify/require"
 )
 
-func teardown(t *testing.T, category string, directory string, keyPair *aws.Ec2Keypair, terraformOptions *terraform.Options) {
+func teardown(t *testing.T, category string, directory string, keyPair *aws.Ec2Keypair, agent *ssh.SshAgent, id string, terraformOptions *terraform.Options) {
 
 	_, err := terraform.DestroyE(t, terraformOptions)
 	if err != nil {
 		if strings.Contains(err.Error(), "operation error EC2: DisassociateAddress") {
 			t.Logf("Ignored error while destroying cluster: %s", err)
 		}
-		t.Fatalf("Error creating cluster: %s", err)
+		t.Fatalf("Error destroying cluster: %s", err)
 	}
 
-	files, err := filepath.Glob(fmt.Sprintf("../examples/%s/%s/.terraform*", category, directory))
-	require.NoError(t, err)
-	for _, f := range files {
-		err1 := os.RemoveAll(f)
-		require.NoError(t, err1)
+	gwd := git.GetRepoRoot(t)      // git working directory
+	fwd, err4 := filepath.Abs(gwd) // full working directory
+	if err4 != nil {
+		require.NoError(t, err4)
 	}
-	files, err2 := filepath.Glob(fmt.Sprintf("../examples/%s/%s/terraform.*", category, directory))
-	require.NoError(t, err2)
-	for _, f := range files {
-		err3 := os.RemoveAll(f)
-		require.NoError(t, err3)
-	}
-
+	testDataDir := fwd + "/tests/data/" + id
+	err5 := os.RemoveAll(testDataDir)
+	require.NoError(t, err5)
 	aws.DeleteEC2KeyPair(t, keyPair)
+	agent.Stop()
 }
 
 func setup(t *testing.T, category string, directory string, region string, owner string, uniqueID string) (*terraform.Options, *aws.Ec2Keypair) {
 
 	// Create an EC2 KeyPair that we can use for SSH access
-	keyPairName := fmt.Sprintf("terraform-aws-server-%s-%s-%s", category, directory, uniqueID)
+	keyPairName := fmt.Sprintf("tf-%s-%s-%s", category, directory, uniqueID)
 	keyPair := aws.CreateAndImportEC2KeyPair(t, region, keyPairName)
 
 	// tag the key pair so we can find in the access module
@@ -66,11 +64,30 @@ func setup(t *testing.T, category string, directory string, region string, owner
 		".*registry service is unreachable.*":          "Failed due to transient network error.",
 		".*connection reset by peer.*":                 "Failed due to transient network error.",
 		".*TLS handshake timeout.*":                    "Failed due to transient network error.",
-		".*operation error EC2: DisassociateAddress.*": "Failed due to transient AWS error.",
+		".*operation error EC2: DisassociateAddress.*": "Failed due to transient AWS reconcile error.",
+	}
+	gwd := git.GetRepoRoot(t)      // git root dir
+	fgd, err3 := filepath.Abs(gwd) // full git root dir
+	if err3 != nil {
+		require.NoError(t, err3)
+	}
+	testDataDir := fgd + "/tests/data/" + uniqueID
+	err4 := os.Mkdir(testDataDir, 0755)
+	if err4 != nil && !os.IsExist(err4) {
+		require.NoError(t, err4)
+	}
+
+	files, err5 := filepath.Glob(fmt.Sprintf("%s/examples/%s/%s/*", fgd, category, directory))
+	require.NoError(t, err5)
+	for _, f := range files {
+		// copy all the files to the test data dir to prevent collisions
+		fileName := strings.Split(f, "/")[len(strings.Split(f, "/"))-1]
+		err6 := os.Link(f, fmt.Sprintf("%s/%s", testDataDir, fileName))
+		require.NoError(t, err6)
 	}
 
 	terraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
-		TerraformDir: fmt.Sprintf("../examples/%s/%s", category, directory),
+		TerraformDir: testDataDir,
 		// Variables to pass to our Terraform code using -var options
 		Vars: map[string]interface{}{
 			"key":        keyPair.KeyPair.PublicKey,
@@ -80,6 +97,7 @@ func setup(t *testing.T, category string, directory string, region string, owner
 		// Environment variables to set when running Terraform
 		EnvVars: map[string]string{
 			"AWS_DEFAULT_REGION": region,
+			"TF_IN_AUTOMATION":   "1",
 		},
 		RetryableTerraformErrors: retryableTerraformErrors,
 	})
