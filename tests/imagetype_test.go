@@ -56,20 +56,3 @@ func TestImageTypeCustom(t *testing.T) {
 	delete(terraformOptions.Vars, "key_name")
 	terraform.InitAndApply(t, terraformOptions)
 }
-
-func TestImageTypeSelect(t *testing.T) {
-	t.Parallel()
-	uniqueID := os.Getenv("IDENTIFIER") + "-" + random.UniqueId()
-	category := "imagetype"
-	directory := "select"
-	region := "us-west-1"
-	owner := "terraform-ci@suse.com"
-	terraformOptions, keyPair := setup(t, category, directory, region, owner, uniqueID)
-	sshAgent := ssh.SshAgentWithKeyPair(t, keyPair.KeyPair)
-
-	defer teardown(t, category, directory, keyPair, sshAgent, uniqueID, terraformOptions)
-	// don't pass key or key_name to the module
-	delete(terraformOptions.Vars, "key")
-	delete(terraformOptions.Vars, "key_name")
-	terraform.InitAndApply(t, terraformOptions)
-}

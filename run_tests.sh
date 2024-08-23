@@ -33,13 +33,13 @@ if [ "" =  "$IDENTIFIER" ]; then
 fi
 echo "id is: $IDENTIFIER..."
 run_tests "$@"
-echo "Clearing leftovers with Id $IDENTIFIER in $AWS_REGION..."
-if [ "" != "$IDENTIFIER" ]; then
-  while [ "" != "$(leftovers -d --iaas=aws --aws-region="$AWS_REGION" --filter="Id:$IDENTIFIER")" ]; do
-    leftovers --iaas=aws --aws-region="$AWS_REGION" --filter="Id:$IDENTIFIER" --no-confirm
-  done
-  while [ "" != "$(leftovers -d --iaas=aws --aws-region="$AWS_REGION" --type="ec2-key-pair" --filter="tf-$IDENTIFIER")" ]; do
-    leftovers --iaas=aws --aws-region="$AWS_REGION" --type="ec2-key-pair" --filter="tf-$IDENTIFIER" --no-confirm
-  done
-fi
-echo "done"
+# echo "Clearing leftovers with Id $IDENTIFIER in $AWS_REGION..."
+# if [ "" != "$IDENTIFIER" ]; then
+#   while [ "" != "$(leftovers -d --iaas=aws --aws-region="$AWS_REGION" --filter="Id:$IDENTIFIER")" ]; do
+#     leftovers --iaas=aws --aws-region="$AWS_REGION" --filter="Id:$IDENTIFIER" --no-confirm
+#   done
+#   while [ "" != "$(leftovers -d --iaas=aws --aws-region="$AWS_REGION" --type="ec2-key-pair" --filter="tf-$IDENTIFIER")" ]; do
+#     leftovers --iaas=aws --aws-region="$AWS_REGION" --type="ec2-key-pair" --filter="tf-$IDENTIFIER" --no-confirm
+#   done
+# fi
+# echo "done"
