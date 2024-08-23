@@ -1,3 +1,0 @@
-variable "identifier" {
-  type = string
-}
