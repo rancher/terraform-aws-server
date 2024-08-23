@@ -72,18 +72,23 @@ func setup(t *testing.T, category string, directory string, region string, owner
 		require.NoError(t, err3)
 	}
 	testDataDir := fgd + "/tests/data/" + uniqueID
-	err4 := os.Mkdir(testDataDir, 0755)
+
+	err4 := os.Mkdir(fgd+"/tests/data", 0755)
 	if err4 != nil && !os.IsExist(err4) {
 		require.NoError(t, err4)
 	}
+	err5 := os.Mkdir(testDataDir, 0755)
+	if err5 != nil && !os.IsExist(err4) {
+		require.NoError(t, err5)
+	}
 
-	files, err5 := filepath.Glob(fmt.Sprintf("%s/examples/%s/%s/*", fgd, category, directory))
-	require.NoError(t, err5)
+	files, err6 := filepath.Glob(fmt.Sprintf("%s/examples/%s/%s/*", fgd, category, directory))
+	require.NoError(t, err6)
 	for _, f := range files {
 		// copy all the files to the test data dir to prevent collisions
 		fileName := strings.Split(f, "/")[len(strings.Split(f, "/"))-1]
-		err6 := os.Link(f, fmt.Sprintf("%s/%s", testDataDir, fileName))
-		require.NoError(t, err6)
+		err7 := os.Link(f, fmt.Sprintf("%s/%s", testDataDir, fileName))
+		require.NoError(t, err7)
 	}
 
 	terraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
