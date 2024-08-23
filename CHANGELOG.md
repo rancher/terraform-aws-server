@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.3.0](https://github.com/rancher/terraform-aws-server/compare/v1.2.4...v1.3.0) (2024-08-23)
+
+
+### Features
+
+* update supported images ([#101](https://github.com/rancher/terraform-aws-server/issues/101)) ([868847b](https://github.com/rancher/terraform-aws-server/commit/868847b39fab4ee1cc32b37e7d9e327c0e1e1275))
+
+
+### Bug Fixes
+
+* make sure test data directory exists ([#105](https://github.com/rancher/terraform-aws-server/issues/105)) ([f1e44ed](https://github.com/rancher/terraform-aws-server/commit/f1e44ed5e195598944cc4b78a8a54ee140dff782))
+* remove left overs and redundant tests ([#104](https://github.com/rancher/terraform-aws-server/issues/104)) ([7a2b6cf](https://github.com/rancher/terraform-aws-server/commit/7a2b6cff87ab9dd112a529e15f56eea9e7cf7792))
+* remove test data ([#103](https://github.com/rancher/terraform-aws-server/issues/103)) ([65b85fb](https://github.com/rancher/terraform-aws-server/commit/65b85fb9277a49e2b8eaa91ba1fb477eacb8c4a0))
+
 ## [1.2.4](https://github.com/rancher/terraform-aws-server/compare/v1.2.3...v1.2.4) (2024-07-25)
 
 
