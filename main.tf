@@ -145,6 +145,7 @@ module "direct_access" {
   depends_on = [
     module.image,
     module.server,
+    module.indirect_access,
   ]
   source = "./modules/direct_access"
   server = {
