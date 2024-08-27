@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.1](https://github.com/rancher/terraform-aws-server/compare/v1.3.0...v1.3.1) (2024-08-27)
+
+
+### Bug Fixes
+
+* indirect access should be before direct ([#106](https://github.com/rancher/terraform-aws-server/issues/106)) ([e7a064c](https://github.com/rancher/terraform-aws-server/commit/e7a064c89091b06988ea96408b0bb951e10efea7))
+
 ## [1.3.0](https://github.com/rancher/terraform-aws-server/compare/v1.2.4...v1.3.0) (2024-08-23)
 
 
