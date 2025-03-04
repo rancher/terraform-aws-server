@@ -42,12 +42,14 @@
               chmod +x $out/bin/leftovers
             '';
           };
+          aspellWithDicts = pkgs.aspellWithDicts (d: [d.en d.en-computers]);
 
           devShellPackage = pkgs.symlinkJoin {
             name = "dev-shell-package";
             paths = with pkgs; [
               actionlint
-              awscli
+              aspellWithDicts
+              awscli2
               bashInteractive
               curl
               dig
@@ -62,6 +64,7 @@
               leftovers
               less
               openssh
+              openssl
               shellcheck
               tflint
               tfsec
