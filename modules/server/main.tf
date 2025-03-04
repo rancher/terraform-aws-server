@@ -141,7 +141,7 @@ resource "terraform_data" "set_primary_ipv6" {
     aws_instance.created,
   ]
   triggers_replace = {
-    "aws_instance" = "${aws_instance.created[0].id}"
+    "aws_instance" = aws_instance.created[0].id
   }
   provisioner "local-exec" {
     command = <<-EOT

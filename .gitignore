@@ -18,4 +18,4 @@ examples/*/config/50-*
 examples/*/50-*
 *.lock
 *.DS_*
-tests/data
+test/data/*

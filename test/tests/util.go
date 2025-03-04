@@ -16,7 +16,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func teardown(t *testing.T, category string, directory string, keyPair *aws.Ec2Keypair, agent *ssh.SshAgent, id string, terraformOptions *terraform.Options) {
+func Teardown(t *testing.T, category string, directory string, keyPair *aws.Ec2Keypair, agent *ssh.SshAgent, id string, terraformOptions *terraform.Options) {
 
 	_, err := terraform.DestroyE(t, terraformOptions)
 	if err != nil {
@@ -38,7 +38,7 @@ func teardown(t *testing.T, category string, directory string, keyPair *aws.Ec2K
 	agent.Stop()
 }
 
-func setup(t *testing.T, category string, directory string, region string, owner string, uniqueID string) (*terraform.Options, *aws.Ec2Keypair) {
+func Setup(t *testing.T, category string, directory string, region string, owner string, uniqueID string) (*terraform.Options, *aws.Ec2Keypair) {
 
 	// Create an EC2 KeyPair that we can use for SSH access
 	keyPairName := fmt.Sprintf("tf-%s-%s-%s", category, directory, uniqueID)
@@ -71,9 +71,9 @@ func setup(t *testing.T, category string, directory string, region string, owner
 	if err3 != nil {
 		require.NoError(t, err3)
 	}
-	testDataDir := fgd + "/tests/data/" + uniqueID
+	testDataDir := fgd + "/test/data/" + uniqueID
 
-	err4 := os.Mkdir(fgd+"/tests/data", 0755)
+	err4 := os.Mkdir(fgd + "/test/data", 0755)
 	if err4 != nil && !os.IsExist(err4) {
 		require.NoError(t, err4)
 	}
@@ -86,12 +86,15 @@ func setup(t *testing.T, category string, directory string, region string, owner
 	require.NoError(t, err6)
 	for _, f := range files {
 		// copy all the files to the test data dir to prevent collisions
+    // the number of parent directories to repo root must be the same as in the example
+    //   this is because the module source is a relative path '../../../'
 		fileName := strings.Split(f, "/")[len(strings.Split(f, "/"))-1]
 		err7 := os.Link(f, fmt.Sprintf("%s/%s", testDataDir, fileName))
 		require.NoError(t, err7)
 	}
 
 	terraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
+    // example files are copied to the test directory
 		TerraformDir: testDataDir,
 		// Variables to pass to our Terraform code using -var options
 		Vars: map[string]interface{}{

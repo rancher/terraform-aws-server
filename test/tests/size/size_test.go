@@ -1,4 +1,4 @@
-package test
+package size
 
 import (
 	"os"
@@ -7,6 +7,7 @@ import (
 	"github.com/gruntwork-io/terratest/modules/random"
 	"github.com/gruntwork-io/terratest/modules/ssh"
 	"github.com/gruntwork-io/terratest/modules/terraform"
+  util "github.com/rancher/terraform-aws-server/test/tests"
 )
 
 func TestSizeSmall(t *testing.T) {
@@ -16,11 +17,11 @@ func TestSizeSmall(t *testing.T) {
 	directory := "small"
 	region := "us-west-2"
 	owner := "terraform-ci@suse.com"
-	terraformOptions, keyPair := setup(t, category, directory, region, owner, uniqueID)
+	terraformOptions, keyPair := util.Setup(t, category, directory, region, owner, uniqueID)
 	sshAgent := ssh.SshAgentWithKeyPair(t, keyPair.KeyPair)
 	delete(terraformOptions.Vars, "key")
 	delete(terraformOptions.Vars, "key_name")
-	defer teardown(t, category, directory, keyPair, sshAgent, uniqueID, terraformOptions)
+	defer util.Teardown(t, category, directory, keyPair, sshAgent, uniqueID, terraformOptions)
 	terraform.InitAndApply(t, terraformOptions)
 }
 func TestSizeMedium(t *testing.T) {
@@ -30,11 +31,11 @@ func TestSizeMedium(t *testing.T) {
 	directory := "medium"
 	region := "us-west-2"
 	owner := "terraform-ci@suse.com"
-	terraformOptions, keyPair := setup(t, category, directory, region, owner, uniqueID)
+	terraformOptions, keyPair := util.Setup(t, category, directory, region, owner, uniqueID)
 	sshAgent := ssh.SshAgentWithKeyPair(t, keyPair.KeyPair)
 	delete(terraformOptions.Vars, "key")
 	delete(terraformOptions.Vars, "key_name")
-	defer teardown(t, category, directory, keyPair, sshAgent, uniqueID, terraformOptions)
+	defer util.Teardown(t, category, directory, keyPair, sshAgent, uniqueID, terraformOptions)
 	terraform.InitAndApply(t, terraformOptions)
 }
 func TestSizeLarge(t *testing.T) {
@@ -44,11 +45,11 @@ func TestSizeLarge(t *testing.T) {
 	directory := "large"
 	region := "us-west-2"
 	owner := "terraform-ci@suse.com"
-	terraformOptions, keyPair := setup(t, category, directory, region, owner, uniqueID)
+	terraformOptions, keyPair := util.Setup(t, category, directory, region, owner, uniqueID)
 	sshAgent := ssh.SshAgentWithKeyPair(t, keyPair.KeyPair)
 	delete(terraformOptions.Vars, "key")
 	delete(terraformOptions.Vars, "key_name")
-	defer teardown(t, category, directory, keyPair, sshAgent, uniqueID, terraformOptions)
+	defer util.Teardown(t, category, directory, keyPair, sshAgent, uniqueID, terraformOptions)
 	terraform.InitAndApply(t, terraformOptions)
 }
 func TestSizeXL(t *testing.T) {
@@ -58,11 +59,11 @@ func TestSizeXL(t *testing.T) {
 	directory := "xl"
 	region := "us-west-2"
 	owner := "terraform-ci@suse.com"
-	terraformOptions, keyPair := setup(t, category, directory, region, owner, uniqueID)
+	terraformOptions, keyPair := util.Setup(t, category, directory, region, owner, uniqueID)
 	sshAgent := ssh.SshAgentWithKeyPair(t, keyPair.KeyPair)
 	delete(terraformOptions.Vars, "key")
 	delete(terraformOptions.Vars, "key_name")
-	defer teardown(t, category, directory, keyPair, sshAgent, uniqueID, terraformOptions)
+	defer util.Teardown(t, category, directory, keyPair, sshAgent, uniqueID, terraformOptions)
 	terraform.InitAndApply(t, terraformOptions)
 }
 func TestSizeXXL(t *testing.T) {
@@ -72,10 +73,10 @@ func TestSizeXXL(t *testing.T) {
 	directory := "xxl"
 	region := "us-west-2"
 	owner := "terraform-ci@suse.com"
-	terraformOptions, keyPair := setup(t, category, directory, region, owner, uniqueID)
+	terraformOptions, keyPair := util.Setup(t, category, directory, region, owner, uniqueID)
 	sshAgent := ssh.SshAgentWithKeyPair(t, keyPair.KeyPair)
 	delete(terraformOptions.Vars, "key")
 	delete(terraformOptions.Vars, "key_name")
-	defer teardown(t, category, directory, keyPair, sshAgent, uniqueID, terraformOptions)
+	defer util.Teardown(t, category, directory, keyPair, sshAgent, uniqueID, terraformOptions)
 	terraform.InitAndApply(t, terraformOptions)
 }

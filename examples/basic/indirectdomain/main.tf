@@ -28,10 +28,6 @@ resource "random_pet" "server" {
   length = 1
 }
 
-data "aws_availability_zones" "available" {
-  state = "available"
-}
-
 data "http" "myip" {
   url = "https://ipinfo.io/ip"
   retry {

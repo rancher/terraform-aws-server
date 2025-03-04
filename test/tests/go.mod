@@ -1,4 +1,4 @@
-module github.com/rancher/terraform-aws-server/test.go
+module github.com/rancher/terraform-aws-server/test/tests
 
 go 1.20
 
