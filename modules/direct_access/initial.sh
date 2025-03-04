@@ -36,11 +36,9 @@ if [ "${IGNORE_CLOUDINIT}" -eq 1 ]; then
     elif [ "$(which useradd)" != "" ]; then
         useradd -U -s "/bin/sh" -m -G "${ADMIN_GROUP}" "${USER}"
         echo "${USER} ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
-    else {
+    else
         echo "No supported user creation tool found";
         EXIT=1
-        break
-    }
     fi
     install -d -m 0700 /home/"${USER}"/.ssh
     cp .ssh/authorized_keys /home/"${USER}"/.ssh

@@ -11,7 +11,7 @@ if [ "sle-micro" = "$TYPE" ] || [ "sles" = "$TYPE" ] || [ "liberty" = "$TYPE" ];
       select(.region | contains("us-")) |
       select(.name | contains("sapcal") | not) |
       select(.name | contains("x86_64")) |
-      select(.name | contains("'$TYPE'"))' |
+      select(.name | contains("'"$TYPE"'"))' |
       jq -s 'unique_by(.name)' |
       jq -r '.[].name'
   )"
@@ -32,7 +32,7 @@ elif [ "cis"  = "$TYPE" ]; then
       jq -r '.[].Name' <<< "$IMAGE"
     fi
 elif [ "ubuntu-22"  = "$TYPE" ] || [ "ubuntu-24" = "$TYPE" ]; then
-    V="$(echo $TYPE | awk -F- '{print $2}')"
+    V="$(echo "$TYPE" | awk -F- '{print $2}')"
     IMAGE="$(aws ec2 describe-images --filter="Name=name,Values=ubuntu/images/*/ubuntu-*-$V.04-amd64-server-*" | jq -r '.Images')"
     if [ "null" != "$IMAGE" ]; then
       jq -r '.[].Name' <<< "$IMAGE"
@@ -43,13 +43,13 @@ elif [ "rocky-8"  = "$TYPE" ] || [ "rocky-9" = "$TYPE" ]; then
     # example: Rocky-9-EC2-LVM-9.4-20240523.0.x86_64-prod-hyj6jp3bki4bm
     # product code: c0tjzp9xnxvr0ah4f0yletr6b
 
-    V="$(echo $TYPE | awk -F- '{print $2}')"
+    V="$(echo "$TYPE" | awk -F- '{print $2}')"
     IMAGE="$(aws ec2 describe-images --filter="Name=name,Values=Rocky-$V-EC2-*-$V.*-*.*.x86_64-*" | jq -r '.Images')"
     if [ "null" != "$IMAGE" ]; then
       NAMES="$(jq -r '.[].Name' <<< "$IMAGE")"
       echo "Name --- OwnerId"
       for n in $NAMES; do
-        OWNER="$(jq -r '.[] | select(.Name == "'$n'") | .OwnerId' <<< "$IMAGE")"
+        OWNER="$(jq -r '.[] | select(.Name == "'"$n"'") | .OwnerId' <<< "$IMAGE")"
         echo "$n    $OWNER"
       done
     fi
