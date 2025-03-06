@@ -1,7 +1,8 @@
 locals {
+  # image search is only valid for regions in the regions.txt file in thie directory
   standard_types = {
-    # using the getImages script in this directory with argument "sles-15-sp5-chost"
-    # suse-sles-15-sp6-chost-byos-v20240807-hvm-ssd-x86_64
+    # using the getImages script in this directory with argument "sles"
+    # suse-sles-15-sp6-chost-byos-v20250212-hvm-ssd-x86_64
     sles-15 = { # BYOS = Bring Your Own Subscription
       user         = "ec2-user",
       group        = "wheel",
@@ -13,8 +14,8 @@ locals {
       workfolder   = "~"
     },
 
-    # using the getImages script in this directory with argument "sle-micro-5-5-byos"
-    # suse-sle-micro-5-5-byos-v20240808-hvm-ssd-x86_64
+    # using the getImages script in this directory with argument "sle-micro"
+    # suse-sle-micro-5-5-byos-v20250131-hvm-ssd-x86_64
     # sle micro is already optimized for containers
     sle-micro-55 = { # BYOS = Bring Your Own Subscription
       user         = "suse",
@@ -27,8 +28,8 @@ locals {
       workfolder   = "~"
     }
 
-    # using the getImages script in this directory with argument "sle-micro-5-5-byos"
-    # suse-sle-micro-6-0-byos-v20240612-hvm-ssd-x86_64
+    # using the getImages script in this directory with argument "sle-micro"
+    # suse-sle-micro-6-0-byos-v20250210-hvm-ssd-x86_64
     # sle micro is already optimized for containers
     sle-micro-60 = { # BYOS = Bring Your Own Subscription
       user         = "suse",
@@ -41,13 +42,27 @@ locals {
       workfolder   = "~"
     }
 
+    # using the getImages script in this directory with argument "sle-micro"
+    # suse-sle-micro-6-1-byos-v20250210-hvm-ssd-x86_64
+    # sle micro is already optimized for containers
+    sle-micro-61 = { # BYOS = Bring Your Own Subscription
+      user         = "suse",
+      group        = "wheel",
+      name         = "suse-sle-micro-6-1-byos-v*-hvm-ssd-x86_64",
+      name_regex   = "^suse-sle-micro-6-1-byos-v[0-9]+-hvm-ssd-x86_64$",
+      product_code = "",
+      owners       = ["013907871322"],
+      architecture = "x86_64",
+      workfolder   = "~"
+    }
+
     # WARNING! you must subscribe and accept the terms to use this image
     # https://aws.amazon.com/marketplace/server/procurement?productId=ca1fe94d-9237-41c7-8fc8-78b6b0658c9f
-    # example: CIS Red Hat Enterprise Linux 8 Benchmark - STIG - v08 -ca1fe94d-9237-41c7-8fc8-78b6b0658c9f
+    # example: CIS Red Hat Enterprise Linux 8 Benchmark - STIG - v12 -ca1fe94d-9237-41c7-8fc8-78b6b0658c9f
     cis-rhel-8 = {
       user         = "ec2-user",
       group        = "wheel",
-      name         = "CIS Red Hat Enterprise Linux 8 Benchmark - STIG - v08 -*",
+      name         = "CIS Red Hat Enterprise Linux 8 Benchmark - STIG*"
       name_regex   = ".*",
       product_code = "bysa8cc41lo4owixsmqw6v44f",
       owners       = ["679593333241"],
@@ -56,28 +71,28 @@ locals {
     },
 
     # WARNING! you must subscribe and accept the terms to use this image
-    # example: ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-20240801-47489723-7305-4e22-8b22-b0d57054f216
+    # ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-20250305
     ubuntu-22 = {
       user         = "ubuntu",
       group        = "admin",
       name         = "ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*",
-      name_regex   = "^ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-[0-9a-f-]+$", # specifically avoiding .1 images eg. ubuntu-jammy-22.04-amd64-server-20240207.1-47489723-7305-4e22-8b22-b0d57054f216
-      product_code = "47xbqns9xujfkkjt189a13aqe",
-      owners       = ["679593333241"],
+      name_regex   = "^ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-[0-9]+$", # specifically avoiding .1 images eg. ubuntu-jammy-22.04-amd64-server-20240207.1-47489723-7305-4e22-8b22-b0d57054f216
+      product_code = "",                                                               #"47xbqns9xujfkkjt189a13aqe",
+      owners       = ["099720109477"],
       architecture = "x86_64",
       workfolder   = "~"
     },
 
     # WARNING! you must subscribe and accept the terms to use this image
     # https://aws.amazon.com/marketplace/pp/prodview-a2hsmwr6uilqq
-    # example: "ubuntu-minimal/images/hvm-ssd-gp3/ubuntu-noble-24.04-amd64-minimal-20240709-prod-u7oazfncxktmo"
+    # ubuntu/images/hvm-ssd-gp3/ubuntu-noble-24.04-amd64-server-20250305
     ubuntu-24 = {
       user         = "ubuntu",
       group        = "admin",
       name         = "ubuntu-minimal/images/hvm-ssd-gp3/ubuntu-noble-24.04-amd64-minimal-*",
-      name_regex   = "^ubuntu-minimal/images/hvm-ssd-gp3/ubuntu-noble-24.04-amd64-minimal-[0-9]+-prod-[a-z0-9]+$",
-      product_code = "b3ouvp5dn1avmqoxkjmtm6cjt", # minimal
-      owners       = ["679593333241"],
+      name_regex   = "^ubuntu-minimal/images/hvm-ssd-gp3/ubuntu-noble-24.04-amd64-minimal-[0-9]+$",
+      product_code = "",
+      owners       = ["099720109477"],
       architecture = "x86_64",
       workfolder   = "~"
     },
@@ -98,11 +113,11 @@ locals {
 
     # WARNING! you must subscribe and accept the terms to use this image
     # https://aws.amazon.com/marketplace/pp/prodview-yjxmiuc6p5jzk
-    # example: Rocky-9-EC2-LVM-9.4-20240523.0.x86_64-prod-hyj6jp3bki4bm
+    # Rocky-9-EC2-LVM-9.5-20241118.0.x86_64-prod-hyj6jp3bki4bm
     rocky-9 = {
       user         = "ec2-user",
       group        = "wheel",
-      name         = "Rocky-9-EC2-LVM-9.*-*.*.x86_64-*",
+      name         = "Rocky-9-EC2-LVM-9.*-*.*.x86_64-prod-*",
       name_regex   = "^Rocky-9-EC2-LVM-9.[0-9]+-[0-9]+.[0-9].x86_64-prod-[0-9a-z]+$",
       product_code = "c0tjzp9xnxvr0ah4f0yletr6b",
       owners       = ["679593333241"],
@@ -115,11 +130,12 @@ locals {
     # https://access.redhat.com/support/policy/updates/errata
     # therefore the search found here is the most recent even minor that has been released
     # expect RHEL 9.4 in June 2024
+    # RHEL-9.5.0_HVM-20241211-x86_64-0-Hourly2-GP3
     rhel-9 = {
       user         = "ec2-user",
       group        = "wheel",
-      name         = "RHEL-9.3*_HVM-2024*-x86_64-*-Hourly2-GP3",
-      name_regex   = "^RHEL-9.3.*_HVM-2024.*-x86_64-.*-Hourly2-GP3$",
+      name         = "RHEL-9.*.*_HVM-*-x86_64-*-Hourly2-GP3",
+      name_regex   = "^RHEL-9.[0-9].[0-9]_HVM-[0-9]+-x86_64-[0-9]-Hourly2-GP3$",
       product_code = "",
       owners       = ["309956199498"],
       architecture = "x86_64",
@@ -127,19 +143,20 @@ locals {
     },
 
     # this is a community AMI with no product code or marketplace page, but it is produced by our cloud team
-    # example: suse-liberty-linux-8-9-byos-v20240603-x86_64
+    # suse-liberty-linux-8-9-byos-v20240603-x86_64
     liberty-8 = {
       user         = "ec2-user",
       group        = "wheel",
-      name         = "suse-liberty-linux-8-*-byos-*-x86_64",
-      name_regex   = "^suse-liberty-linux-8-[0-9]+-byos-v[0-9]+-x86_64$",
+      name         = "suse-liberty-linux-8-*-byos-v*-x86_64",
+      name_regex   = "^suse-liberty-linux-8-[0-9]-byos-v[0-9]+-x86_64$",
       product_code = "",
-      owners       = [],
+      owners       = ["013907871322"],
       architecture = "x86_64",
       workfolder   = "~"
     },
   }
 }
+
 # suse-liberty-linux-8-9-byos-v20240603-x86_64
 ### DEPRECATED
 ## with the EOL of RHEL-7 and CentOS-7 in 2024, this image is no longer available
