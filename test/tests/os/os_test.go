@@ -1,4 +1,4 @@
-package test
+package os_test
 
 import (
 	"fmt"
@@ -10,6 +10,7 @@ import (
 	"github.com/gruntwork-io/terratest/modules/ssh"
 	"github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/stretchr/testify/assert"
+  util "github.com/rancher/terraform-aws-server/test/tests"
 )
 
 func TestOs(t *testing.T) {
@@ -27,20 +28,20 @@ func TestOs(t *testing.T) {
 	// get the image list from the imagetype example
 	category := "imagetype"
 	directory := "basic"
-	imageTypesTerraformOptions, keyPair := setup(t, category, directory, region, owner, uniqueID)
+	imageTypesTerraformOptions, keyPair := util.Setup(t, category, directory, region, owner, uniqueID)
 	sshAgent := ssh.SshAgentWithKeyPair(t, keyPair.KeyPair)
 	// don't pass key or key_name to the image module
 	delete(imageTypesTerraformOptions.Vars, "key")
 	delete(imageTypesTerraformOptions.Vars, "key_name")
 	_, err := terraform.InitAndApplyE(t, imageTypesTerraformOptions)
 	if err != nil {
-		teardown(t, category, directory, keyPair, sshAgent, uniqueID, imageTypesTerraformOptions)
+		util.Teardown(t, category, directory, keyPair, sshAgent, uniqueID, imageTypesTerraformOptions)
 		t.Error(err)
 		t.Fail()
 	}
 	info := terraform.OutputMap(t, imageTypesTerraformOptions, "image_names")
 	images := keys(info)
-	teardown(t, category, directory, keyPair, sshAgent, uniqueID, imageTypesTerraformOptions)
+	util.Teardown(t, category, directory, keyPair, sshAgent, uniqueID, imageTypesTerraformOptions)
 	for k := range images {
 		image := images[k].String()
 		t.Run(image, func(t *testing.T) {
@@ -49,13 +50,13 @@ func TestOs(t *testing.T) {
 			uniqueID := id + "-" + random.UniqueId()
 			category := "os"
 			directory := "all"
-			terraformOptions, keyPair := setup(t, category, directory, region, owner, uniqueID)
+			terraformOptions, keyPair := util.Setup(t, category, directory, region, owner, uniqueID)
 			sshAgent := ssh.SshAgentWithKeyPair(t, keyPair.KeyPair)
 			terraformOptions.SshAgent = sshAgent
 			terraformOptions.Vars["image"] = image
 			_, err := terraform.InitAndApplyE(t, terraformOptions)
 			if err != nil {
-				teardown(t, category, directory, keyPair, sshAgent, uniqueID, terraformOptions)
+				util.Teardown(t, category, directory, keyPair, sshAgent, uniqueID, terraformOptions)
 				t.Error(err)
 				t.Fail()
 			}
@@ -67,7 +68,7 @@ func TestOs(t *testing.T) {
 			assert.True(t, ok, fmt.Sprintf("Wrong data type for 'image', expected map[string], got %T", out["image"]))
 			assert.NotEmpty(t, outputServer["public_ip"], "The 'server.public_ip' is empty")
 			assert.NotEmpty(t, outputImage["id"], "The 'image.id' is empty")
-			teardown(t, category, directory, keyPair, sshAgent, uniqueID, terraformOptions)
+			util.Teardown(t, category, directory, keyPair, sshAgent, uniqueID, terraformOptions)
 		})
 	}
 }

@@ -27,10 +27,6 @@ data "http" "myip" {
   }
 }
 
-data "aws_availability_zones" "available" {
-  state = "available"
-}
-
 resource "random_pet" "server" {
   keepers = {
     # regenerate the pet name when the identifier changes

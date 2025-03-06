@@ -1,4 +1,4 @@
-package test
+package basic
 
 import (
 	"fmt"
@@ -9,6 +9,7 @@ import (
 	"github.com/gruntwork-io/terratest/modules/ssh"
 	"github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/stretchr/testify/assert"
+  util "github.com/rancher/terraform-aws-server/test/tests"
 )
 
 func TestBasicBasic(t *testing.T) {
@@ -22,11 +23,11 @@ func TestBasicBasic(t *testing.T) {
 	directory := "basic"
 	region := "us-west-2"
 	owner := "terraform-ci@suse.com"
-	terraformOptions, keyPair := setup(t, category, directory, region, owner, uniqueID)
+	terraformOptions, keyPair := util.Setup(t, category, directory, region, owner, uniqueID)
 	sshAgent := ssh.SshAgentWithKeyPair(t, keyPair.KeyPair)
 	delete(terraformOptions.Vars, "key")
 	delete(terraformOptions.Vars, "key_name")
-	defer teardown(t, category, directory, keyPair, sshAgent, uniqueID, terraformOptions)
+	defer util.Teardown(t, category, directory, keyPair, sshAgent, uniqueID, terraformOptions)
 	terraform.InitAndApply(t, terraformOptions)
 }
 
@@ -41,12 +42,12 @@ func TestBasicDualstack(t *testing.T) {
 	directory := "dualstack"
 	region := "us-west-2"
 	owner := "terraform-ci@suse.com"
-	terraformOptions, keyPair := setup(t, category, directory, region, owner, uniqueID)
+	terraformOptions, keyPair := util.Setup(t, category, directory, region, owner, uniqueID)
 	sshAgent := ssh.SshAgentWithKeyPair(t, keyPair.KeyPair)
 	terraformOptions.SshAgent = sshAgent
 
 	delete(terraformOptions.Vars, "key_name")
-	defer teardown(t, category, directory, keyPair, sshAgent, uniqueID, terraformOptions)
+	defer util.Teardown(t, category, directory, keyPair, sshAgent, uniqueID, terraformOptions)
 	terraform.InitAndApply(t, terraformOptions)
 }
 func TestBasicPrivateIp(t *testing.T) {
@@ -60,9 +61,9 @@ func TestBasicPrivateIp(t *testing.T) {
 	directory := "privateip"
 	region := "us-west-1"
 	owner := "terraform-ci@suse.com"
-	terraformOptions, keyPair := setup(t, category, directory, region, owner, uniqueID)
+	terraformOptions, keyPair := util.Setup(t, category, directory, region, owner, uniqueID)
 	sshAgent := ssh.SshAgentWithKeyPair(t, keyPair.KeyPair)
-	defer teardown(t, category, directory, keyPair, sshAgent, uniqueID, terraformOptions)
+	defer util.Teardown(t, category, directory, keyPair, sshAgent, uniqueID, terraformOptions)
 	delete(terraformOptions.Vars, "key")
 	delete(terraformOptions.Vars, "key_name")
 	terraform.InitAndApply(t, terraformOptions)
@@ -78,9 +79,9 @@ func TestBasicIndirectOnly(t *testing.T) {
 	directory := "indirectonly"
 	region := "us-west-1"
 	owner := "terraform-ci@suse.com"
-	terraformOptions, keyPair := setup(t, category, directory, region, owner, uniqueID)
+	terraformOptions, keyPair := util.Setup(t, category, directory, region, owner, uniqueID)
 	sshAgent := ssh.SshAgentWithKeyPair(t, keyPair.KeyPair)
-	defer teardown(t, category, directory, keyPair, sshAgent, uniqueID, terraformOptions)
+	defer util.Teardown(t, category, directory, keyPair, sshAgent, uniqueID, terraformOptions)
 	delete(terraformOptions.Vars, "key")
 	delete(terraformOptions.Vars, "key_name")
 	terraform.InitAndApply(t, terraformOptions)
@@ -101,9 +102,9 @@ func TestBasicIndirectDomain(t *testing.T) {
 	directory := "indirectdomain"
 	region := "us-west-1"
 	owner := "terraform-ci@suse.com"
-	terraformOptions, keyPair := setup(t, category, directory, region, owner, uniqueID)
+	terraformOptions, keyPair := util.Setup(t, category, directory, region, owner, uniqueID)
 	sshAgent := ssh.SshAgentWithKeyPair(t, keyPair.KeyPair)
-	defer teardown(t, category, directory, keyPair, sshAgent, uniqueID, terraformOptions)
+	defer util.Teardown(t, category, directory, keyPair, sshAgent, uniqueID, terraformOptions)
 	delete(terraformOptions.Vars, "key")
 	delete(terraformOptions.Vars, "key_name")
 	terraformOptions.Vars["zone"] = zone
@@ -121,9 +122,9 @@ func TestBasicDirectNetworkOnly(t *testing.T) {
 	directory := "directnetworkonly"
 	region := "us-west-1"
 	owner := "terraform-ci@suse.com"
-	terraformOptions, keyPair := setup(t, category, directory, region, owner, uniqueID)
+	terraformOptions, keyPair := util.Setup(t, category, directory, region, owner, uniqueID)
 	sshAgent := ssh.SshAgentWithKeyPair(t, keyPair.KeyPair)
-	defer teardown(t, category, directory, keyPair, sshAgent, uniqueID, terraformOptions)
+	defer util.Teardown(t, category, directory, keyPair, sshAgent, uniqueID, terraformOptions)
 	delete(terraformOptions.Vars, "key")
 	delete(terraformOptions.Vars, "key_name")
 	terraform.InitAndApply(t, terraformOptions)
@@ -145,9 +146,9 @@ func TestBasicDirectNetworkDomain(t *testing.T) {
 	directory := "directnetworkdomain"
 	region := "us-west-1"
 	owner := "terraform-ci@suse.com"
-	terraformOptions, keyPair := setup(t, category, directory, region, owner, uniqueID)
+	terraformOptions, keyPair := util.Setup(t, category, directory, region, owner, uniqueID)
 	sshAgent := ssh.SshAgentWithKeyPair(t, keyPair.KeyPair)
-	defer teardown(t, category, directory, keyPair, sshAgent, uniqueID, terraformOptions)
+	defer util.Teardown(t, category, directory, keyPair, sshAgent, uniqueID, terraformOptions)
 	delete(terraformOptions.Vars, "key")
 	delete(terraformOptions.Vars, "key_name")
 	terraformOptions.Vars["zone"] = zone
@@ -165,12 +166,12 @@ func TestBasicDirectSshEip(t *testing.T) {
 	directory := "directssheip"
 	region := "us-west-1"
 	owner := "terraform-ci@suse.com"
-	terraformOptions, keyPair := setup(t, category, directory, region, owner, uniqueID)
+	terraformOptions, keyPair := util.Setup(t, category, directory, region, owner, uniqueID)
 
 	sshAgent := ssh.SshAgentWithKeyPair(t, keyPair.KeyPair)
 	terraformOptions.SshAgent = sshAgent
 
-	defer teardown(t, category, directory, keyPair, sshAgent, uniqueID, terraformOptions)
+	defer util.Teardown(t, category, directory, keyPair, sshAgent, uniqueID, terraformOptions)
 	delete(terraformOptions.Vars, "key_name")
 	terraform.InitAndPlan(t, terraformOptions)
 	terraform.InitAndApply(t, terraformOptions)
@@ -196,12 +197,12 @@ func TestBasicDirectSshSubnet(t *testing.T) {
 	directory := "directsshsubnet"
 	region := "us-west-1"
 	owner := "terraform-ci@suse.com"
-	terraformOptions, keyPair := setup(t, category, directory, region, owner, uniqueID)
+	terraformOptions, keyPair := util.Setup(t, category, directory, region, owner, uniqueID)
 
 	sshAgent := ssh.SshAgentWithKeyPair(t, keyPair.KeyPair)
 	terraformOptions.SshAgent = sshAgent
 
-	defer teardown(t, category, directory, keyPair, sshAgent, uniqueID, terraformOptions)
+	defer util.Teardown(t, category, directory, keyPair, sshAgent, uniqueID, terraformOptions)
 	delete(terraformOptions.Vars, "key_name")
 	terraform.InitAndPlan(t, terraformOptions)
 	terraform.InitAndApply(t, terraformOptions)

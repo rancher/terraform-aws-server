@@ -198,7 +198,7 @@ set_repo_name() {
 
 run_tests() {
   R="$(get_repo_root)"
-  $R/run_tests.sh "$@"
+  "$R"/run_tests.sh "$@"
 }
 
 get_leftovers() {
