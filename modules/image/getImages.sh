@@ -4,23 +4,24 @@ group_by_region=false
 objects=false
 type=""
 
-while getopts ":t:r:o:" opt; do
-  case $opt in
-    t) type="$OPTARG" ;;
-    r) group_by_region=true ;;
-    o) objects=true ;;
+while getopts ":t:ro" opt; do
+  case "${opt}" in
+    t) type="${OPTARG}"
+      ;;
+    r) group_by_region=true
+      ;;
+    o) objects=true
+      ;;
     \?) echo "Invalid option -$OPTARG" >&2 && exit 1 ;;
   esac
 done
 
 if [ -z "$type" ]; then echo 'type (-t) required'; exit 1; fi
 
-declare -a regions
 declare -a image_names
 declare -a image_objects
 
-
-for region in $(cat regions.txt); do
+while IFS= read -r region; do
   export AWS_REGION="$region"
 
   # echo "looking in region: $AWS_REGION OR $AWS_DEFAULT_REGION"
@@ -73,7 +74,7 @@ for region in $(cat regions.txt); do
         NAMES="$(jq -r '.[].Name' <<< "$IMAGE")"
         # echo "Name --- OwnerId"
         for n in $NAMES; do
-          OWNER="$(jq -r '.[] | select(.Name == "'"$n"'") | .OwnerId' <<< "$IMAGE")"
+          # OWNER="$(jq -r '.[] | select(.Name == "'"$n"'") | .OwnerId' <<< "$IMAGE")"
           # echo "$n    $OWNER"
           image_names+=("$n")
           image_obects+=("$IMAGE")
@@ -86,24 +87,26 @@ for region in $(cat regions.txt); do
     echo "sle-micro, sles, liberty, ubuntu, rhel-9, cis, rocky"
   fi
 
-  if [ $group_by_region ]; then
-    for i in "${images[@]}"; do
+  if [ $group_by_region == true ]; then
+    for i in "${image_names[@]}"; do
       echo "$i-$region"
     done
   fi
 
-done
+done < "./regions.txt"
 
-if [ ! $objects ]; then
-  # echo "sorted and uniq..."
-  IFS=$'\n' sorted=($(sort <<<"${image_names[*]}" | uniq))
-  unset IFS
-  # echo "${#images[*]} images found"
-  for i in "${sorted[@]}"; do
+if [ $objects == true ]; then
+  for i in "${image_objects[@]}"; do
     echo "$i"
   done
-else
-  for i in "${image_objects[@]}"; do
+fi
+
+if [ $objects == false ] && [ $group_by_region == false ]; then
+  # echo "sorted and uniq..."
+  IFS=$'\n' sorted=("$(sort <<<"${image_names[*]}" | uniq)")
+  unset IFS
+  # echo "${#image_names[*]} images found"
+  for i in "${sorted[@]}"; do
     echo "$i"
   done
 fi
