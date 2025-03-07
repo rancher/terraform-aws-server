@@ -41,7 +41,6 @@ data "aws_vpc" "general_info_select" {
   count = local.select
   id    = data.aws_subnet.general_info_select[0].vpc_id
 }
-
 data "aws_ec2_instance_type" "general_info_create" {
   count         = local.create
   instance_type = local.server_type.id
@@ -64,7 +63,6 @@ data "aws_availability_zone" "general_info_create" {
   count = local.create
   name  = data.aws_subnet.general_info_create[0].availability_zone
 }
-
 data "aws_vpc" "general_info_create" {
   count = local.create
   id    = data.aws_security_group.general_info_create[0].vpc_id
@@ -73,13 +71,11 @@ data "aws_key_pair" "ssh_key_selected" {
   count    = (local.aws_keypair_use_strategy == "select" ? 1 : 0)
   key_name = local.ssh_key_name
 }
-
 resource "aws_key_pair" "created" {
   count      = (local.aws_keypair_use_strategy == "create" ? local.create : 0)
   key_name   = local.ssh_key_name
   public_key = local.ssh_key
 }
-
 resource "aws_instance" "created" {
   count = local.create
   depends_on = [

@@ -85,9 +85,14 @@ func Setup(t *testing.T, category string, directory string, region string, owner
 	files, err6 := filepath.Glob(fmt.Sprintf("%s/examples/%s/%s/*", fgd, category, directory))
 	require.NoError(t, err6)
 	for _, f := range files {
-		// copy all the files to the test data dir to prevent collisions
+
+    // copy all the files to the test data dir to prevent collisions
     // the number of parent directories to repo root must be the same as in the example
     //   this is because the module source is a relative path '../../../'
+    base := filepath.Base(f)
+    if strings.HasPrefix(base, ".") {
+       continue // skip hidden files
+    }
 		fileName := strings.Split(f, "/")[len(strings.Split(f, "/"))-1]
 		err7 := os.Link(f, fmt.Sprintf("%s/%s", testDataDir, fileName))
 		require.NoError(t, err7)

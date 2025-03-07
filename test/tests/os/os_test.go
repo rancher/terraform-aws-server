@@ -21,9 +21,10 @@ func TestOs(t *testing.T) {
 	uniqueID := id + "-" + random.UniqueId()
 	region := os.Getenv("AWS_REGION")
 	if region == "" {
-		region = "us-west-1"
+		region = "us-west-2"
 	}
 	owner := "terraform-ci@suse.com"
+  imageType := os.Getenv("IMAGE")
 
 	// get the image list from the imagetype example
 	category := "imagetype"
@@ -44,7 +45,11 @@ func TestOs(t *testing.T) {
 	util.Teardown(t, category, directory, keyPair, sshAgent, uniqueID, imageTypesTerraformOptions)
 	for k := range images {
 		image := images[k].String()
-		t.Run(image, func(t *testing.T) {
+    if imageType != "" && imageType != image {
+      continue
+    }
+
+    t.Run(image, func(t *testing.T) {
 			t.Parallel()
 			t.Logf("Running test for %s", image)
 			uniqueID := id + "-" + random.UniqueId()
