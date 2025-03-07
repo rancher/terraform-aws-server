@@ -31,9 +31,12 @@ func Teardown(t *testing.T, category string, directory string, keyPair *aws.Ec2K
 	if err4 != nil {
 		require.NoError(t, err4)
 	}
-	testDataDir := fwd + "/tests/data/" + id
+	testDataDir := fwd + "/test/data/" + id
 	err5 := os.RemoveAll(testDataDir)
-	require.NoError(t, err5)
+  require.NoError(t, err5)
+  exampleDataDir := fwd + "/examples/" + category + "/" + directory + "/data"
+  err6 := os.RemoveAll(exampleDataDir)
+  require.NoError(t, err6)
 	aws.DeleteEC2KeyPair(t, keyPair)
 	agent.Stop()
 }
