@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.4.0](https://github.com/rancher/terraform-aws-server/compare/v1.3.1...v1.4.0) (2025-03-07)
+
+
+### Features
+
+* update image selection ([#111](https://github.com/rancher/terraform-aws-server/issues/111)) ([03ebc18](https://github.com/rancher/terraform-aws-server/commit/03ebc189ce60a09c5e5b18e01fb619f4fca25e0f))
+
+
+### Bug Fixes
+
+* remove version constraints ([#108](https://github.com/rancher/terraform-aws-server/issues/108)) ([6bdb720](https://github.com/rancher/terraform-aws-server/commit/6bdb7206425aca91d9e73487b05a1e66c8bb6f63))
+* trigger tests ([fe1bb96](https://github.com/rancher/terraform-aws-server/commit/fe1bb96526ae0aeaa9f1f2d810ff544e6163dce9))
+* trigger tests ([#113](https://github.com/rancher/terraform-aws-server/issues/113)) ([fe1bb96](https://github.com/rancher/terraform-aws-server/commit/fe1bb96526ae0aeaa9f1f2d810ff544e6163dce9))
+* update image docs ([#115](https://github.com/rancher/terraform-aws-server/issues/115)) ([09c8960](https://github.com/rancher/terraform-aws-server/commit/09c8960638e9b3bc36be3243f0dc50fcb77b3e0d))
+* update to comply with new restrictions ([#109](https://github.com/rancher/terraform-aws-server/issues/109)) ([82a3887](https://github.com/rancher/terraform-aws-server/commit/82a3887852cc1278041f5137609f2a17e91ea5a1))
+
 ## [1.3.1](https://github.com/rancher/terraform-aws-server/compare/v1.3.0...v1.3.1) (2024-08-27)
 
 
