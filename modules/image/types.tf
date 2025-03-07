@@ -18,7 +18,7 @@ locals {
     # suse-sle-micro-5-5-byos-v20250131-hvm-ssd-x86_64
     # sle micro is already optimized for containers
     sle-micro-55 = { # BYOS = Bring Your Own Subscription
-      user         = "suse",
+      user         = "ec2-user",
       group        = "wheel",
       name         = "suse-sle-micro-5-5-byos-v*-hvm-ssd-x86_64",
       name_regex   = "^suse-sle-micro-5-5-byos-v[0-9]+-hvm-ssd-x86_64$",
@@ -98,20 +98,6 @@ locals {
     },
 
     # WARNING! you must subscribe and accept the terms to use this image
-    # https://aws.amazon.com/marketplace/pp/prodview-2otariyxb3mqu
-    # example: Rocky-8-EC2-Base-8.9-20231119.0.x86_64-d6577ceb-8ea8-4e0e-84c6-f098fc302e82
-    rocky-8 = {
-      user         = "ec2-user",
-      group        = "wheel",
-      name         = "Rocky-8-EC2-Base-8.*-*.*.x86_64-*", # LVM is preferred, but Rocky 8 doesn't have an official LVM image
-      name_regex   = "^Rocky-8-EC2-Base-8.[0-9]+-[0-9]+.[0-9].x86_64-.*$",
-      product_code = "cotnnspjrsi38lfn8qo4ibnnm",
-      owners       = ["679593333241"],
-      architecture = "x86_64",
-      workfolder   = "~"
-    },
-
-    # WARNING! you must subscribe and accept the terms to use this image
     # https://aws.amazon.com/marketplace/pp/prodview-yjxmiuc6p5jzk
     # Rocky-9-EC2-LVM-9.5-20241118.0.x86_64-prod-hyj6jp3bki4bm
     rocky-9 = {
@@ -157,7 +143,6 @@ locals {
   }
 }
 
-# suse-liberty-linux-8-9-byos-v20240603-x86_64
 ### DEPRECATED
 ## with the EOL of RHEL-7 and CentOS-7 in 2024, this image is no longer available
 ## # https://pint.suse.com/?resource=images&search=liberty&state=active
@@ -193,6 +178,20 @@ locals {
 #   name         = "ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-2024*",
 #   name_regex   = "^ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-2024[0-9]+-.*$", # specifically avoiding .1 images eg. ubuntu-jammy-22.04-amd64-server-20240207.1-47489723-7305-4e22-8b22-b0d57054f216
 #   product_code = "a8jyynf4hjutohctm41o2z18m",
+#   owners       = ["679593333241"],
+#   architecture = "x86_64",
+#   workfolder   = "~"
+# },
+# We no longer support Rocky 8 in favor of liberty 8
+# WARNING! you must subscribe and accept the terms to use this image
+# https://aws.amazon.com/marketplace/pp/prodview-2otariyxb3mqu
+# example: Rocky-8-EC2-Base-8.9-20231119.0.x86_64-d6577ceb-8ea8-4e0e-84c6-f098fc302e82
+# rocky-8 = {
+#   user         = "ec2-user",
+#   group        = "wheel",
+#   name         = "Rocky-8-EC2-Base-8.*-*.*.x86_64-*", # LVM is preferred, but Rocky 8 doesn't have an official LVM image
+#   name_regex   = "^Rocky-8-EC2-Base-8.[0-9]+-[0-9]+.[0-9].x86_64-.*$",
+#   product_code = "cotnnspjrsi38lfn8qo4ibnnm",
 #   owners       = ["679593333241"],
 #   architecture = "x86_64",
 #   workfolder   = "~"
