@@ -5,7 +5,7 @@ output "server" {
     vpc_id                            = try(module.server[0].vpc_id, "")
     subnet_id                         = try(module.server[0].subnet_id, "")
     availability_zone                 = try(module.server[0].availability_zone, "")
-    security_group_ids                = try(module.server[0].vpc_security_group_ids, tolist([]))
+    security_group_ids                = try(concat(module.server[0].vpc_security_group_ids, module.direct_access[0].security_group.id), tolist([]))
     key_name                          = try(module.server[0].key_name, "")
     private_ip                        = try(module.server[0].private_ip, "")
     public_ip                         = try(coalesce(module.server[0].public_ip, module.direct_access[0].eip.public_ip), "")
