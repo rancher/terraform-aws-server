@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.1](https://github.com/rancher/terraform-aws-server/compare/v1.4.0...v1.4.1) (2025-05-02)
+
+
+### Bug Fixes
+
+* expose the direct access security group ([#116](https://github.com/rancher/terraform-aws-server/issues/116)) ([ccdf6c8](https://github.com/rancher/terraform-aws-server/commit/ccdf6c82f20aa251d97e086522c0bb50c11780f2))
+
 ## [1.4.0](https://github.com/rancher/terraform-aws-server/compare/v1.3.1...v1.4.0) (2025-03-07)
 
 
