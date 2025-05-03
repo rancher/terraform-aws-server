@@ -127,3 +127,11 @@ variable "add_eip" {
     If set to true, we will add an elastic ip to the instance.
   EOT
 }
+
+variable "server_security_group_name" {
+  type        = string
+  description = <<-EOT
+    The name for the security group that the server is on.
+    We will allow direct access to this security group as well as the cidrs in the access address objects.
+  EOT
+}

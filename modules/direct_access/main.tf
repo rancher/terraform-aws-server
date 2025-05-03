@@ -11,8 +11,34 @@ locals {
   add_eip          = var.add_eip
   domain_ips       = flatten(local.domain.ips)
   # tflint-ignore: terraform_unused_declarations
-  fail_domain_ips = ((local.add_domain && length(local.domain_ips) == 0) ? one([local.domain_ips, "missing_domain_ips"]) : false)
-  all_ips         = compact(concat(local.domain_ips, [(local.add_eip ? aws_eip.created[0].public_ip : "")]))
+  fail_domain_ips            = ((local.add_domain && length(local.domain_ips) == 0) ? one([local.domain_ips, "missing_domain_ips"]) : false)
+  all_ips                    = compact(concat(local.domain_ips, [(local.add_eip ? aws_eip.created[0].public_ip : "")]))
+  server_security_group_name = var.server_security_group_name
+
+  access_address_cidrs_length = [
+    for i in range(length(local.access_addresses)) :
+    length(local.access_addresses[keys(local.access_addresses)[i]].cidrs)
+  ] # [1,1,2,2,1]
+
+  access_address_cidrs_matrix = merge([
+    for ia in range(length(local.access_addresses)) :
+    {
+      for ib in range(local.access_address_cidrs_length[ia]) :
+      "${keys(local.access_addresses)[ia]}-${ib}" => {
+        port      = local.access_addresses[keys(local.access_addresses)[ia]].port
+        cidr      = local.access_addresses[keys(local.access_addresses)[ia]].cidrs[ib]
+        ip_family = local.access_addresses[keys(local.access_addresses)[ia]].ip_family
+        protocol  = local.access_addresses[keys(local.access_addresses)[ia]].protocol
+      }
+    }
+  ]...)
+}
+
+data "aws_security_group" "server_security_group" {
+  filter {
+    name   = "tag:Name"
+    values = [local.server_security_group_name]
+  }
 }
 
 resource "aws_security_group" "direct_access" {
@@ -24,18 +50,28 @@ resource "aws_security_group" "direct_access" {
   }
 }
 
-resource "aws_security_group_rule" "server_ingress" {
+resource "aws_vpc_security_group_ingress_rule" "server_ingress" {
   depends_on = [
     aws_security_group.direct_access,
   ]
-  for_each          = local.access_addresses
+  for_each          = local.access_address_cidrs_matrix
   security_group_id = aws_security_group.direct_access.id
-  type              = "ingress"
   from_port         = each.value.port
   to_port           = each.value.port
-  protocol          = each.value.protocol
-  cidr_blocks       = (each.value.ip_family != "ipv6" ? each.value.cidrs : null)
-  ipv6_cidr_blocks  = (each.value.ip_family == "ipv6" ? each.value.cidrs : null)
+  ip_protocol       = each.value.protocol
+  cidr_ipv4         = (each.value.ip_family != "ipv6" ? each.value.cidr : null)
+  cidr_ipv6         = (each.value.ip_family == "ipv6" ? each.value.cidr : null)
+}
+
+# allow the server's security group direct access to the server
+resource "aws_vpc_security_group_ingress_rule" "server_direct_link" {
+  depends_on = [
+    aws_security_group.direct_access,
+    data.aws_security_group.server_security_group,
+  ]
+  security_group_id            = aws_security_group.direct_access.id
+  referenced_security_group_id = data.aws_security_group.server_security_group.id
+  ip_protocol                  = -1
 }
 
 resource "aws_network_interface_sg_attachment" "server_security_group_attachment" {
@@ -45,7 +81,6 @@ resource "aws_network_interface_sg_attachment" "server_security_group_attachment
   security_group_id    = aws_security_group.direct_access.id
   network_interface_id = local.server.network_interface_id
 }
-
 
 resource "aws_eip" "created" {
   count  = local.add_eip ? 1 : 0
@@ -87,7 +122,8 @@ resource "terraform_data" "setup" {
     aws_eip.created,
     aws_eip_association.created,
     aws_network_interface_sg_attachment.server_security_group_attachment,
-    aws_security_group_rule.server_ingress,
+    aws_vpc_security_group_ingress_rule.server_ingress,
+    aws_vpc_security_group_ingress_rule.server_direct_link,
     aws_security_group.direct_access,
   ]
   count = (local.use_strategy == "ssh" ? 1 : 0)
@@ -125,7 +161,8 @@ resource "terraform_data" "remove_initial_user" {
     terraform_data.setup,
     aws_eip_association.created,
     aws_network_interface_sg_attachment.server_security_group_attachment,
-    aws_security_group_rule.server_ingress,
+    aws_vpc_security_group_ingress_rule.server_ingress,
+    aws_vpc_security_group_ingress_rule.server_direct_link,
     aws_security_group.direct_access,
   ]
   count = (local.use_strategy == "ssh" ? 1 : 0)
