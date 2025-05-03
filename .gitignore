@@ -19,3 +19,4 @@ examples/*/50-*
 *.lock
 *.DS_*
 test/data/*
+*.test
