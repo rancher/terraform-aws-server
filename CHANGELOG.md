@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.2](https://github.com/rancher/terraform-aws-server/compare/v1.4.1...v1.4.2) (2025-05-05)
+
+
+### Bug Fixes
+
+* add direct to project ([#118](https://github.com/rancher/terraform-aws-server/issues/118)) ([bd65ca9](https://github.com/rancher/terraform-aws-server/commit/bd65ca94f138314fbd0fac1afa630bdf035c5b82))
+
 ## [1.4.1](https://github.com/rancher/terraform-aws-server/compare/v1.4.0...v1.4.1) (2025-05-02)
 
 
