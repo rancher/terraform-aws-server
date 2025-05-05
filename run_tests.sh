@@ -3,15 +3,29 @@
 rerun_failed=false
 specific_test=""
 specific_package=""
+cleanup_id=""
 
-while getopts ":r:t:p:" opt; do
+while getopts ":r:t:p:c:" opt; do
   case $opt in
     r) rerun_failed=true ;;
     t) specific_test="$OPTARG" ;;
     p) specific_package="$OPTARG" ;;
-    \?) echo "Invalid option -$OPTARG" >&2 && exit 1 ;;
+    c) cleanup_id="$OPTARG" ;;
+    \?) cat <<EOT >&2 && exit 1 ;;
+Invalid option -$OPTARG, valid options are
+  -r to re-run failed tests
+  -t to specify a specific test (eg. TestBase)
+  -p to specify a specific test package (eg. base)
+  -c to run clean up only with the given id (eg. abc123)
+EOT
   esac
 done
+
+if [ -n "$cleanup_id" ]; then
+  export IDENTIFIER="$cleanup_id"
+fi
+
+REPO_ROOT="$(git rev-parse --show-toplevel)"
 
 run_tests() {
   local rerun=$1
@@ -94,13 +108,31 @@ if [ -z "$GITHUB_TOKEN" ]; then echo "GITHUB_TOKEN isn't set"; else echo "GITHUB
 if [ -z "$GITHUB_OWNER" ]; then echo "GITHUB_OWNER isn't set"; else echo "GITHUB_OWNER is set"; fi
 if [ -z "$ZONE" ]; then echo "ZONE isn't set"; else echo "ZONE is set"; fi
 
-# Run tests initially
-run_tests false
+if [ -z "$cleanup_id" ]; then
+  echo "checking tests for compile errors..."
+  D="$(pwd)"
+  cd "$REPO_ROOT/test/tests" || exit
+  if ! go mod tidy; then echo "failed to tidy, exit code $?"; exit 1; fi
 
-# Check if we need to rerun failed tests
-if [ "$rerun_failed" = true ] && [ -f "/tmp/${IDENTIFIER}_failed_tests.txt" ]; then
-  echo "Rerunning failed tests..."
-  run_tests true
+  while IFS= read -r file; do
+    echo "found $file";
+    if ! go test -c "$file"; then C=$?; echo "failed to compile $file, exit code $C"; exit $C; fi
+  done < "$(find "$REPO_ROOT/test" -name '*.go')"
+  echo "compile checks passed..."
+  cd "$D" || exit
+
+  echo "checking terraform configs for errors..."
+  if ! tflint --recursive; then C=$?; echo "tflint failed, exit code $C"; exit $C; fi
+  echo "terraform configs valid..."
+
+  # Run tests initially
+  run_tests false
+
+  # Check if we need to rerun failed tests
+  if [ "$rerun_failed" = true ] && [ -f "/tmp/${IDENTIFIER}_failed_tests.txt" ]; then
+    echo "Rerunning failed tests..."
+    run_tests true
+  fi
 fi
 
 echo "Clearing leftovers with Id $IDENTIFIER in $AWS_REGION..."
@@ -121,8 +153,8 @@ if [ -n "$IDENTIFIER" ]; then
 
   attempts=0
   # shellcheck disable=SC2143
-  while [ -n "$(leftovers -d --iaas=aws --aws-region="$AWS_REGION" --type="ec2-key-pair" --filter="tf-$IDENTIFIER" | grep -v 'AccessDenied')" ] && [ $attempts -lt 3 ]; do
-    leftovers --iaas=aws --aws-region="$AWS_REGION" --type="ec2-key-pair" --filter="tf-$IDENTIFIER" --no-confirm | grep -v 'AccessDenied' || true
+  while [ -n "$(leftovers -d --iaas=aws --aws-region="$AWS_REGION" --type="ec2-key-pair" --filter="terraform-ci-$IDENTIFIER" | grep -v 'AccessDenied')" ] && [ $attempts -lt 3 ]; do
+    leftovers --iaas=aws --aws-region="$AWS_REGION" --type="ec2-key-pair" --filter="terraform-ci-$IDENTIFIER" --no-confirm | grep -v 'AccessDenied' || true
     sleep 10
     attempts=$((attempts + 1))
   done

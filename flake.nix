@@ -58,6 +58,7 @@
               gitleaks
               gnupg
               go
+              golint
               gotestfmt
               gotestsum
               jq
@@ -72,6 +73,7 @@
               updatecli
               vim
               which
+              yq-go
             ];
           };
 

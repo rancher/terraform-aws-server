@@ -173,4 +173,5 @@ module "direct_access" {
     type = "A"                # we will enable ipv6 in the future
     ips  = distinct([module.server[0].public_ip, module.server[0].private_ip])
   }
+  server_security_group_name = local.server_security_group_name
 }
