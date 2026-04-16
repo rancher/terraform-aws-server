@@ -1,5 +1,22 @@
 # Changelog
 
+## [2.0.0](https://github.com/rancher/terraform-aws-server/compare/v1.4.2...v2.0.0) (2026-04-16)
+
+
+### ⚠ BREAKING CHANGES
+
+* upgrade images and instance types ([#131](https://github.com/rancher/terraform-aws-server/issues/131))
+
+### Bug Fixes
+
+* bump actions/checkout from 4 to 6 ([#123](https://github.com/rancher/terraform-aws-server/issues/123)) ([a2c9345](https://github.com/rancher/terraform-aws-server/commit/a2c9345d22a4d2a9462c26f30ed7561b1804785b))
+* bump actions/github-script from 7 to 8 ([#121](https://github.com/rancher/terraform-aws-server/issues/121)) ([6e76f9f](https://github.com/rancher/terraform-aws-server/commit/6e76f9f99546efd936bcb689de7301ed204ecc28))
+* bump actions/github-script from 8.0.0 to 9.0.0 ([#130](https://github.com/rancher/terraform-aws-server/issues/130)) ([a04c856](https://github.com/rancher/terraform-aws-server/commit/a04c856d178ec60264c2fdd790450b8c5c39f79c))
+* bump aws-actions/configure-aws-credentials from 4 to 6 ([#125](https://github.com/rancher/terraform-aws-server/issues/125)) ([61d9dea](https://github.com/rancher/terraform-aws-server/commit/61d9deaaa40213d6c74547ae373a12e01713d884))
+* bump googleapis/release-please-action from 4.3.0 to 4.4.0 ([#129](https://github.com/rancher/terraform-aws-server/issues/129)) ([01b6b5a](https://github.com/rancher/terraform-aws-server/commit/01b6b5aace68479b253cc7a7547933922451dbab))
+* supply chain vulnerabilities and upgrade modules ([#127](https://github.com/rancher/terraform-aws-server/issues/127)) ([6be57cb](https://github.com/rancher/terraform-aws-server/commit/6be57cbd5b0337e99884c09ef5a7118cd1ad5d33))
+* upgrade images and instance types ([#131](https://github.com/rancher/terraform-aws-server/issues/131)) ([3265479](https://github.com/rancher/terraform-aws-server/commit/326547914494dabff4ff75eb43572a55cf4c32bd))
+
 ## [1.4.2](https://github.com/rancher/terraform-aws-server/compare/v1.4.1...v1.4.2) (2025-05-05)
 
 
