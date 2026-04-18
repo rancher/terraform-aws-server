@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.1](https://github.com/rancher/terraform-aws-server/compare/v2.0.0...v2.0.1) (2026-04-18)
+
+
+### Bug Fixes
+
+* initial admin group missing ([#132](https://github.com/rancher/terraform-aws-server/issues/132)) ([079f77e](https://github.com/rancher/terraform-aws-server/commit/079f77edff6e28d9479c522f23fd1621d1f4f0d1))
+
 ## [2.0.0](https://github.com/rancher/terraform-aws-server/compare/v1.4.2...v2.0.0) (2026-04-16)
 
 
