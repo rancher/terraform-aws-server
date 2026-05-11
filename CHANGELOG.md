@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.0.2](https://github.com/rancher/terraform-aws-server/compare/v2.0.1...v2.0.2) (2026-05-11)
+
+
+### Bug Fixes
+
+* bump release please action from 4.4.0 to 4.4.1 ([#134](https://github.com/rancher/terraform-aws-server/issues/134)) ([6822ab0](https://github.com/rancher/terraform-aws-server/commit/6822ab0d2ff142543ecda2ba8bf63800d3697097))
+* update actions ([#138](https://github.com/rancher/terraform-aws-server/issues/138)) ([1eb059a](https://github.com/rancher/terraform-aws-server/commit/1eb059a13d666713be10472f1fc11e3407b8044e))
+
 ## [2.0.1](https://github.com/rancher/terraform-aws-server/compare/v2.0.0...v2.0.1) (2026-04-18)
 
 
