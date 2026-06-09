@@ -1,17 +1,15 @@
 locals {
-  use_strategy     = var.use_strategy
-  cloudinit_ignore = var.cloudinit_ignore
-  server           = var.server
-  image            = var.image
-  image_workfolder = (local.image.workfolder == "~" ? "/home/${local.image.user}" : local.image.workfolder)
-  access_addresses = var.access_addresses
-  ssh              = var.ssh
-  add_domain       = var.add_domain
-  domain           = var.domain
-  add_eip          = var.add_eip
-  domain_ips       = flatten(local.domain.ips)
-  # tflint-ignore: terraform_unused_declarations
-  fail_domain_ips            = ((local.add_domain && length(local.domain_ips) == 0) ? one([local.domain_ips, "missing_domain_ips"]) : false)
+  use_strategy               = var.use_strategy
+  cloudinit_ignore           = var.cloudinit_ignore
+  server                     = var.server
+  image                      = var.image
+  image_workfolder           = (local.image.workfolder == "~" ? "/home/${local.image.user}" : local.image.workfolder)
+  access_addresses           = var.access_addresses
+  ssh                        = var.ssh
+  add_domain                 = var.add_domain
+  domain                     = var.domain
+  add_eip                    = var.add_eip
+  domain_ips                 = flatten(local.domain.ips)
   all_ips                    = compact(concat(local.domain_ips, [(local.add_eip ? aws_eip.created[0].public_ip : "")]))
   server_security_group_name = var.server_security_group_name
 
@@ -32,6 +30,15 @@ locals {
       }
     }
   ]...)
+}
+
+resource "terraform_data" "input_validation" {
+  lifecycle {
+    precondition {
+      condition     = !(local.add_domain && length(local.domain_ips) == 0)
+      error_message = "missing_domain_ips: The domain_ips must be provided when add_domain is true."
+    }
+  }
 }
 
 data "aws_security_group" "server_security_group" {

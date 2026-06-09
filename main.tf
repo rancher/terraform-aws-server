@@ -2,8 +2,6 @@ locals {
   # image
   image_use_strategy = var.image_use_strategy
   image              = var.image
-  # tflint-ignore: terraform_unused_declarations
-  fail_image = ((local.image_use_strategy == "select" && local.image == null) ? one([local.image, "missing_image"]) : false)
   image_dummy = {
     id          = "dummy"
     user        = "dummy"
@@ -13,56 +11,31 @@ locals {
   server_image = (local.image == null ? local.image_dummy : local.image)
   # when finding an image you must specify an image_type from our list of supported image types (see module/image/types.tf)
   image_type = var.image_type
-  # tflint-ignore: terraform_unused_declarations
-  fail_image_type = ((local.image_use_strategy == "find" && local.image_type == "") ? one([local.image_type, "missing_image_type"]) : false)
 
   # server
   server_use_strategy = var.server_use_strategy
   server_id           = var.server_id
-  # tflint-ignore: terraform_unused_declarations
-  fail_server_id = ((local.server_use_strategy == "select" && local.server_id == "") ? one([local.server_id, "missing_server_id"]) : false)
-  server_name    = var.server_name
-  # tflint-ignore: terraform_unused_declarations
-  fail_server_name = ((local.server_use_strategy == "create" && local.server_name == "") ? one([local.server_name, "missing_server_name"]) : false)
-  server_type      = var.server_type
-  # tflint-ignore: terraform_unused_declarations
-  fail_server_type = ((local.server_use_strategy == "create" && local.server_type == "") ? one([local.server_type, "missing_server_type"]) : false)
-  server_ip_family = var.server_ip_family
+  server_name         = var.server_name
+  server_type         = var.server_type
+  server_ip_family    = var.server_ip_family
 
   # internal access
-  server_subnet_name = var.subnet_name
-  # tflint-ignore: terraform_unused_declarations
-  fail_subnet_name           = ((local.server_use_strategy == "create" && local.server_subnet_name == "") ? one([local.server_subnet_name, "missing_subnet_name"]) : false)
+  server_subnet_name         = var.subnet_name
   server_security_group_name = var.security_group_name
-  # tflint-ignore: terraform_unused_declarations
-  fail_security_group_name = ((local.server_use_strategy == "create" && local.server_security_group_name == "") ? one([local.server_security_group_name, "missing_security_group_name"]) : false)
-  server_private_ip        = var.private_ip # if this is empty AWS will assign one
+  server_private_ip          = var.private_ip # if this is empty AWS will assign one
 
   # balanced access
   indirect_access_use_strategy = var.indirect_access_use_strategy
   load_balancer_target_groups  = var.load_balancer_target_groups
-  # tflint-ignore: terraform_unused_declarations
-  fail_load_balancer_target_groups = ((local.indirect_access_use_strategy == "create" && length(local.load_balancer_target_groups) > 0) ? one([local.load_balancer_target_groups, "missing_load_balancer_target_groups"]) : false)
 
   # direct access
   direct_access_use_strategy = var.direct_access_use_strategy
   server_access_addresses    = var.server_access_addresses
-  # tflint-ignore: terraform_unused_declarations
-  fail_server_access_addresses = ((local.direct_access_use_strategy != "skip" && local.server_access_addresses == null) ? one([local.server_access_addresses, "missing_server_access_addresses"]) : false)
-  server_user                  = var.server_user
-  # tflint-ignore: terraform_unused_declarations
-  fail_server_user = ((local.direct_access_use_strategy == "ssh" && local.server_user == null) ? one([local.server_user, "missing_server_user"]) : false)
-  add_domain       = var.add_domain
-  domain_name      = var.domain_name
-  # tflint-ignore: terraform_unused_declarations
-  fail_domain_name = ((local.add_domain && local.domain_name == "") ? one([local.domain_name, "missing_domain_name"]) : false)
-  domain_zone      = var.domain_zone
-  # tflint-ignore: terraform_unused_declarations
-  fail_domain_zone      = ((local.add_domain && local.domain_zone == "") ? one([local.domain_zone, "missing_domain_zone"]) : false)
-  add_eip               = var.add_eip
-  direct_access_host_ip = (length(module.server) > 0 ? module.server[0].public_ip : "")
-  # tflint-ignore: terraform_unused_declarations
-  fail_direct_access_host_ip = ((local.server_mod == 1 && local.direct_access_use_strategy != "skip" && local.direct_access_host_ip == "") ? one([local.direct_access_host_ip, "missing_direct_access_host_ip"]) : false)
+  server_user                = var.server_user
+  add_domain                 = var.add_domain
+  domain_name                = var.domain_name
+  domain_zone                = var.domain_zone
+  add_eip                    = var.add_eip
 
   # config
   cloudinit_use_strategy = var.cloudinit_use_strategy
@@ -75,16 +48,73 @@ locals {
     name        = local.server_name
     workfolder  = module.image[0].image.workfolder
   }) : "")
-  # tflint-ignore: terraform_unused_declarations
-  fail_cloudinit_specify = ((local.cloudinit_use_strategy == "specify" && local.user_init == "" ? one([local.user_init, "missing_cloudinit"]) : false))
-  # tflint-ignore: terraform_unused_declarations
-  fail_cloudinit_default = ((local.cloudinit_use_strategy == "default" && local.direct_access_use_strategy != "ssh" ? one([local.direct_access_use_strategy, "direct_access_incorrect_for_default_cloudinit"]) : false))
 
   # mods
   image_mod    = (local.image_use_strategy == "skip" ? 0 : 1)
   server_mod   = ((local.server_use_strategy == "skip" || local.image_mod == 0) ? 0 : 1)
   indirect_mod = ((local.indirect_access_use_strategy == "skip" || local.image_mod == 0 || local.server_mod == 0) ? 0 : 1)
   direct_mod   = ((local.direct_access_use_strategy == "skip" || local.image_mod == 0 || local.server_mod == 0) ? 0 : 1)
+}
+
+resource "terraform_data" "input_validation" {
+  lifecycle {
+    precondition {
+      condition     = !(local.image_use_strategy == "select" && local.image == null)
+      error_message = "missing_image: The image object must be provided when image_use_strategy is 'select'."
+    }
+    precondition {
+      condition     = !(local.image_use_strategy == "find" && local.image_type == "")
+      error_message = "missing_image_type: The image_type must be provided when image_use_strategy is 'find'."
+    }
+    precondition {
+      condition     = !(local.server_use_strategy == "select" && local.server_id == "")
+      error_message = "missing_server_id: The server_id must be provided when server_use_strategy is 'select'."
+    }
+    precondition {
+      condition     = !(local.server_use_strategy == "create" && local.server_name == "")
+      error_message = "missing_server_name: The server_name must be provided when server_use_strategy is 'create'."
+    }
+    precondition {
+      condition     = !(local.server_use_strategy == "create" && local.server_type == "")
+      error_message = "missing_server_type: The server_type must be provided when server_use_strategy is 'create'."
+    }
+    precondition {
+      condition     = !(local.server_use_strategy == "create" && local.server_subnet_name == "")
+      error_message = "missing_subnet_name: The subnet_name must be provided when server_use_strategy is 'create'."
+    }
+    precondition {
+      condition     = !(local.server_use_strategy == "create" && local.server_security_group_name == "")
+      error_message = "missing_security_group_name: The security_group_name must be provided when server_use_strategy is 'create'."
+    }
+    precondition {
+      condition     = !(local.indirect_access_use_strategy == "create" && length(local.load_balancer_target_groups) > 0)
+      error_message = "missing_load_balancer_target_groups: Target groups must be provided when indirect_access_use_strategy is 'create'."
+    }
+    precondition {
+      condition     = !(local.direct_access_use_strategy != "skip" && local.server_access_addresses == null)
+      error_message = "missing_server_access_addresses: Server access addresses must be provided when direct_access_use_strategy is not 'skip'."
+    }
+    precondition {
+      condition     = !(local.direct_access_use_strategy == "ssh" && local.server_user == null)
+      error_message = "missing_server_user: The server_user object must be provided when direct_access_use_strategy is 'ssh'."
+    }
+    precondition {
+      condition     = !(local.add_domain && local.domain_name == "")
+      error_message = "missing_domain_name: The domain_name must be provided when add_domain is true."
+    }
+    precondition {
+      condition     = !(local.add_domain && local.domain_zone == "")
+      error_message = "missing_domain_zone: The domain_zone must be provided when add_domain is true."
+    }
+    precondition {
+      condition     = !(local.cloudinit_use_strategy == "specify" && local.user_init == "")
+      error_message = "missing_cloudinit: The cloudinit_content must be provided when cloudinit_use_strategy is 'specify'."
+    }
+    precondition {
+      condition     = !(local.cloudinit_use_strategy == "default" && local.direct_access_use_strategy != "ssh")
+      error_message = "direct_access_incorrect_for_default_cloudinit: direct_access_use_strategy must be 'ssh' to use 'default' cloudinit."
+    }
+  }
 }
 
 module "image" {

@@ -8,5 +8,6 @@ Addresses #
 <!--- Please describe how you verified this change or why testing isn't relevant. --->
 
 <!--- Does this change alter an interface that users of the provider will need to adjust to? --->
-<!--- Will there be any existing configurations broken by this change? If so, change the following line with an explanation. --->
+<!--- Will there be any existing configurations broken by this change? -->
+<!--- If so, change the following line with an explanation. --->
 Not a breaking change.

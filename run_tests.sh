@@ -213,6 +213,12 @@ if [ -z "$GITHUB_TOKEN" ]; then echo "GITHUB_TOKEN isn't set"; else echo "GITHUB
 if [ -z "$GITHUB_OWNER" ]; then echo "GITHUB_OWNER isn't set"; else echo "GITHUB_OWNER is set"; fi
 if [ -z "$ZONE" ]; then echo "ZONE isn't set"; else echo "ZONE is set"; fi
 
+if [ "$dirty_mode" = true ]; then
+  echo "Running in dirty mode, skipping cleanup..."
+else
+  trap 'echo "Starting cleanup..."; sh "$REPO_ROOT/cleanup.sh" "$IDENTIFIER"' EXIT
+fi
+
 if [ -z "$cleanup_id" ]; then
 
   D="$(pwd)"
@@ -243,8 +249,6 @@ if [ -z "$cleanup_id" ]; then
   if ! tflint --recursive; then C=$?; echo "tflint failed, exit code $C"; exit $C; fi
   echo "terraform configs valid..."
 
-  make build
-
   # Run tests initially
   run_tests false "$slow_mode"
   sleep 60
@@ -257,18 +261,6 @@ if [ -z "$cleanup_id" ]; then
   fi
 fi
 
-if [ $dirty_mode == true ]; then
-  echo "Running in dirty mode, skipping cleanup..."
-else
-  echo "Starting cleanup..."
-  sh "$REPO_ROOT/cleanup.sh" "$IDENTIFIER"
-  C=$?
-  if [ $C -ne 0 ]; then
-    echo "Cleanup failed with exit code $C"
-    exit $C
-  fi
-  echo "Cleanup completed successfully."
-fi
 
 if [ -n "$cleanup_id" ]; then
   # cleanup only mode
