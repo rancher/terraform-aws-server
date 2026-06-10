@@ -18,6 +18,10 @@ jobs:
       contents: read
       id-token: write
     steps:
+    - name: Fix Runner Permissions
+      shell: bash
+      run: sudo chown -R "$(whoami)" "$RUNNER_TEMP"
+
     - name: Checkout
       shell: bash
       run: |
