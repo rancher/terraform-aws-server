@@ -28,10 +28,8 @@ jobs:
       - name: Fix Runner Permissions
         shell: bash
         run: |
-          sudo chown -R "$(whoami)" "$RUNNER_TEMP"
-          sudo chown -R "$(whoami)" "$(dirname "$GITHUB_EVENT_PATH")"
-          sudo chown -R "$(whoami)" "$GITHUB_WORKSPACE"
-          sudo chown -R "$(whoami)" "$HOME"
+          sudo chown -R "$(whoami)" /home/runner
+          sudo chmod -R 0770 /home/runner
 
       - name: 'Release Please'
         # https://github.com/googleapis/release-please-action/releases
