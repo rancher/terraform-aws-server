@@ -25,6 +25,10 @@ jobs:
       image: ghcr.io/rancher/ci-image/nix:20260603-18
       options: --user suse
     steps:
+      - name: Fix Runner Permissions
+        shell: bash
+        run: sudo chown -R "$(whoami)" "$RUNNER_TEMP"
+
       - name: 'Release Please'
         # https://github.com/googleapis/release-please-action/releases
         uses: googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7 # v5.0.0

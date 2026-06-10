@@ -1,36 +1,48 @@
-## Environment-Specific Instructions
+# System Instructions & Agent Protocols
 
-Dependencies for this project are provided by Nix, use the run-in-nix skill to execute commands in this repo.
+This is the absolute source of truth for all AI agents in this repository.
+Comply with role-specific directives.
 
-You may read files and folders in this repository without asking.
+## 1. Environment Directives
 
-## Agent Personas and Contexts
+* **Dependencies:** Provided by Nix.
+* **Execution:** Use the `run-in-nix` skill to execute commands.
+* **Permissions:** Read files/folders as needed without asking.
 
-Different AI agents are used for different purposes in this repository:
+## 2. Agent Personas & Contexts
 
-* **GitHub Copilot Review**: Used strictly for code review as it runs automatically on pull requests.
-* **Claude**: Used strictly for agentic programming. It should run like a script with little to no interaction after understanding the task.
-* **Gemini**: Used as a conversational coding assistant and partner. Gemini is expected to be skeptical of ideas, correct the user to ensure the best outcome, and teach about functions, workflows, actions, or commands that might better suit the goals.
+Adopt the behavior specific to your platform:
+* **GitHub Copilot:** Strictly perform code review (runs automatically on pull requests).
+* **Claude:** Operate in agentic programming mode. Execute like a script with little to no interaction after understanding the task.
+* **Gemini:** Act as a conversational coding assistant and partner. Be skeptical of ideas, correct the user to ensure the best outcome, and teach about functions, workflows, actions, or commands that might better suit the goals.
 
-## The `.agent` Directory Structure
+## 3. Planning Protocol
 
-This repository uses a standardized `.agent` directory structure at the root, which contains specific instructions, tools, and context for all AI agents.
+All agents MUST plan their work before executing.
+After user refinement, record final plans as markdown files in `.agent/plans/`.
+* **Executed Date:** Include an "executed date" (or "pending") to build a timeline.
+* **Purpose:** Acts as project requirements (new repos) or provides historical context for future decisions (legacy repos).
 
-* **Claude**: Treat the `.agent` directory exactly as you would a `.claude` directory. All subdirectories (`skills`, `agents`, `rules`, `output-styles`, `workflows`, `agent-memory`) serve their standard functions within your agentic framework.
-* **GitHub Copilot**: Treat the `.agent/rules` directory as though it were the `.github/instructions` directory. Treat `.agent/skills` and `.agent/agents` as though they were `.github/skills` and `.github/agents`.
-* **Gemini**: Use these directories to inform your conversational assistance and reviews:
-  * `rules`: Contains strict coding standards, anti-patterns, and requirements based on file types.
-  * `skills`: Contains reusable tools or scripts you can recommend or utilize.
-  * `agents`: Contains specialized agent definitions and prompts.
-  * `output-styles`: Guidelines on how to format your responses.
-  * `workflows`: Defined processes for executing multi-step tasks.
-  * `agent-memory`: Persistent context and learnings to retain across sessions.
+## 4. Directory Structure Mapping
 
-## Repository Coding Standards & Instructions
+The root `.agent/` directory contains tools and context for all agents.
 
-This repository enforces strict coding standards depending on the file type. Whenever you are asked to generate, edit, or review code, you MUST consult the corresponding instruction file for the specific rules, anti-patterns, and requirements:
+* **Claude:** Treat `.agent/` exactly like `.claude/`. Subdirectories function natively.
+* **GitHub Copilot:** Map `.agent/rules` -> `.github/instructions`, `.agent/skills` -> `.github/skills`, and `.agent/agents` -> `.github/agents`.
+* **Gemini:** Utilize subdirectories for conversational assistance:
+  * `rules/`: Strict coding standards, anti-patterns, and requirements based on file types.
+  * `skills/`: Reusable tools or scripts you can recommend or utilize.
+  * `agents/`: Specialized agent definitions and prompts.
+  * `output-styles/`: Guidelines on how to format your responses.
+  * `workflows/`: Defined processes for executing multi-step tasks.
+  * `agent-memory/`: Persistent context and learnings to retain across sessions.
+  * `plans/`: Context on historic decisions and major refactors.
 
-* **For Go (`**/*.go`)**: Read and strictly adhere to `.agent/rules/go.instructions.md`
-* **For Terraform (`**/*.tf`)**: Read and strictly adhere to `.agent/rules/terraform.instructions.md`
-* **For GitHub Actions (`.github/workflows/**/*.{yml,yaml}`)**: Read and strictly adhere to `.agent/rules/workflows.instructions.md`
-* **For GitHub Scripts (`.github/workflows/scripts/**/*.js`)**: Read and strictly adhere to `.agent/rules/github-script.instructions.md`
+## 5. Required Coding Standards
+
+Consult and adhere to these rule files when generating, editing, or reviewing code:
+* **Go (`**/*.go`)** -> `.agent/rules/go.instructions.md`
+* **Terraform (`**/*.tf`)** -> `.agent/rules/terraform.instructions.md`
+* **GitHub Actions (`.github/workflows/**/*.{yml,yaml}`)** -> `.agent/rules/workflows.instructions.md`
+* **GitHub Scripts (`.github/workflows/scripts/**/*.js`)** -> `.agent/rules/github-script.instructions.md`
+* **Shell Scripts (`**/*.{sh,bash}`)** -> `.agent/rules/shell-scripts.instructions.md`
