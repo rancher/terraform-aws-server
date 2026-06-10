@@ -18,35 +18,42 @@ jobs:
       contents: read
       id-token: write
     steps:
-    - name: Fix Runner Permissions
-      shell: bash
-      run: sudo chown -R "$(whoami)" "$RUNNER_TEMP"
+      - name: Fix Runner Permissions
+        shell: bash
+        run: |
+          sudo chown -R "$(whoami)" "$RUNNER_TEMP"
+          sudo chown -R "$(whoami)" "$(dirname "$GITHUB_EVENT_PATH")"
+          sudo chown -R "$(whoami)" "$GITHUB_WORKSPACE"
+          sudo chown -R "$(whoami)" "$HOME"
 
-    - name: Checkout
-      shell: bash
-      run: |
-        sudo chown -R "$(whoami)" . "$HOME"
-        sudo git config --global --add safe.directory "$GITHUB_WORKSPACE"
-        git init .
-        git remote add origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git"
-        git fetch --tags --force origin
-        git fetch origin "+refs/heads/*:refs/remotes/origin/*"
-        git fetch origin "+refs/pull/${{ github.event.number }}/merge:refs/remotes/pull/${{ github.event.number }}/merge"
-        git checkout "${{ github.sha }}"
+      - name: Checkout
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          COMMIT_SHA: ${{ github.sha }}
+        run: |
+          sudo chown -R "$(whoami)" . "$HOME"
+          sudo git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          git init .
+          git remote add origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${REPO}.git"
+          git fetch --tags --force origin
+          git fetch origin "+refs/heads/*:refs/remotes/origin/*"
+          git checkout "$COMMIT_SHA"
 
-    # The FOSSA token is shared between all repos in Rancher's GH org.
-    # It can be used directly and there is no need to request specific access to EIO.
-    - name: 'Read FOSSA Token'
-      # https://github.com/rancher-eio/read-vault-secrets/commits/main/
-      uses: rancher-eio/read-vault-secrets@7282bf97898cd1c16c89f837e0bb442e6d384c89 # main
-      with:
-        secrets: |
-          secret/data/github/org/rancher/fossa/push token | FOSSA_API_KEY_PUSH_ONLY
+      # The FOSSA token is shared between all repos in Rancher's GH org.
+      # It can be used directly and there is no need to request specific access to EIO.
+      - name: 'Read FOSSA Token'
+        # https://github.com/rancher-eio/read-vault-secrets/commits/main/
+        uses: rancher-eio/read-vault-secrets@7282bf97898cd1c16c89f837e0bb442e6d384c89 # main
+        with:
+          secrets: |
+            secret/data/github/org/rancher/fossa/push token | FOSSA_API_KEY_PUSH_ONLY
 
-    - name: 'FOSSA Scan'
-      # https://github.com/fossas/fossa-action/releases
-      uses: fossas/fossa-action@ff70fe9fe17cbd2040648f1c45e8ec4e4884dcf3 # v1.9.0
-      with:
-        api-key: ${{ env.FOSSA_API_KEY_PUSH_ONLY }}
-        # Only runs the scan and do not provide/returns any results back to the pipeline.
-        run-tests: false
+      - name: 'FOSSA Scan'
+        # https://github.com/fossas/fossa-action/releases
+        uses: fossas/fossa-action@ff70fe9fe17cbd2040648f1c45e8ec4e4884dcf3 # v1.9.0
+        with:
+          api-key: ${{ env.FOSSA_API_KEY_PUSH_ONLY }}
+          # Only runs the scan and do not provide/returns any results back to the pipeline.
+          run-tests: false
