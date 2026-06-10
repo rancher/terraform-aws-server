@@ -2,12 +2,8 @@ locals {
   use_strategy = var.use_strategy
 
   find_type = var.type
-  # tflint-ignore: terraform_unused_declarations
-  fail_type = ((local.use_strategy == "find" && local.type == "") ? one([local.type, "missing_find_type"]) : false)
 
   image = var.image
-  # tflint-ignore: terraform_unused_declarations
-  fail_image_id = (local.use_strategy == "select" && local.image.id == "" ? one([local.image.id, "missing_select_image_id"]) : false)
 
   # path
   search = (local.use_strategy == "find" ? true : false)
@@ -26,6 +22,19 @@ locals {
   admin_group  = (local.search ? local.type.group : local.image.admin_group)
   workfolder   = (local.search ? local.type.workfolder : local.image.workfolder)
   filters      = { for k, v in { "name" = local.name, "product-code" = local.product_code, "architecture" = local.architecture } : k => v if v != "" }
+}
+
+resource "terraform_data" "input_validation" {
+  lifecycle {
+    precondition {
+      condition     = !(local.use_strategy == "find" && local.type == "")
+      error_message = "missing_find_type: The type must be provided when use_strategy is 'find'."
+    }
+    precondition {
+      condition     = !(local.use_strategy == "select" && local.image.id == "")
+      error_message = "missing_select_image_id: The image.id must be provided when use_strategy is 'select'."
+    }
+  }
 }
 
 data "aws_ami" "search" {

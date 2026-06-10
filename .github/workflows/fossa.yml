@@ -11,24 +11,35 @@ jobs:
   fossa-scanning:
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    container:
+      image: ghcr.io/rancher/ci-image/nix:20260603-18
+      options: --user suse
     permissions:
       contents: read
       id-token: write
     steps:
     - name: Checkout
-      # https://github.com/actions/checkout
-      uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      shell: bash
+      run: |
+        sudo chown -R "$(whoami)" . "$HOME"
+        sudo git config --global --add safe.directory "$GITHUB_WORKSPACE"
+        git init .
+        git remote add origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git"
+        git fetch --tags --force origin
+        git fetch origin "+refs/heads/*:refs/remotes/origin/*"
+        git fetch origin "+refs/pull/${{ github.event.number }}/merge:refs/remotes/pull/${{ github.event.number }}/merge"
+        git checkout "${{ github.sha }}"
 
     # The FOSSA token is shared between all repos in Rancher's GH org.
     # It can be used directly and there is no need to request specific access to EIO.
-    - name: Read FOSSA token
+    - name: 'Read FOSSA Token'
       # https://github.com/rancher-eio/read-vault-secrets/commits/main/
       uses: rancher-eio/read-vault-secrets@7282bf97898cd1c16c89f837e0bb442e6d384c89 # main
       with:
         secrets: |
           secret/data/github/org/rancher/fossa/push token | FOSSA_API_KEY_PUSH_ONLY
 
-    - name: FOSSA scan
+    - name: 'FOSSA Scan'
       # https://github.com/fossas/fossa-action/releases
       uses: fossas/fossa-action@ff70fe9fe17cbd2040648f1c45e8ec4e4884dcf3 # v1.9.0
       with:

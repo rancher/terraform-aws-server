@@ -36,7 +36,7 @@ data "http" "myip" {
 
 module "access" {
   source                     = "rancher/access/aws"
-  version                    = "v4.0.0"
+  version                    = "v4.0.3"
   vpc_name                   = "${local.project_name}-vpc"
   security_group_name        = "${local.project_name}-sg"
   security_group_type        = "project"

@@ -8,13 +8,11 @@ locals {
   type              = var.type # the designation from types.tf
   image_supports_c8 = var.image_supports_c8
   image_supports_c7 = var.image_supports_c7
-  # tflint-ignore: terraform_unused_declarations
-  fail_type      = (local.create == 1 && local.server_type == null ? one([local.type, "type_not_found"]) : false)
-  ip_family      = var.ip_family
-  server_type    = lookup(local.types, local.type, null)
-  security_group = var.security_group # the name of the security group to find and assign to the server
-  subnet         = var.subnet         # the name of the subnet to find and assign to the server
-  cloudinit      = var.cloudinit      # the cloudinit content to associate with the server
+  ip_family         = var.ip_family
+  server_type       = lookup(local.types, local.type, null)
+  security_group    = var.security_group # the name of the security group to find and assign to the server
+  subnet            = var.subnet         # the name of the subnet to find and assign to the server
+  cloudinit         = var.cloudinit      # the cloudinit content to associate with the server
 
   aws_keypair_use_strategy = var.aws_keypair_use_strategy
   ssh_key                  = var.ssh_key
@@ -23,6 +21,15 @@ locals {
   ip   = var.ip # ip to assign to the server
   ipv4 = ((local.ip_family == "ipv4" || local.ip_family == "dualstack") ? local.ip : "")
   ipv6 = (local.ip_family == "ipv6" ? local.ip : "")
+}
+
+resource "terraform_data" "input_validation" {
+  lifecycle {
+    precondition {
+      condition     = !(local.create == 1 && local.server_type == null)
+      error_message = "type_not_found: The specified server type could not be found."
+    }
+  }
 }
 
 # select

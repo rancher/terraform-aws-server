@@ -1,0 +1,171 @@
+name: pull_request
+
+on:
+  pull_request:
+    branches: [main]
+
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  GITHUB_OWNER: ${{ github.repository_owner }}
+
+permissions: {}
+
+jobs:
+  terraform:
+    name: 'Terraform'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    container:
+      image: ghcr.io/rancher/ci-image/nix:20260603-18
+      options: --user suse
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        shell: bash
+        run: |
+          sudo chown -R "$(whoami)" . "$HOME"
+          sudo git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          git init .
+          git remote add origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git"
+          git fetch --tags --force origin
+          git fetch origin "+refs/heads/*:refs/remotes/origin/*"
+          git fetch origin "+refs/pull/${{ github.event.number }}/merge:refs/remotes/pull/${{ github.event.number }}/merge"
+          git checkout "${{ github.sha }}"
+      - name: 'Lint terraform'
+        shell: bash
+        run: |
+          bash .github/workflows/scripts/nix-run.sh "bash .github/workflows/scripts/lint-terraform.sh"
+
+  eslint:
+    name: 'Check GitHub scripts'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    container:
+      image: ghcr.io/rancher/ci-image/nix:20260603-18
+      options: --user suse
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        shell: bash
+        run: |
+          sudo chown -R "$(whoami)" . "$HOME"
+          sudo git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          git init .
+          git remote add origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git"
+          git fetch --tags --force origin
+          git fetch origin "+refs/heads/*:refs/remotes/origin/*"
+          git fetch origin "+refs/pull/${{ github.event.number }}/merge:refs/remotes/pull/${{ github.event.number }}/merge"
+          git checkout "${{ github.sha }}"
+      - name: 'Check for github-script errors'
+        shell: bash
+        run: |
+          bash .github/workflows/scripts/nix-run.sh "bash .github/workflows/scripts/eslint.sh"
+
+  actionlint:
+    name: 'Lint Workflows'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    container:
+      image: ghcr.io/rancher/ci-image/nix:20260603-18
+      options: --user suse
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        shell: bash
+        run: |
+          sudo chown -R "$(whoami)" . "$HOME"
+          sudo git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          git init .
+          git remote add origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git"
+          git fetch --tags --force origin
+          git fetch origin "+refs/heads/*:refs/remotes/origin/*"
+          git fetch origin "+refs/pull/${{ github.event.number }}/merge:refs/remotes/pull/${{ github.event.number }}/merge"
+          git checkout "${{ github.sha }}"
+      - name: 'Action lint'
+        shell: bash
+        run: |
+          bash .github/workflows/scripts/nix-run.sh "bash .github/workflows/scripts/actionlint.sh"
+
+  shellcheck:
+    name: 'Shellcheck'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    container:
+      image: ghcr.io/rancher/ci-image/nix:20260603-18
+      options: --user suse
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        shell: bash
+        run: |
+          sudo chown -R "$(whoami)" . "$HOME"
+          sudo git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          git init .
+          git remote add origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git"
+          git fetch --tags --force origin
+          git fetch origin "+refs/heads/*:refs/remotes/origin/*"
+          git fetch origin "+refs/pull/${{ github.event.number }}/merge:refs/remotes/pull/${{ github.event.number }}/merge"
+          git checkout "${{ github.sha }}"
+      - name: 'Shell check'
+        shell: bash
+        run: |
+          bash .github/workflows/scripts/nix-run.sh "bash .github/workflows/scripts/shellcheck.sh"
+
+  validate-commit-message:
+    name: 'Validate Commit Message'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    container:
+      image: ghcr.io/rancher/ci-image/nix:20260603-18
+      options: --user suse
+    permissions:
+      contents: read
+      pull-requests: read
+    steps:
+      - name: Checkout
+        shell: bash
+        run: |
+          sudo chown -R "$(whoami)" . "$HOME"
+          sudo git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          git init .
+          git remote add origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git"
+          git fetch --tags --force origin
+          git fetch origin "+refs/heads/*:refs/remotes/origin/*"
+          git fetch origin "+refs/pull/${{ github.event.number }}/merge:refs/remotes/pull/${{ github.event.number }}/merge"
+          git checkout "${{ github.sha }}"
+      - name: 'Check commit message'
+        shell: bash
+        run: |
+          bash .github/workflows/scripts/nix-run.sh "bash .github/workflows/scripts/validate-commit-message.sh ${{ github.event.number }}"
+
+  gitleaks:
+    name: 'Scan for Secrets'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    container:
+      image: ghcr.io/rancher/ci-image/nix:20260603-18
+      options: --user suse
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        shell: bash
+        run: |
+          sudo chown -R "$(whoami)" . "$HOME"
+          sudo git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          git init .
+          git remote add origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git"
+          git fetch --tags --force origin
+          git fetch origin "+refs/heads/*:refs/remotes/origin/*"
+          git fetch origin "+refs/pull/${{ github.event.number }}/merge:refs/remotes/pull/${{ github.event.number }}/merge"
+          git checkout "${{ github.sha }}"
+      - name: 'Check for secrets'
+        shell: bash
+        run: |
+          bash .github/workflows/scripts/nix-run.sh "bash .github/workflows/scripts/gitleaks.sh"
+        continue-on-error: true

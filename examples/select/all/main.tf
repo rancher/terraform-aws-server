@@ -28,7 +28,7 @@ resource "random_pet" "server" {
 
 module "access" {
   source                     = "rancher/access/aws"
-  version                    = "v4.0.0"
+  version                    = "v4.0.3"
   vpc_name                   = substr("${local.project_name}-vpc", 0, 32)
   security_group_name        = substr("${local.project_name}-sg", 0, 32) # quirk, this name must be unique accross object types and can't start with 'sg-'
   security_group_type        = "project"

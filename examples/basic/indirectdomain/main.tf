@@ -38,11 +38,11 @@ data "http" "myip" {
 
 module "access" {
   source                     = "rancher/access/aws"
-  version                    = "v4.0.0"
+  version                    = "v4.0.3"
   vpc_name                   = "${local.project_name}-vpc"
   security_group_name        = "${local.project_name}-sg"
   security_group_type        = "project" # by default only allow access within the vpc
-  domain                     = "${local.project_name}.${local.zone}"
+  domain                     = "${local.project_name}-${local.identifier}.${local.zone}"
   domain_zone                = local.zone
   load_balancer_use_strategy = "create"
   load_balancer_name         = "${local.project_name}-lb"

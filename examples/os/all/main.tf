@@ -28,7 +28,6 @@ data "http" "myip" {
   }
 }
 
-
 resource "random_pet" "server" {
   keepers = {
     # regenerate the pet name when the identifier changes
@@ -39,7 +38,7 @@ resource "random_pet" "server" {
 
 module "access" {
   source                     = "rancher/access/aws"
-  version                    = "v4.0.0"
+  version                    = "v4.0.3"
   vpc_name                   = "${local.project_name}-vpc"
   vpc_public                 = true
   security_group_name        = "${local.project_name}-sg"

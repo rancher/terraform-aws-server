@@ -34,7 +34,7 @@ resource "random_pet" "server" {
 
 module "access" {
   source                     = "rancher/access/aws"
-  version                    = "v4.0.0"
+  version                    = "v4.0.3"
   vpc_name                   = "${local.project_name}-vpc"
   vpc_public                 = true
   security_group_name        = "${local.project_name}-sg"
@@ -55,7 +55,7 @@ module "this" {
   security_group_name        = module.access.security_group.tags_all.Name
   direct_access_use_strategy = "network"
   add_domain                 = true
-  domain_name                = "${local.project_name}.${local.zone}"
+  domain_name                = "${local.project_name}-${local.identifier}.${local.zone}"
   domain_zone                = local.zone
   server_access_addresses = {
     "runner" = {
