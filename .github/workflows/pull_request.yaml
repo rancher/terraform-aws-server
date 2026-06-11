@@ -18,21 +18,12 @@ jobs:
     timeout-minutes: 10
     container:
       image: ghcr.io/rancher/ci-image/nix:20260603-18
-      options: --user suse
     permissions:
       contents: read
     steps:
-      - name: Checkout
-        shell: bash
-        run: |
-          sudo chown -R "$(whoami)" . "$HOME"
-          sudo git config --global --add safe.directory "$GITHUB_WORKSPACE"
-          git init .
-          git remote add origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git"
-          git fetch --tags --force origin
-          git fetch origin "+refs/heads/*:refs/remotes/origin/*"
-          git fetch origin "+refs/pull/${{ github.event.number }}/merge:refs/remotes/pull/${{ github.event.number }}/merge"
-          git checkout "${{ github.sha }}"
+      - name: 'Checkout'
+        # https://github.com/actions/checkout/releases
+        uses: actions/checkout@9f698171ed81b15d1823a05fc7211befd50c8ae0 # v6.0.3
       - name: 'Lint terraform'
         shell: bash
         run: |
@@ -44,21 +35,12 @@ jobs:
     timeout-minutes: 10
     container:
       image: ghcr.io/rancher/ci-image/nix:20260603-18
-      options: --user suse
     permissions:
       contents: read
     steps:
-      - name: Checkout
-        shell: bash
-        run: |
-          sudo chown -R "$(whoami)" . "$HOME"
-          sudo git config --global --add safe.directory "$GITHUB_WORKSPACE"
-          git init .
-          git remote add origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git"
-          git fetch --tags --force origin
-          git fetch origin "+refs/heads/*:refs/remotes/origin/*"
-          git fetch origin "+refs/pull/${{ github.event.number }}/merge:refs/remotes/pull/${{ github.event.number }}/merge"
-          git checkout "${{ github.sha }}"
+      - name: 'Checkout'
+        # https://github.com/actions/checkout/releases
+        uses: actions/checkout@9f698171ed81b15d1823a05fc7211befd50c8ae0 # v6.0.3
       - name: 'Check for github-script errors'
         shell: bash
         run: |
@@ -70,21 +52,12 @@ jobs:
     timeout-minutes: 10
     container:
       image: ghcr.io/rancher/ci-image/nix:20260603-18
-      options: --user suse
     permissions:
       contents: read
     steps:
-      - name: Checkout
-        shell: bash
-        run: |
-          sudo chown -R "$(whoami)" . "$HOME"
-          sudo git config --global --add safe.directory "$GITHUB_WORKSPACE"
-          git init .
-          git remote add origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git"
-          git fetch --tags --force origin
-          git fetch origin "+refs/heads/*:refs/remotes/origin/*"
-          git fetch origin "+refs/pull/${{ github.event.number }}/merge:refs/remotes/pull/${{ github.event.number }}/merge"
-          git checkout "${{ github.sha }}"
+      - name: 'Checkout'
+        # https://github.com/actions/checkout/releases
+        uses: actions/checkout@9f698171ed81b15d1823a05fc7211befd50c8ae0 # v6.0.3
       - name: 'Action lint'
         shell: bash
         run: |
@@ -96,21 +69,12 @@ jobs:
     timeout-minutes: 10
     container:
       image: ghcr.io/rancher/ci-image/nix:20260603-18
-      options: --user suse
     permissions:
       contents: read
     steps:
-      - name: Checkout
-        shell: bash
-        run: |
-          sudo chown -R "$(whoami)" . "$HOME"
-          sudo git config --global --add safe.directory "$GITHUB_WORKSPACE"
-          git init .
-          git remote add origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git"
-          git fetch --tags --force origin
-          git fetch origin "+refs/heads/*:refs/remotes/origin/*"
-          git fetch origin "+refs/pull/${{ github.event.number }}/merge:refs/remotes/pull/${{ github.event.number }}/merge"
-          git checkout "${{ github.sha }}"
+      - name: 'Checkout'
+        # https://github.com/actions/checkout/releases
+        uses: actions/checkout@9f698171ed81b15d1823a05fc7211befd50c8ae0 # v6.0.3
       - name: 'Shell check'
         shell: bash
         run: |
@@ -122,22 +86,13 @@ jobs:
     timeout-minutes: 10
     container:
       image: ghcr.io/rancher/ci-image/nix:20260603-18
-      options: --user suse
     permissions:
       contents: read
       pull-requests: read
     steps:
-      - name: Checkout
-        shell: bash
-        run: |
-          sudo chown -R "$(whoami)" . "$HOME"
-          sudo git config --global --add safe.directory "$GITHUB_WORKSPACE"
-          git init .
-          git remote add origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git"
-          git fetch --tags --force origin
-          git fetch origin "+refs/heads/*:refs/remotes/origin/*"
-          git fetch origin "+refs/pull/${{ github.event.number }}/merge:refs/remotes/pull/${{ github.event.number }}/merge"
-          git checkout "${{ github.sha }}"
+      - name: 'Checkout'
+        # https://github.com/actions/checkout/releases
+        uses: actions/checkout@9f698171ed81b15d1823a05fc7211befd50c8ae0 # v6.0.3
       - name: 'Check commit message'
         shell: bash
         run: |
@@ -149,21 +104,12 @@ jobs:
     timeout-minutes: 10
     container:
       image: ghcr.io/rancher/ci-image/nix:20260603-18
-      options: --user suse
     permissions:
       contents: read
     steps:
-      - name: Checkout
-        shell: bash
-        run: |
-          sudo chown -R "$(whoami)" . "$HOME"
-          sudo git config --global --add safe.directory "$GITHUB_WORKSPACE"
-          git init .
-          git remote add origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git"
-          git fetch --tags --force origin
-          git fetch origin "+refs/heads/*:refs/remotes/origin/*"
-          git fetch origin "+refs/pull/${{ github.event.number }}/merge:refs/remotes/pull/${{ github.event.number }}/merge"
-          git checkout "${{ github.sha }}"
+      - name: 'Checkout'
+        # https://github.com/actions/checkout/releases
+        uses: actions/checkout@9f698171ed81b15d1823a05fc7211befd50c8ae0 # v6.0.3
       - name: 'Check for secrets'
         shell: bash
         run: |
