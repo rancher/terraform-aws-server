@@ -13,31 +13,13 @@ jobs:
     timeout-minutes: 30
     container:
       image: ghcr.io/rancher/ci-image/nix:20260603-18
-      options: --user suse
     permissions:
       contents: read
       id-token: write
     steps:
-      - name: Fix Runner Permissions
-        shell: bash
-        run: |
-          sudo chown -R "$(whoami)" /__w /__t /github/home /github/workflow || true
-          sudo chmod -R u+rwX       /__w /__t /github/home /github/workflow || true
-
-      - name: Checkout
-        shell: bash
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-          REPO: ${{ github.repository }}
-          COMMIT_SHA: ${{ github.sha }}
-        run: |
-          sudo chown -R "$(whoami)" . "$HOME"
-          sudo git config --global --add safe.directory "$GITHUB_WORKSPACE"
-          git init .
-          git remote add origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${REPO}.git"
-          git fetch --tags --force origin
-          git fetch origin "+refs/heads/*:refs/remotes/origin/*"
-          git checkout "$COMMIT_SHA"
+      - name: 'Checkout'
+        # https://github.com/actions/checkout/releases
+        uses: actions/checkout@9f698171ed81b15d1823a05fc7211befd50c8ae0 # v6.0.3
 
       # The FOSSA token is shared between all repos in Rancher's GH org.
       # It can be used directly and there is no need to request specific access to EIO.
