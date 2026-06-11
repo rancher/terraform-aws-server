@@ -21,8 +21,15 @@ jobs:
       - name: Fix Runner Permissions
         shell: bash
         run: |
-          sudo chown -R "$(whoami)" /home/runner
-          sudo chmod -R 0770 /home/runner
+          WORKSPACE_ROOT="${RUNNER_WORKSPACE%/*}"
+          sudo chown -R "$(whoami)" "$WORKSPACE_ROOT"
+          sudo chmod -R 0770 "$WORKSPACE_ROOT"
+          sudo chown -R "$(whoami)" "$HOME"
+          sudo chmod -R 0770 "$HOME"
+          if [ -n "$GITHUB_EVENT_PATH" ] && [ -f "$GITHUB_EVENT_PATH" ]; then
+            sudo chown -R "$(whoami)" "$(dirname "$GITHUB_EVENT_PATH")"
+            sudo chmod -R 0770 "$(dirname "$GITHUB_EVENT_PATH")"
+          fi
 
       - name: Checkout
         shell: bash
