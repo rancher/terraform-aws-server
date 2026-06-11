@@ -23,6 +23,13 @@ trap 'rm -f .nix-script.sh' EXIT
 # Ensure the suse user can read/write the script and current directory
 chown -R suse:suse . || true
 
+# Ensure parent directories are traversable by the suse user
+p="$PWD"
+while [ "$p" != "/" ] && [ -n "$p" ]; do
+  chmod a+rx "$p" 2>/dev/null || true
+  p="$(dirname "$p")"
+done
+
 sudo -E -u suse /home/suse/.nix-profile/bin/nix develop \
   --ignore-environment \
   --extra-experimental-features nix-command \
