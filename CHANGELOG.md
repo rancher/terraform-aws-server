@@ -1,5 +1,25 @@
 # Changelog
 
+## [2.0.3](https://github.com/rancher/terraform-aws-server/compare/v2.0.2...v2.0.3) (2026-06-11)
+
+
+### Bug Fixes
+
+* add id token write permissions ([#153](https://github.com/rancher/terraform-aws-server/issues/153)) ([a798997](https://github.com/rancher/terraform-aws-server/commit/a7989972140b062c770f411f1bab9ec2a5bb1bc5))
+* bump actions/checkout from 6.0.2 to 6.0.3 ([#141](https://github.com/rancher/terraform-aws-server/issues/141)) ([c46ce22](https://github.com/rancher/terraform-aws-server/commit/c46ce22fa910ba9ec6158b11ab21d3fb1fb22fc8))
+* bump configure AWS credentials from 6.1.1 to 6.2.0 ([#140](https://github.com/rancher/terraform-aws-server/issues/140)) ([cfe16ea](https://github.com/rancher/terraform-aws-server/commit/cfe16ead06cb5617287a8cde80559843944c53f8))
+* chown and mod all the things ([#147](https://github.com/rancher/terraform-aws-server/issues/147)) ([ea0c9c4](https://github.com/rancher/terraform-aws-server/commit/ea0c9c4e829e1fcbf5d25987cfbb8b912e5f4581))
+* correct permissions in the container ([#154](https://github.com/rancher/terraform-aws-server/issues/154)) ([cacfcfc](https://github.com/rancher/terraform-aws-server/commit/cacfcfc24214f5383e5cdd469f7769f8f4c73afa))
+* do not own __e ([#149](https://github.com/rancher/terraform-aws-server/issues/149)) ([2fe82ba](https://github.com/rancher/terraform-aws-server/commit/2fe82ba2a4c8642950410db5f6f331fbdddd796b))
+* fix workflow permissions, add shell instructions, make AGENTS.md more concise ([#144](https://github.com/rancher/terraform-aws-server/issues/144)) ([2d0d2f4](https://github.com/rancher/terraform-aws-server/commit/2d0d2f4996fc22c58bd9f75413bfbfd91651d74f))
+* move checkout higher in the workflow ([#151](https://github.com/rancher/terraform-aws-server/issues/151)) ([d1f2cc9](https://github.com/rancher/terraform-aws-server/commit/d1f2cc94a6927b7942b9629fa05a667d770bacba))
+* remove user from container options and use root ([#150](https://github.com/rancher/terraform-aws-server/issues/150)) ([1e44ab8](https://github.com/rancher/terraform-aws-server/commit/1e44ab8fefa32d8a27289ba41b0ef8579e462f8a))
+* Repository Refactoring & Modernization ([#143](https://github.com/rancher/terraform-aws-server/issues/143)) ([cb60cd1](https://github.com/rancher/terraform-aws-server/commit/cb60cd1e53319073922c6fedebbc8b4563bc6f2f))
+* run docker container call inline ([#152](https://github.com/rancher/terraform-aws-server/issues/152)) ([94ebea1](https://github.com/rancher/terraform-aws-server/commit/94ebea148f53c1e438cee49d7a7720670714d1e1))
+* specifically own mounted directories ([#148](https://github.com/rancher/terraform-aws-server/issues/148)) ([995a72d](https://github.com/rancher/terraform-aws-server/commit/995a72dad046516d071e61f96f35ad740583e5ae))
+* update owner and mode to home runner path ([#146](https://github.com/rancher/terraform-aws-server/issues/146)) ([27c6ee2](https://github.com/rancher/terraform-aws-server/commit/27c6ee227d9f5acd959eadfae46c6d7ea94d3ade))
+* update workflow file permissions ([#145](https://github.com/rancher/terraform-aws-server/issues/145)) ([7e0626c](https://github.com/rancher/terraform-aws-server/commit/7e0626caa3384d50a444e1bb525d00a259492d90))
+
 ## [2.0.2](https://github.com/rancher/terraform-aws-server/compare/v2.0.1...v2.0.2) (2026-05-11)
 
 
