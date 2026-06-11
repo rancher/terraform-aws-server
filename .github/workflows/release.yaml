@@ -31,6 +31,10 @@ jobs:
         with:
           release-type: terraform-module
 
+      - name: 'Checkout'
+        # https://github.com/actions/checkout/releases
+        uses: actions/checkout@9f698171ed81b15d1823a05fc7211befd50c8ae0 # v6.0.3
+
       - name: Free Disk Space Before Test
         shell: bash
         run: |
@@ -47,11 +51,6 @@ jobs:
             const { default: script } = await import(scriptPath);
             context.payload.pull_request = { number: ${{ fromJson(steps.release-please.outputs.pr).number }} };
             await script({ github, context });
-
-      - name: 'Checkout'
-        if: steps.release-please.outputs.pr
-        # https://github.com/actions/checkout/releases
-        uses: actions/checkout@9f698171ed81b15d1823a05fc7211befd50c8ae0 # v6.0.3
 
       - name: 'Configure AWS Credentials'
         id: aws-creds
