@@ -28,8 +28,8 @@ jobs:
       - name: Fix Runner Permissions
         shell: bash
         run: |
-          sudo chown -R "$(whoami)" /__w /__t /__e /github/home /github/workflow || true
-          sudo chmod -R u+rwX       /__w /__t /__e /github/home /github/workflow || true
+          sudo chown -R "$(whoami)" /__w /__t /github/home /github/workflow || true
+          sudo chmod -R u+rwX       /__w /__t /github/home /github/workflow || true
 
       - name: 'Release Please'
         # https://github.com/googleapis/release-please-action/releases
