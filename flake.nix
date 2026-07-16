@@ -82,19 +82,33 @@
             '';
           };
 
+          macVscode = pkgs.writeShellScriptBin "code" ''
+            exec /usr/local/bin/code "$@"
+          '';
+
+          swVers = pkgs.writeShellScriptBin "sw_vers" ''
+            exec /usr/bin/sw_vers "$@"
+          '';
+
         devPackages = [
           # place our downloaded packages here
           leftovers
           terraform
+          macVscode
+          swVers
         ] ++ (with pkgs; [
           # here are the packages from the nix repository
+          act
           actionlint
           age
           awscli2
           bashInteractive
           cspell
+          colima
           curl
           dig
+          docker-client
+          docker-compose
           eslint
           gh
           git
@@ -106,6 +120,8 @@
           gotestfmt
           gotestsum
           jq
+          kubernetes-helm
+          kubectl
           less
           nodejs_26
           openssh
@@ -113,11 +129,13 @@
           shellcheck
           tflint
           tfsec
+          time
           tree
           trivy
           updatecli
           vim
           which
+          xz
           yq-go
         ]);
 
@@ -140,6 +158,7 @@
             buildInputs = [ devShellPackage ];
             shellHook = ''
               export PS1="nix:# ";
+              ln -sfn $(which docker-compose) ~/.docker/cli-plugins/docker-compose;
             '';
           };
         }
