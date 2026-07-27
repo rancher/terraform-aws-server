@@ -37,7 +37,7 @@ resource "random_pet" "server" {
 
 module "access" {
   source              = "rancher/access/aws"
-  version             = "v4.0.4"
+  version             = "v4.0.6"
   vpc_name            = substr("vpc-${local.project_name}", 0, 32)
   vpc_type            = "dualstack"
   security_group_name = substr("secg-${local.project_name}", 0, 32)
