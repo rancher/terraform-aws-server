@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.0.4](https://github.com/rancher/terraform-aws-server/compare/v2.0.3...v2.0.4) (2026-07-28)
+
+
+### Bug Fixes
+
+* bump aws-actions/configure-aws-credentials from 6.2.2 to 6.2.3 ([#162](https://github.com/rancher/terraform-aws-server/issues/162)) ([426f6f1](https://github.com/rancher/terraform-aws-server/commit/426f6f1f47dbd6ec691c29fdb9d9f2744b08de4b))
+* update the access module to v4.0.6 ([#164](https://github.com/rancher/terraform-aws-server/issues/164)) ([5c1bb16](https://github.com/rancher/terraform-aws-server/commit/5c1bb16a17e30620b5dbf45077dd690f090af3bd))
+
 ## [2.0.3](https://github.com/rancher/terraform-aws-server/compare/v2.0.2...v2.0.3) (2026-07-16)
 
 
