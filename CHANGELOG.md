@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.5](https://github.com/rancher/terraform-aws-server/compare/v2.0.4...v2.0.5) (2026-08-28)
+
+
+### Bug Fixes
+
+* bump rancher-eio/read-vault-secrets ([#165](https://github.com/rancher/terraform-aws-server/issues/165)) ([2cbc46d](https://github.com/rancher/terraform-aws-server/commit/2cbc46d6f547c059891092c17da68593aa1d059c))
+
 ## [2.0.4](https://github.com/rancher/terraform-aws-server/compare/v2.0.3...v2.0.4) (2026-07-28)
 
 
