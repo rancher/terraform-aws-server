@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.0.5](https://github.com/rancher/terraform-aws-server/compare/v2.0.4...v2.0.5) (2026-09-21)
+
+
+### Bug Fixes
+
+* bump aws-actions/configure-aws-credentials from 6.2.3 to 6.2.4 ([#167](https://github.com/rancher/terraform-aws-server/issues/167)) ([90eea20](https://github.com/rancher/terraform-aws-server/commit/90eea20a40e7e192f406a74c99bb81dd5028a690))
+* bump aws-actions/configure-aws-credentials from 6.2.4 to 6.3.0 ([#168](https://github.com/rancher/terraform-aws-server/issues/168)) ([7b52e21](https://github.com/rancher/terraform-aws-server/commit/7b52e213e9a05fff2cd0bd852b2d1fbe8da41078))
+* bump rancher-eio/read-vault-secrets ([#165](https://github.com/rancher/terraform-aws-server/issues/165)) ([2cbc46d](https://github.com/rancher/terraform-aws-server/commit/2cbc46d6f547c059891092c17da68593aa1d059c))
+
 ## [2.0.4](https://github.com/rancher/terraform-aws-server/compare/v2.0.3...v2.0.4) (2026-07-28)
 
 
